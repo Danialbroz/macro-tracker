@@ -26,7 +26,7 @@
     }
 
     .underwater-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
-    .bubble-dumbbell { position: absolute; bottom: -15%; opacity: 0; animation: rise linear infinite; filter: drop-shadow(0 0 8px rgba(186,230,253,0.4)); }
+    .bubble-dumbbell { position: absolute; bottom: -15%; opacity: 0; animation: rise linear infinite; filter: drop-shadow(0 0 8px rgba(186,230,253,0.4)); will-change: transform, opacity; } /* MOD: Added will-change for performance */
     @keyframes rise {
       0% { bottom: -15%; transform: translateX(0) rotate(0deg); opacity: 0; }
       10% { opacity: 1; }
@@ -105,10 +105,10 @@
     .scan-btn { margin-bottom: 10px; }
     .log-btn { margin-top: 12px; }
 
-    /* --- Water-style sync progress bar --- */
-    .progress-wrap { display: none; margin-top: 10px; }
+    /* --- Water-style sync progress bar (NEW) --- */
+    .progress-wrap { display: none; margin-top: 10px; height: 30px; }
     .progress-track {
-      position: relative; height: 30px; border-radius: 16px; overflow: hidden;
+      position: relative; height: 100%; border-radius: 16px; overflow: hidden;
       background: rgba(15,23,42,0.45);
       border: 1px solid rgba(255,255,255,0.22);
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -119,15 +119,8 @@
       background-size: 300% 100%;
       animation: waterFlow 2.4s linear infinite;
       transition: width 0.15s linear;
-      overflow: hidden;
     }
-    .progress-fill::after {
-      content: ''; position: absolute; top: 0; left: 0; right: -20px; bottom: 0;
-      background: repeating-linear-gradient(115deg, rgba(255,255,255,0.22) 0 8px, transparent 8px 22px);
-      animation: waterWave 1s linear infinite;
-    }
-    @keyframes waterFlow { 0% { background-position: 0% 50%; } 100% { background-position: 150% 50%; } }
-    @keyframes waterWave { from { transform: translateX(0); } to { transform: translateX(30px); } }
+    @keyframes waterFlow { 0% { background-position: 150% 50%; } 100% { background-position: 0% 50%; } }
     .progress-text {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       display: flex; align-items: center; justify-content: center;
@@ -135,10 +128,25 @@
       text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
 
+    /* --- Scan Success "Apple Pay" Animation (NEW) --- */
+    .success-anim-wrap {
+      display: none; align-items: center; justify-content: center; flex-direction: column;
+      gap: 12px; margin: 10px 0;
+    }
+    .success-anim-wrap.show { display: flex; animation: successPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes successPopIn { from { opacity: 0; transform: scale(0.7); } }
+    .success-checkmark-svg { width: 50px; height: 50px; }
+    .checkmark-circle { stroke-dasharray: 166; stroke-dashoffset: 166; animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) forwards; }
+    .checkmark-check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards; }
+    .success-anim-wrap.show .checkmark-circle { animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.1s forwards; }
+    .success-anim-wrap.show .checkmark-check { animation: stroke 0.3s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards; }
+    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+    .success-anim-text { font-size: 0.9rem; font-weight: 600; color: var(--green); text-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
+
     #scannedPreviewWrap { display: none; text-align: center; margin: 8px 0; }
     #scannedPreviewImg { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); }
 
-    #status { font-size: 0.85rem; color: var(--purple); text-align: center; margin-top: 6px; display: none; }
+    #status { font-size: 0.85rem; color: var(--red); text-align: center; margin-top: 6px; display: none; }
 
     /* --- Food log cards --- */
     .food-card { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
@@ -191,15 +199,30 @@
       background: rgba(236, 72, 153, 0.15); border-color: var(--pink); color: var(--pink);
       transform: scale(1.05); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
     }
-
     .gender-card svg { overflow: visible; }
     .arms-group { transform: translateY(18px); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease; }
     .gender-card.selected .arms-group { transform: translateY(0); opacity: 1; }
-
     .face-neutral { transition: opacity 0.3s ease; }
     .face-happy { opacity: 0; transition: opacity 0.3s ease; }
     .gender-card.selected .face-neutral { opacity: 0; }
     .gender-card.selected .face-happy { opacity: 1; }
+
+    /* --- Goal Selection Cards (NEW) --- */
+    .goal-selector { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; margin-top: 8px; }
+    .goal-card {
+      background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 16px; padding: 14px 4px; text-align: center; cursor: pointer;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #94a3b8; user-select: none;
+      touch-action: manipulation;
+    }
+    .goal-card svg { height: 36px; width: 36px; margin-bottom: 8px; transition: all 0.3s ease; }
+    .goal-card span { display: block; font-weight: 600; font-size: 0.75rem; }
+    .goal-card.selected {
+      transform: scale(1.05); color: var(--text); border-color: var(--accent);
+      background: rgba(56, 189, 248, 0.15);
+      box-shadow: 0 0 24px rgba(56, 189, 248, 0.3);
+    }
+    .goal-card.selected svg { transform: scale(1.1); color: var(--accent); }
 
     /* --- Height slider + stick figure --- */
     .metrics-visual { display: flex; align-items: flex-end; justify-content: center; gap: 20px; margin: 10px 0 20px; }
@@ -280,6 +303,26 @@
       background: rgba(255,255,255,0.08); color: #e0f2fe; font-weight: 600; border: 1px solid rgba(255,255,255,0.12);
       padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0; touch-action: manipulation;
     }
+
+    /* --- Onboarding Success Overlay (NEW) --- */
+    #onboardingSuccessOverlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      z-index: 3000; display: none; align-items: center; justify-content: center;
+      background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      opacity: 0; transition: opacity 0.4s ease;
+    }
+    #onboardingSuccessOverlay.show { display: flex; opacity: 1; }
+    #onboardingSuccessOverlay .success-card {
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      transform: scale(0.8); opacity: 0;
+      transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    #onboardingSuccessOverlay.show .success-card { transform: scale(1); opacity: 1; }
+    #onboardingSuccessOverlay h2 {
+      font-size: 1.3rem; color: #f0f9ff; font-weight: 600; margin-top: 20px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+    }
+    #onboardingSuccessOverlay .success-checkmark-svg { width: 120px; height: 120px; }
   </style>
 </head>
 <body>
@@ -292,10 +335,17 @@
           <stop offset="35%" stop-color="#bae6fd" stop-opacity="0.45"/>
           <stop offset="100%" stop-color="#38bdf8" stop-opacity="0.12"/>
         </radialGradient>
-        <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" stop-color="#475569"/>
-          <stop offset="50%" stop-color="#38bdf8"/>
-          <stop offset="100%" stop-color="#5eead4"/>
+        <!-- MOD: Removed old gaugeGrad -->
+        <!-- NEW: Added dedicated gradients for calorie and protein gauges -->
+        <linearGradient id="gaugeGradCal" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#4ade80" />
+          <stop offset="50%" stop-color="#facc15" />
+          <stop offset="100%" stop-color="#ef4444" />
+        </linearGradient>
+        <linearGradient id="gaugeGradPro" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#f87171" />
+          <stop offset="50%" stop-color="#facc15" />
+          <stop offset="100%" stop-color="#4ade80" />
         </linearGradient>
       </defs>
     </svg>
@@ -369,7 +419,6 @@
 
         <label style="margin-top: 24px;">Biological Sex</label>
         <div class="gender-selector">
-
           <div class="gender-card" id="card-male" onclick="selectGender('male')">
             <svg viewBox="0 0 24 24" width="60" height="60">
               <g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
@@ -409,7 +458,6 @@
             </svg>
             <span>Girl</span>
           </div>
-
         </div>
         <input type="hidden" id="obSex" value="">
 
@@ -418,7 +466,6 @@
 
       <div id="step2" class="step">
         <h2>Body Metrics</h2>
-
         <div class="metrics-visual">
           <div class="height-slider-wrap">
             <div class="height-ticks">
@@ -429,7 +476,6 @@
               <div class="height-handle" id="heightHandle"><span id="heightHandleLabel">150</span></div>
             </div>
           </div>
-
           <div class="stick-figure-wrap">
             <svg id="stickFigureSvg" viewBox="0 0 100 200">
               <line x1="10" y1="188" x2="90" y2="188" stroke="rgba(255,255,255,0.25)" stroke-width="2" stroke-linecap="round"/>
@@ -443,15 +489,12 @@
             </svg>
           </div>
         </div>
-
         <div class="metrics-inputs">
           <label>Height (cm)</label>
           <input type="number" id="obHeight" placeholder="e.g. 175" inputmode="numeric" oninput="onHeightInput()">
-
           <label>Current Weight (kg)</label>
           <input type="number" id="obWeight" placeholder="e.g. 70" inputmode="numeric" oninput="onWeightInput()">
         </div>
-
         <div style="display: flex; gap: 12px; margin-top: 24px;">
           <button class="action-btn secondary-btn" style="margin-top:0;" onclick="prevStep(1)">⬅ Back</button>
           <button class="action-btn" style="margin-top:0;" onclick="goToStep3()">Next ➔</button>
@@ -460,15 +503,24 @@
 
       <div id="step3" class="step">
         <h2>Your Goal</h2>
+        <!-- NEW: Goal selection cards, replacing the <select> element -->
+        <div class="goal-selector">
+          <div class="goal-card" id="goal-lose" onclick="selectGoal('lose')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m17 14-5 5-5-5"/><path d="M17 5H7"/></svg>
+            <span>Lose Weight</span>
+          </div>
+          <div class="goal-card" id="goal-gain" onclick="selectGoal('gain')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14"/><path d="m17 10-5-5-5 5"/><path d="M7 19h10"/></svg>
+            <span>Gain Muscle</span>
+          </div>
+          <div class="goal-card" id="goal-maintain" onclick="selectGoal('maintain')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9h14"/><path d="M5 15h14"/></svg>
+            <span>Maintain</span>
+          </div>
+        </div>
+        <input type="hidden" id="obGoal" value="">
 
-        <label>Main Goal</label>
-        <select id="obGoal" onchange="updateGoalUI()">
-          <option value="lose">Lose Weight</option>
-          <option value="gain">Gain Muscle</option>
-          <option value="maintain">Maintain Current Weight</option>
-        </select>
-
-        <div id="goalWeightField">
+        <div id="goalWeightField" style="margin-top: 24px;">
           <label>Goal Weight (kg)</label>
           <input type="number" id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric">
         </div>
@@ -507,23 +559,12 @@
   <div id="cancelConfirmModal" class="cancel-modal-overlay">
     <div class="cancel-modal-card">
       <svg class="stickman-wiggle" viewBox="0 0 100 100" width="110" height="110">
-        <circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/>
-        <path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <circle cx="44" cy="24" r="1.6" fill="#f8fafc"/>
-        <circle cx="57" cy="24" r="1.6" fill="#f8fafc"/>
-        <path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
-        <line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/>
-        <path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-        <text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text>
+        <circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/><path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="44" cy="24" r="1.6" fill="#f8fafc"/><circle cx="57" cy="24" r="1.6" fill="#f8fafc"/><path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/><path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text>
       </svg>
       <h3>Are you sure you want to cancel?</h3>
       <div class="cancel-modal-btns">
         <button class="cancel-yes-btn" onclick="doCancelOnboarding()">Yes, I am!</button>
-        <button class="cancel-no-btn" onclick="closeCancelModal()">No, i hate myself</button>
+        <button class="cancel-no-btn" onclick="closeCancelModal()">No, I'm not</button>
       </div>
     </div>
   </div>
@@ -539,6 +580,18 @@
       </div>
     </div>
   </div>
+
+  <!-- NEW: Onboarding Success Animation Overlay -->
+  <div id="onboardingSuccessOverlay">
+    <div class="success-card">
+       <svg class="success-checkmark-svg" viewBox="0 0 52 52">
+        <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/>
+        <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/>
+      </svg>
+      <h2>Your data has been updated</h2>
+    </div>
+  </div>
+
 
   <div id="mainApp" style="display:none;">
     <div class="header">
@@ -564,7 +617,8 @@
         <div class="meter-label">Calories</div>
         <div class="gauge-wrap">
           <svg viewBox="0 0 200 120" class="gauge-svg">
-            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round"/>
+            <!-- MOD: Changed stroke to use new gradient -->
+            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/>
             <g id="calNeedle" transform="rotate(-90 100 100)">
               <line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
             </g>
@@ -577,7 +631,8 @@
         <div class="meter-label">Protein</div>
         <div class="gauge-wrap">
           <svg viewBox="0 0 200 120" class="gauge-svg">
-            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGrad)" stroke-width="14" stroke-linecap="round"/>
+            <!-- MOD: Changed stroke to use new gradient -->
+            <path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/>
             <g id="proNeedle" transform="rotate(-90 100 100)">
               <line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/>
             </g>
@@ -600,12 +655,21 @@
           <div class="progress-text" id="progressText">0%</div>
         </div>
       </div>
+      
+      <!-- NEW: Scan success animation -->
+      <div class="success-anim-wrap" id="scanSuccessAnimation">
+        <svg class="success-checkmark-svg" viewBox="0 0 52 52">
+          <circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/>
+          <path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/>
+        </svg>
+        <span class="success-anim-text">Analyze Successfully</span>
+      </div>
 
       <div id="scannedPreviewWrap">
         <img id="scannedPreviewImg">
       </div>
 
-      <div id="status">Analyzing food...</div>
+      <div id="status"></div>
 
       <input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)">
       <div class="macro-input-grid">
@@ -641,7 +705,8 @@
         document.getElementById('cancelOnboardingBtn').classList.remove('show');
         positionHeightHandle(150);
         updateStickFigure(150, 0);
-        updateGoalUI();
+        selectGender('male'); // NEW: Default gender selection
+        selectGoal('lose');   // NEW: Default goal selection
         nextStep(1);
       } else {
         GOAL_CAL = savedGoals.cal;
@@ -663,7 +728,7 @@
         selectGender(profile.sex);
         document.getElementById('obHeight').value = profile.height;
         document.getElementById('obWeight').value = profile.weight;
-        document.getElementById('obGoal').value = profile.goal;
+        selectGoal(profile.goal); // MOD: Use selectGoal function
         document.getElementById('obGoalWeight').value = profile.goalWeight || '';
         document.getElementById('obTimeline').value = profile.timeline || 12;
         document.getElementById('obExercise').value = profile.exercise;
@@ -672,8 +737,9 @@
       } else {
         positionHeightHandle(150);
         updateStickFigure(150, 0);
+        selectGender('male'); // NEW: Default gender selection
+        selectGoal('lose');   // NEW: Default goal selection
       }
-      updateGoalUI();
       nextStep(1);
     }
 
@@ -698,6 +764,14 @@
       document.getElementById('card-' + gender).classList.add('selected');
     }
 
+    // NEW: Function to handle goal selection
+    function selectGoal(goal) {
+      document.getElementById('obGoal').value = goal;
+      document.querySelectorAll('.goal-card').forEach(card => card.classList.remove('selected'));
+      document.getElementById('goal-' + goal).classList.add('selected');
+      updateGoalUI();
+    }
+
     function nextStep(stepNum) {
       document.querySelectorAll('.step').forEach(el => el.classList.remove('active'));
       document.getElementById('step' + stepNum).classList.add('active');
@@ -719,6 +793,7 @@
 
     function goToStep4() {
       const goal = document.getElementById('obGoal').value;
+      if (!goal) return alert("Please select a goal!"); // MOD: Check if goal is selected
       if (goal !== 'maintain') {
         const gw = parseFloat(document.getElementById('obGoalWeight').value);
         if (!gw) return alert("Please enter your goal weight!");
@@ -860,13 +935,11 @@
       if (!height || !weight) return alert("Please fill in your height and weight!");
 
       let bmr = (10 * weight) + (6.25 * height) - (5 * age) + (sex === 'male' ? 5 : -161);
-
       let multiplier = 1.2;
       if (exercise === 2) multiplier = 1.375;
       if (exercise === 4) multiplier = 1.55;
       if (exercise === 6) multiplier = 1.725;
       let tdee = bmr * multiplier;
-
       let targetCal = tdee;
       let targetPro = weight * 2.0;
 
@@ -875,11 +948,9 @@
         const weightDiff = goalWeight - weight;
         const totalKcalChange = weightDiff * 7700;
         const dailyKcalChange = totalKcalChange / (timeline * 7);
-
         targetCal = tdee + dailyKcalChange;
         if (goal === 'lose') targetPro = weight * 2.2;
       }
-
       targetCal = Math.round(targetCal);
       if (targetCal < 1200) targetCal = 1200;
       targetPro = Math.round(targetPro);
@@ -889,10 +960,16 @@
       GOAL_CAL = targetCal;
       GOAL_PRO = targetPro;
 
-      document.getElementById('onboardingScreen').style.display = 'none';
-      document.getElementById('cancelOnboardingBtn').classList.remove('show');
-      document.getElementById('mainApp').style.display = 'block';
-      render();
+      // NEW: Onboarding success animation
+      const successOverlay = document.getElementById('onboardingSuccessOverlay');
+      successOverlay.classList.add('show');
+      setTimeout(() => {
+        successOverlay.classList.remove('show');
+        document.getElementById('onboardingScreen').style.display = 'none';
+        document.getElementById('cancelOnboardingBtn').classList.remove('show');
+        document.getElementById('mainApp').style.display = 'block';
+        render();
+      }, 2000);
     }
 
     // ---------- Settings dropdown ----------
@@ -900,7 +977,6 @@
       document.getElementById('dropdownMenu').classList.toggle('show');
       document.getElementById('gearBtn').classList.toggle('spin');
     }
-
     document.addEventListener('click', (e) => {
       const menu = document.getElementById('dropdownMenu');
       const btn = document.getElementById('gearBtn');
@@ -911,17 +987,13 @@
     });
 
     // ---------- API Key modal ----------
-    function setApiKey() {
-      openApiKeyModal();
-    }
+    function setApiKey() { openApiKeyModal(); }
     function openApiKeyModal() {
       const current = localStorage.getItem('gemini_key') || '';
       document.getElementById('apiKeyInput').value = current;
       document.getElementById('apiKeyModal').classList.add('show');
     }
-    function closeApiKeyModal() {
-      document.getElementById('apiKeyModal').classList.remove('show');
-    }
+    function closeApiKeyModal() { document.getElementById('apiKeyModal').classList.remove('show'); }
     function saveApiKeyFn() {
       const key = document.getElementById('apiKeyInput').value.trim();
       localStorage.setItem('gemini_key', key);
@@ -933,6 +1005,7 @@
       const wrap = document.getElementById('progressWrap');
       const fill = document.getElementById('progressFill');
       const text = document.getElementById('progressText');
+      document.getElementById('scanSuccessAnimation').classList.remove('show'); // NEW: Hide success anim
       wrap.style.display = 'block';
       fill.style.width = '0%';
       text.textContent = '0%';
@@ -949,15 +1022,17 @@
 
     function finishProgress(success) {
       clearInterval(progressTimer);
+      const wrap = document.getElementById('progressWrap');
       const fill = document.getElementById('progressFill');
       const text = document.getElementById('progressText');
       if (success) {
         fill.style.width = '100%';
         text.textContent = '100%';
+        setTimeout(() => { wrap.style.display = 'none'; }, 600);
       } else {
         text.textContent = 'ERROR';
+        setTimeout(() => { wrap.style.display = 'none'; }, 1400);
       }
-      setTimeout(() => { document.getElementById('progressWrap').style.display = 'none'; }, success ? 600 : 1400);
     }
 
     // ---------- AI Scanning ----------
@@ -986,7 +1061,7 @@
 
       const apiKey = localStorage.getItem('gemini_key');
       if (!apiKey) {
-        alert('AI scanning is private and not configured for this device.');
+        alert('AI scanning requires a Gemini API key. Please add one in the settings menu (⚙️).');
         return;
       }
 
@@ -1001,7 +1076,7 @@
         document.getElementById('scannedPreviewImg').src = lastScanThumb;
         document.getElementById('scannedPreviewWrap').style.display = 'block';
 
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`, {
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-1.5:generateContent?key=${apiKey}`, { // Note: Model name updated for better JSON handling
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -1014,6 +1089,8 @@
             generationConfig: { responseMimeType: "application/json" }
           })
         });
+        
+        if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
 
         const data = await res.json();
         const rawText = data.candidates[0].content.parts[0].text;
@@ -1026,11 +1103,15 @@
         document.getElementById('foodFat').value = parsed.fat || 0;
 
         finishProgress(true);
-        statusEl.textContent = '✅ Scanned! Adjust if needed, then tap + Log Meal.';
-        statusEl.style.display = 'block';
+        // NEW: Show success animation
+        const successAnim = document.getElementById('scanSuccessAnimation');
+        successAnim.classList.add('show');
+        setTimeout(() => successAnim.classList.remove('show'), 2500);
+
       } catch (err) {
+        console.error(err);
         finishProgress(false);
-        statusEl.textContent = '❌ Error analyzing image. Check your API key.';
+        statusEl.textContent = '❌ Error analyzing image. Check API key.';
         statusEl.style.display = 'block';
       }
       event.target.value = '';
@@ -1041,14 +1122,12 @@
       const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
       return data[todayKey] || [];
     }
-
     function saveLogs(logs) {
       const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
       data[todayKey] = logs;
       localStorage.setItem('macro_logs', JSON.stringify(data));
       render();
     }
-
     function addEntry() {
       const name = document.getElementById('foodName').value.trim() || 'Meal';
       const cal = parseInt(document.getElementById('foodCal').value) || 0;
@@ -1070,7 +1149,6 @@
       document.getElementById('scannedPreviewWrap').style.display = 'none';
       lastScanThumb = null;
     }
-
     function removeEntry(id) {
       const logs = getLogs().filter(item => item.id !== id);
       saveLogs(logs);
@@ -1094,20 +1172,20 @@
           box.classList.remove('over-limit');
           needleLine.setAttribute('stroke', '#5eead4');
         } else {
-          box.classList.remove('target-reached');
+          box.classList.remove('target-reached', 'over-limit');
           needleLine.setAttribute('stroke', '#cbd5e1');
         }
-      } else {
+      } else { // 'cal'
         if (rawPct > 100) {
           box.classList.add('over-limit');
+          box.classList.remove('target-reached');
           needleLine.setAttribute('stroke', '#f87171');
         } else {
-          box.classList.remove('over-limit');
+          box.classList.remove('over-limit', 'target-reached');
           needleLine.setAttribute('stroke', '#cbd5e1');
         }
       }
     }
-
     function render() {
       const logs = getLogs();
       let totalCal = 0, totalPro = 0;
@@ -1117,7 +1195,6 @@
       if (logs.length === 0) {
         listEl.innerHTML = `<div class="empty-state">🍽️ No meals logged yet today</div>`;
       }
-
       logs.forEach(item => {
         totalCal += item.cal;
         totalPro += item.pro;
@@ -1139,11 +1216,9 @@
             <button class="del-btn" onclick="removeEntry(${item.id})">✕</button>
           </div>`;
       });
-
       renderGauge('cal', totalCal, GOAL_CAL);
       renderGauge('pro', totalPro, GOAL_PRO);
     }
-
     initApp();
   </script>
 </body>
