@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <title>MacroTracker AI</title>
+  <style>
+    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --green: #4ade80; --purple: #c084fc; }
+    * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
+    body { background: var(--bg); color: var(--text); margin: 0; padding: 20px 16px 40px; }
+    .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 16px; }
+    h2 { margin: 0; font-size: 1.4rem; }
+    .key-btn { background: #334155; color: #cbd5e1; width: auto; padding: 6px 12px; font-size: 0.8rem; margin: 0; border-radius: 8px; }
+    .card { background: var(--card); padding: 16px; border-radius: 14px; margin-bottom: 16px; }
+    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
+    .stat-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; }
+    .stat-val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
+    .stat-val.protein { color: var(--green); }
+    input, button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 1rem; }
+    input { background: #0f172a; color: #fff; border: 1px solid #334155; }
+    button { background: var(--accent); color: #0f172a; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    .ai-btn { background: var(--purple); color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0; margin-bottom: 8px; }
+    .log-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
+    .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 8px; margin: 0; font-weight: 600; }
+    #status { font-size: 0.85rem; color: var(--purple); text-align: center; margin-top: 6px; display: none; }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <h2>Today's Macros</h2>
+    <button class="key-btn" onclick="setApiKey()">🔑 API Key</button>
+  </div>
+
+  <div class="card stats">
+    <div class="stat-box">
+      <div id="calTotal" class="stat-val">0 / 2400</div>
+      <small>Calories (kcal)</small>
+    </div>
+    <div class="stat-box">
+      <div id="proTotal" class="stat-val protein">0 / 150g</div>
+      <small>Protein (g)</small>
+    </div>
+  </div>
+
+  <div class="card">
+    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)">
+    <button class="ai-btn" onclick="document.getElementById('cameraInput').click()">
+      📷 Scan Meal with AI
+    </button>
+    <div id="status">Analyzing food...</div>
+
+    <input type="text" id="foodName" placeholder="Food (e.g. Chicken Breast, 3 Eggs)">
+    <div style="display:flex; gap:8px;">
+      <input type="number" id="foodCal" placeholder="Calories" inputmode="numeric">
+      <input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric">
+    </div>
+    <button onclick="addEntry()">+ Log Meal</button>
+  </div>
+
+  <div class="card">
+    <strong>Today's Log</strong>
+    <div id="logList" style="margin-top: 8px;"></div>
+  </div>
+
+  <script>
+    const GOAL_CAL = 2400;
+    const GOAL_PRO = 150;
+    const todayKey = new Date().toISOString().split('T')[0];
+
+    function setApiKey() {
+      const current = localStorage.getItem('gemini_key') || '';
+      const key = prompt('Paste your Gemini API Key (saved locally on your iPhone):', current);
+      if (key !== null) localStorage.setItem('gemini_key', key.trim());
+    }
+
+    async function compressImage(file) {
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const max = 800;
+            const scale = Math.min(max / img.width, max / img.height, 1);
+            canvas.width = img.width * scale;
+            canvas.height = img.height * scale;
+            canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height);
+            resolve(canvas.toDataURL('image/jpeg', 0.7).split(',')[1]);
+          };
+          img.src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      });
+    }
+
+    async function analyzePhoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const apiKey = localStorage.getItem('gemini_key');
+      if (!apiKey) {
+        alert('Tap "🔑 API Key" at the top right to paste your free Gemini API key first.');
+        return;
+      }
+
+      const statusEl = document.getElementById('status');
+      statusEl.style.display = 'block';
+      statusEl.textContent = 'Analyzing meal...';
+
+      try {
+        const base64Image = await compressImage(file);
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{
+              parts: [
+                { text: 'Identify the food in this image and estimate total calories and protein in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35}' },
+                { inline_data: { mime_type: 'image/jpeg', data: base64Image } }
+              ]
+            }],
+            generationConfig: { responseMimeType: "application/json" }
+          })
+        });
+
+        const data = await res.json();
+        const rawText = data.candidates[0].content.parts[0].text;
+        const parsed = JSON.parse(rawText);
+
+        document.getElementById('foodName').value = parsed.name || 'Scanned Meal';
+        document.getElementById('foodCal').value = parsed.cal || 0;
+        document.getElementById('foodPro').value = parsed.pro || 0;
+        statusEl.textContent = '✅ Scanned! Adjust if needed, then tap + Log Meal.';
+      } catch (err) {
+        statusEl.textContent = '❌ Error analyzing image. Check your API key.';
+      }
+      event.target.value = '';
+    }
+
+    function getLogs() {
+      const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
+      return data[todayKey] || [];
+    }
+
+    function saveLogs(logs) {
+      const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
+      data[todayKey] = logs;
+      localStorage.setItem('macro_logs', JSON.stringify(data));
+      render();
+    }
+
+    function addEntry() {
+      const name = document.getElementById('foodName').value.trim() || 'Meal';
+      const cal = parseInt(document.getElementById('foodCal').value) || 0;
+      const pro = parseInt(document.getElementById('foodPro').value) || 0;
+      if (!cal && !pro) return;
+
+      const logs = getLogs();
+      logs.push({ id: Date.now(), name, cal, pro });
+      saveLogs(logs);
+
+      document.getElementById('foodName').value = '';
+      document.getElementById('foodCal').value = '';
+      document.getElementById('foodPro').value = '';
+      document.getElementById('status').style.display = 'none';
+    }
+
+    function removeEntry(id) {
+      const logs = getLogs().filter(item => item.id !== id);
+      saveLogs(logs);
+    }
+
+    function render() {
+      const logs = getLogs();
+      let totalCal = 0, totalPro = 0;
+      const listEl = document.getElementById('logList');
+      listEl.innerHTML = '';
+
+      logs.forEach(item => {
+        totalCal += item.cal;
+        totalPro += item.pro;
+        listEl.innerHTML += `
+          <div class="log-item">
+            <span><strong>${item.name}</strong> (${item.cal} kcal · ${item.pro}g P)</span>
+            <button class="del-btn" onclick="removeEntry(${item.id})">✕</button>
+          </div>`;
+      });
+
+      document.getElementById('calTotal').textContent = `${totalCal} / ${GOAL_CAL}`;
+      document.getElementById('proTotal').textContent = `${totalPro} / ${GOAL_PRO}g`;
+    }
+
+    render();
+  </script>
+</body>
+</html>
