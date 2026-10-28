@@ -10,6 +10,8 @@
     :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --green: #4ade80; --purple: #c084fc; }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
     body { background: var(--bg); color: var(--text); margin: 0; padding: 20px 16px 40px; }
+    
+    /* Main App Styles */
     .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 16px; }
     h2 { margin: 0; font-size: 1.4rem; }
     .header-controls { position: relative; }
@@ -25,76 +27,251 @@
     .stat-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; }
     .stat-val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
     .stat-val.protein { color: var(--green); }
-    input, .action-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 1rem; }
-    input { background: #0f172a; color: #fff; border: 1px solid #334155; }
+    input, .action-btn, select { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 1rem; }
+    input, select { background: #0f172a; color: #fff; border: 1px solid #334155; }
     .action-btn { background: var(--accent); color: #0f172a; font-weight: 700; cursor: pointer; margin-top: 12px; }
     .ai-btn { background: var(--purple); color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0; margin-bottom: 8px; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; }
     .log-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
     .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 8px; margin: 0; font-weight: 600; cursor: pointer; }
     #status { font-size: 0.85rem; color: var(--purple); text-align: center; margin-top: 6px; display: none; }
+
+    /* Underwater Onboarding Screen */
+    .onboarding {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: linear-gradient(180deg, #0284c7 0%, #082f49 100%);
+      z-index: 1000; display: none; align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+    .underwater-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
+    
+    .floating-card {
+      background: rgba(30, 41, 59, 0.5);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border: 1px solid rgba(255,255,255,0.15);
+      padding: 24px; border-radius: 20px; width: 90%; max-width: 400px;
+      animation: bob 4s ease-in-out infinite;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6);
+      z-index: 2; max-height: 85vh; overflow-y: auto;
+    }
+    .floating-card h2 { text-align: center; margin-bottom: 20px; font-size: 1.6rem; color: #fff; }
+    .floating-card label { font-size: 0.85rem; color: #cbd5e1; margin-top: 10px; display: block; font-weight: 600;}
+    .floating-card input, .floating-card select { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); margin-top: 4px; padding: 10px;}
+    
+    @keyframes bob {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-12px); }
+    }
+    
+    .bubble-dumbbell {
+      position: absolute; bottom: -15%; opacity: 0; color: rgba(255, 255, 255, 0.15);
+      animation: rise linear infinite;
+    }
+    @keyframes rise {
+      0% { bottom: -15%; transform: translateX(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 1; }
+      90% { opacity: 1; }
+      100% { bottom: 115%; transform: translateX(30px) rotate(360deg); opacity: 0; }
+    }
+    
+    .db-1 { left: 10%; width: 40px; animation-duration: 7s; animation-delay: 0s; }
+    .db-2 { left: 35%; width: 60px; animation-duration: 12s; animation-delay: 2s; }
+    .db-3 { left: 65%; width: 35px; animation-duration: 9s; animation-delay: 1s; }
+    .db-4 { left: 85%; width: 50px; animation-duration: 11s; animation-delay: 4s; }
+    .db-5 { left: 50%; width: 45px; animation-duration: 8s; animation-delay: 3s; }
   </style>
 </head>
 <body>
 
-  <div class="header">
-    <h2>Today's Macros</h2>
-    <div class="header-controls">
-      <button class="gear-btn" id="gearBtn" onclick="toggleMenu()">
-        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <circle cx="12" cy="12" r="3"></circle>
-          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
-        </svg>
-      </button>
-      <div class="dropdown" id="dropdownMenu">
-        <button onclick="setApiKey(); toggleMenu();">🔑 API Key</button>
-        <button onclick="editData(); toggleMenu();">✏️ Edit your data</button>
+  <!-- Underwater Onboarding Screen -->
+  <div id="onboardingScreen" class="onboarding">
+    <div class="underwater-bg">
+      <svg class="bubble-dumbbell db-1" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
+      <svg class="bubble-dumbbell db-2" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
+      <svg class="bubble-dumbbell db-3" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
+      <svg class="bubble-dumbbell db-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
+      <svg class="bubble-dumbbell db-5" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
+    </div>
+    
+    <div class="floating-card">
+      <h2>Define Your Goals</h2>
+      
+      <label>Age</label> 
+      <input type="number" id="obAge" value="22" inputmode="numeric">
+      
+      <label>Sex</label> 
+      <select id="obSex">
+        <option value="male">Male</option>
+        <option value="female">Female</option>
+      </select>
+      
+      <label>Height (cm)</label> 
+      <input type="number" id="obHeight" placeholder="e.g. 175" inputmode="numeric">
+      
+      <label>Current Weight (kg)</label> 
+      <input type="number" id="obWeight" placeholder="e.g. 70" inputmode="numeric">
+      
+      <label>Main Goal</label> 
+      <select id="obGoal" onchange="toggleGoalFields()">
+        <option value="lose">Lose Weight</option>
+        <option value="gain">Gain Muscle</option>
+        <option value="maintain">Maintain Current Weight</option>
+      </select>
+      
+      <div id="targetFields">
+        <label>Goal Weight (kg)</label> 
+        <input type="number" id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric">
+        
+        <label>Timeline (Weeks)</label> 
+        <input type="number" id="obTimeline" placeholder="e.g. 12" value="12" inputmode="numeric">
+      </div>
+      
+      <label>Exercise per week</label> 
+      <select id="obExercise">
+        <option value="0">Little to no exercise</option>
+        <option value="2">1-3 days / week</option>
+        <option value="4">4-5 days / week</option>
+        <option value="6">6-7 days / week</option>
+      </select>
+      
+      <button class="action-btn" onclick="calculateGoals()">Dive In & Calculate</button>
+    </div>
+  </div>
+
+  <!-- Main Tracking App -->
+  <div id="mainApp" style="display:none;">
+    <div class="header">
+      <h2>Today's Macros</h2>
+      <div class="header-controls">
+        <button class="gear-btn" id="gearBtn" onclick="toggleMenu()">
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="3"></circle>
+            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+          </svg>
+        </button>
+        <div class="dropdown" id="dropdownMenu">
+          <button onclick="setApiKey(); toggleMenu();">🔑 API Key</button>
+          <button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button>
+        </div>
       </div>
     </div>
-  </div>
 
-  <div class="card stats">
-    <div class="stat-box">
-      <div id="calTotal" class="stat-val">0 / 2400</div>
-      <small>Calories (kcal)</small>
+    <div class="card stats">
+      <div class="stat-box">
+        <div id="calTotal" class="stat-val">0 / 0</div>
+        <small>Calories (kcal)</small>
+      </div>
+      <div class="stat-box">
+        <div id="proTotal" class="stat-val protein">0 / 0g</div>
+        <small>Protein (g)</small>
+      </div>
     </div>
-    <div class="stat-box">
-      <div id="proTotal" class="stat-val protein">0 / 150g</div>
-      <small>Protein (g)</small>
+
+    <div class="card">
+      <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)">
+      <button class="ai-btn" onclick="document.getElementById('cameraInput').click()">
+        📷 Scan Meal with AI
+      </button>
+      <div id="status">Analyzing food...</div>
+
+      <input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)">
+      <div style="display:flex; gap:8px;">
+        <input type="number" id="foodCal" placeholder="Calories" inputmode="numeric">
+        <input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric">
+      </div>
+      <button class="action-btn" onclick="addEntry()">+ Log Meal</button>
     </div>
-  </div>
 
-  <div class="card">
-    <input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)">
-    <button class="ai-btn" onclick="document.getElementById('cameraInput').click()">
-      📷 Scan Meal with AI
-    </button>
-    <div id="status">Analyzing food...</div>
-
-    <input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)">
-    <div style="display:flex; gap:8px;">
-      <input type="number" id="foodCal" placeholder="Calories" inputmode="numeric">
-      <input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric">
+    <div class="card">
+      <strong>Today's Log</strong>
+      <div id="logList" style="margin-top: 8px;"></div>
     </div>
-    <button class="action-btn" onclick="addEntry()">+ Log Meal</button>
-  </div>
-
-  <div class="card">
-    <strong>Today's Log</strong>
-    <div id="logList" style="margin-top: 8px;"></div>
   </div>
 
   <script>
-    const GOAL_CAL = 2400;
-    const GOAL_PRO = 150;
+    let GOAL_CAL = 0;
+    let GOAL_PRO = 0;
     const todayKey = new Date().toISOString().split('T')[0];
 
+    // --- ONBOARDING & SETUP LOGIC ---
+    function initApp() {
+      const savedGoals = JSON.parse(localStorage.getItem('user_goals'));
+      if (!savedGoals) {
+        document.getElementById('onboardingScreen').style.display = 'flex';
+        document.getElementById('mainApp').style.display = 'none';
+      } else {
+        GOAL_CAL = savedGoals.cal;
+        GOAL_PRO = savedGoals.pro;
+        document.getElementById('onboardingScreen').style.display = 'none';
+        document.getElementById('mainApp').style.display = 'block';
+        render();
+      }
+    }
+
+    function openOnboarding() {
+      document.getElementById('onboardingScreen').style.display = 'flex';
+      document.getElementById('mainApp').style.display = 'none';
+    }
+
+    function toggleGoalFields() {
+      const goal = document.getElementById('obGoal').value;
+      document.getElementById('targetFields').style.display = (goal === 'maintain') ? 'none' : 'block';
+    }
+
+    function calculateGoals() {
+      const age = parseFloat(document.getElementById('obAge').value);
+      const sex = document.getElementById('obSex').value;
+      const height = parseFloat(document.getElementById('obHeight').value);
+      const weight = parseFloat(document.getElementById('obWeight').value);
+      const goal = document.getElementById('obGoal').value;
+      const goalWeight = parseFloat(document.getElementById('obGoalWeight').value);
+      const timeline = parseFloat(document.getElementById('obTimeline').value);
+      const exercise = parseInt(document.getElementById('obExercise').value);
+
+      if (!age || !height || !weight) return alert("Please fill in your basic stats!");
+
+      // 1. Calculate BMR (Mifflin-St Jeor Equation)
+      let bmr = (10 * weight) + (6.25 * height) - (5 * age) + (sex === 'male' ? 5 : -161);
+      
+      // 2. Calculate Total Daily Energy Expenditure (TDEE)
+      let multiplier = 1.2; // Sedentary
+      if (exercise === 2) multiplier = 1.375; // Light
+      if (exercise === 4) multiplier = 1.55;  // Moderate
+      if (exercise === 6) multiplier = 1.725; // Active
+      let tdee = bmr * multiplier;
+      
+      let targetCal = tdee;
+      let targetPro = weight * 2.0; // Standard 2g per kg for muscle building/maintenance
+
+      // 3. Adjust for weight loss or gain
+      if (goal !== 'maintain') {
+        if (!goalWeight || !timeline) return alert("Please set a goal weight and timeline.");
+        const weightDiff = goalWeight - weight; 
+        const totalKcalChange = weightDiff * 7700; // 7700 kcal per 1kg of bodyweight
+        const dailyKcalChange = totalKcalChange / (timeline * 7);
+        
+        targetCal = tdee + dailyKcalChange;
+        if (goal === 'lose') targetPro = weight * 2.2; // Higher protein needed to preserve muscle in a deficit
+      }
+
+      targetCal = Math.round(targetCal);
+      if (targetCal < 1200) targetCal = 1200; // Safe minimum boundary
+      targetPro = Math.round(targetPro);
+
+      // Save and launch
+      localStorage.setItem('user_goals', JSON.stringify({ cal: targetCal, pro: targetPro }));
+      GOAL_CAL = targetCal;
+      GOAL_PRO = targetPro;
+      
+      document.getElementById('onboardingScreen').style.display = 'none';
+      document.getElementById('mainApp').style.display = 'block';
+      render();
+    }
+
+    // --- UI & DROPDOWN CONTROLS ---
     function toggleMenu() {
       document.getElementById('dropdownMenu').classList.toggle('show');
       document.getElementById('gearBtn').classList.toggle('spin');
-    }
-
-    function editData() {
-      alert('We can build the data editor next!');
     }
 
     document.addEventListener('click', (e) => {
@@ -106,6 +283,7 @@
       }
     });
 
+    // --- AI CAMERA & LOGGING ---
     function setApiKey() {
       const current = localStorage.getItem('gemini_key') || '';
       const key = prompt('Paste your Gemini API Key (saved locally on your iPhone):', current);
@@ -229,7 +407,8 @@
       document.getElementById('proTotal').textContent = `${totalPro} / ${GOAL_PRO}g`;
     }
 
-    render();
+    // Start App
+    initApp();
   </script>
 </body>
 </html>
