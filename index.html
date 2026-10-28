@@ -12,18 +12,25 @@
     body { background: var(--bg); color: var(--text); margin: 0; padding: 20px 16px 40px; }
     .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 16px; }
     h2 { margin: 0; font-size: 1.4rem; }
-    .key-btn { background: #334155; color: #cbd5e1; width: auto; padding: 6px 12px; font-size: 0.8rem; margin: 0; border-radius: 8px; }
+    .header-controls { position: relative; }
+    .gear-btn { background: transparent; border: none; color: #cbd5e1; padding: 6px; cursor: pointer; display: flex; align-items: center; justify-content: center; margin: 0; width: auto; transition: transform 0.4s ease; }
+    .gear-btn.spin { transform: rotate(180deg); }
+    .dropdown { position: absolute; right: 0; top: 100%; margin-top: 8px; background: #334155; border-radius: 8px; width: 170px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100; }
+    .dropdown.show { display: flex; }
+    .dropdown button { background: transparent; margin: 0; padding: 12px 16px; border-radius: 0; text-align: left; font-size: 0.95rem; font-weight: 500; color: #f8fafc; border-bottom: 1px solid #1e293b; border-top: none; border-left: none; border-right: none; }
+    .dropdown button:last-child { border-bottom: none; }
+    .dropdown button:active { background: #475569; }
     .card { background: var(--card); padding: 16px; border-radius: 14px; margin-bottom: 16px; }
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
     .stat-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; }
     .stat-val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
     .stat-val.protein { color: var(--green); }
-    input, button { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 1rem; }
+    input, .action-btn { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 1rem; }
     input { background: #0f172a; color: #fff; border: 1px solid #334155; }
-    button { background: var(--accent); color: #0f172a; font-weight: 700; cursor: pointer; margin-top: 12px; }
-    .ai-btn { background: var(--purple); color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0; margin-bottom: 8px; }
+    .action-btn { background: var(--accent); color: #0f172a; font-weight: 700; cursor: pointer; margin-top: 12px; }
+    .ai-btn { background: var(--purple); color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0; margin-bottom: 8px; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; }
     .log-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
-    .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 8px; margin: 0; font-weight: 600; }
+    .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 8px; margin: 0; font-weight: 600; cursor: pointer; }
     #status { font-size: 0.85rem; color: var(--purple); text-align: center; margin-top: 6px; display: none; }
   </style>
 </head>
@@ -31,7 +38,18 @@
 
   <div class="header">
     <h2>Today's Macros</h2>
-    <button class="key-btn" onclick="setApiKey()">🔑 API Key</button>
+    <div class="header-controls">
+      <button class="gear-btn" id="gearBtn" onclick="toggleMenu()">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="12" cy="12" r="3"></circle>
+          <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path>
+        </svg>
+      </button>
+      <div class="dropdown" id="dropdownMenu">
+        <button onclick="setApiKey(); toggleMenu();">🔑 API Key</button>
+        <button onclick="editData(); toggleMenu();">✏️ Edit your data</button>
+      </div>
+    </div>
   </div>
 
   <div class="card stats">
@@ -52,12 +70,12 @@
     </button>
     <div id="status">Analyzing food...</div>
 
-    <input type="text" id="foodName" placeholder="Food (e.g. Chicken Breast, 3 Eggs)">
+    <input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)">
     <div style="display:flex; gap:8px;">
       <input type="number" id="foodCal" placeholder="Calories" inputmode="numeric">
       <input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric">
     </div>
-    <button onclick="addEntry()">+ Log Meal</button>
+    <button class="action-btn" onclick="addEntry()">+ Log Meal</button>
   </div>
 
   <div class="card">
@@ -69,6 +87,24 @@
     const GOAL_CAL = 2400;
     const GOAL_PRO = 150;
     const todayKey = new Date().toISOString().split('T')[0];
+
+    function toggleMenu() {
+      document.getElementById('dropdownMenu').classList.toggle('show');
+      document.getElementById('gearBtn').classList.toggle('spin');
+    }
+
+    function editData() {
+      alert('We can build the data editor next!');
+    }
+
+    document.addEventListener('click', (e) => {
+      const menu = document.getElementById('dropdownMenu');
+      const btn = document.getElementById('gearBtn');
+      if (!e.target.closest('.header-controls') && menu.classList.contains('show')) {
+        menu.classList.remove('show');
+        btn.classList.remove('spin');
+      }
+    });
 
     function setApiKey() {
       const current = localStorage.getItem('gemini_key') || '';
@@ -102,7 +138,7 @@
 
       const apiKey = localStorage.getItem('gemini_key');
       if (!apiKey) {
-        alert('Tap "🔑 API Key" at the top right to paste your free Gemini API key first.');
+        alert('AI scanning is private and not configured for this device.');
         return;
       }
 
@@ -196,4 +232,4 @@
     render();
   </script>
 </body>
-</html> 
+</html>
