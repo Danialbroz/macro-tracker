@@ -7,11 +7,32 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <title>MacroTracker AI</title>
   <style>
-    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --green: #4ade80; --purple: #c084fc; }
+    :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --pink: #ec4899; --green: #4ade80; --purple: #c084fc; }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
-    body { background: var(--bg); color: var(--text); margin: 0; padding: 20px 16px 40px; }
     
-    /* Main App Styles */
+    /* Global App Styles & Underwater Theme */
+    body { 
+      background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); /* Deep ocean gradient */
+      background-attachment: fixed;
+      color: var(--text); margin: 0; padding: 20px 16px 40px; min-height: 100vh;
+    }
+    
+    /* Global Background Bubbles (Active on all pages) */
+    .underwater-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
+    .bubble-dumbbell { position: absolute; bottom: -15%; opacity: 0; animation: rise linear infinite; }
+    @keyframes rise { 
+      0% { bottom: -15%; transform: translateX(0) rotate(0deg); opacity: 0; } 
+      10% { opacity: 1; } 
+      90% { opacity: 1; } 
+      100% { bottom: 115%; transform: translateX(30px) rotate(360deg); opacity: 0; } 
+    }
+    .db-1 { left: 10%; width: 55px; animation-duration: 8s; animation-delay: 0s; }
+    .db-2 { left: 35%; width: 75px; animation-duration: 12s; animation-delay: 2s; }
+    .db-3 { left: 75%; width: 45px; animation-duration: 10s; animation-delay: 1s; }
+    .db-4 { left: 85%; width: 65px; animation-duration: 14s; animation-delay: 4s; }
+    .db-5 { left: 55%; width: 50px; animation-duration: 9s; animation-delay: 6s; }
+
+    /* Main Interface Elements */
     .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 16px; }
     h2 { margin: 0; font-size: 1.4rem; }
     .header-controls { position: relative; }
@@ -20,45 +41,32 @@
     .dropdown { position: absolute; right: 0; top: 100%; margin-top: 8px; background: #334155; border-radius: 8px; width: 170px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100; }
     .dropdown.show { display: flex; }
     .dropdown button { background: transparent; margin: 0; padding: 12px 16px; border-radius: 0; text-align: left; font-size: 0.95rem; font-weight: 500; color: #f8fafc; border-bottom: 1px solid #1e293b; border-top: none; border-left: none; border-right: none; }
-    .card { background: var(--card); padding: 16px; border-radius: 14px; margin-bottom: 16px; }
+    .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 16px; border-radius: 14px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05); }
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
     .stat-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; }
     .stat-val { font-size: 1.5rem; font-weight: 700; color: var(--accent); }
     .stat-val.protein { color: var(--green); }
     input, .action-btn, select { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 1rem; }
-    input, select { background: #0f172a; color: #fff; border: 1px solid #334155; }
+    input, select { background: rgba(15, 23, 42, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
     .action-btn { background: var(--accent); color: #0f172a; font-weight: 700; cursor: pointer; margin-top: 12px; }
     .ai-btn { background: var(--purple); color: #0f172a; display: flex; align-items: center; justify-content: center; gap: 8px; margin-top: 0; margin-bottom: 8px; width: 100%; padding: 12px; border-radius: 10px; border: none; font-size: 1rem; font-weight: 700; cursor: pointer; }
-    .log-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #334155; font-size: 0.95rem; }
+    .log-item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); font-size: 0.95rem; }
     .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 8px; margin: 0; font-weight: 600; cursor: pointer; }
     #status { font-size: 0.85rem; color: var(--purple); text-align: center; margin-top: 6px; display: none; }
 
-    /* Underwater Onboarding Screen */
+    /* Onboarding Overlay */
     .onboarding {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: linear-gradient(180deg, #0284c7 0%, #082f49 100%);
       z-index: 1000; display: none; align-items: center; justify-content: center;
-      overflow: hidden;
     }
-    .underwater-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 1; pointer-events: none; }
     .floating-card {
-      background: rgba(30, 41, 59, 0.5); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+      background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
       border: 1px solid rgba(255,255,255,0.15); padding: 24px; border-radius: 20px; width: 90%; max-width: 400px;
       animation: bob 4s ease-in-out infinite; box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 2; max-height: 85vh; overflow-y: auto;
     }
     .floating-card h2 { text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #fff; }
     .floating-card label { font-size: 0.85rem; color: #cbd5e1; margin-top: 10px; display: block; font-weight: 600;}
-    .floating-card input, .floating-card select { background: rgba(0,0,0,0.4); border: 1px solid rgba(255,255,255,0.1); margin-top: 4px; padding: 10px;}
-    
     @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-    
-    /* Bubble Dumbbells */
-    .bubble-dumbbell { position: absolute; bottom: -15%; opacity: 0; color: rgba(255, 255, 255, 0.15); animation: rise linear infinite; }
-    @keyframes rise { 0% { bottom: -15%; transform: translateX(0) rotate(0deg); opacity: 0; } 10% { opacity: 1; } 90% { opacity: 1; } 100% { bottom: 115%; transform: translateX(30px) rotate(360deg); opacity: 0; } }
-    .db-1 { left: 10%; width: 40px; animation-duration: 7s; animation-delay: 0s; }
-    .db-2 { left: 35%; width: 60px; animation-duration: 12s; animation-delay: 2s; }
-    .db-3 { left: 65%; width: 35px; animation-duration: 9s; animation-delay: 1s; }
-    .db-4 { left: 85%; width: 50px; animation-duration: 11s; animation-delay: 4s; }
 
     /* Step Logic */
     .step { display: none; animation: fadeIn 0.4s ease; }
@@ -73,29 +81,84 @@
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1); color: #94a3b8; user-select: none;
     }
     .gender-card span { display: block; margin-top: 12px; font-weight: 600; font-size: 0.9rem; }
-    .gender-card.selected {
+    
+    /* Boy Selected State */
+    #card-male.selected {
       background: rgba(56, 189, 248, 0.15); border-color: var(--accent); color: var(--accent);
       transform: scale(1.05); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
     }
     
-    /* SVG Animation States */
-    .state-neutral, .state-happy { transition: opacity 0.3s ease, transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); transform-origin: center; }
-    .state-happy { opacity: 0; transform: scale(0.8) translateY(10px); }
-    .gender-card.selected .state-neutral { opacity: 0; transform: scale(0.8); }
-    .gender-card.selected .state-happy { opacity: 1; transform: scale(1) translateY(0); }
+    /* Girl Selected State (Pink) */
+    #card-female.selected {
+      background: rgba(236, 72, 153, 0.15); border-color: var(--pink); color: var(--pink);
+      transform: scale(1.05); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
+    }
+    
+    /* SVG Animations: Raising Hands from Behind */
+    .gender-card svg { overflow: visible; }
+    .arms-group { transform: translateY(18px); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease; }
+    .gender-card.selected .arms-group { transform: translateY(0); opacity: 1; }
+
+    .face-neutral { transition: opacity 0.3s ease; }
+    .face-happy { opacity: 0; transition: opacity 0.3s ease; }
+    .gender-card.selected .face-neutral { opacity: 0; }
+    .gender-card.selected .face-happy { opacity: 1; }
   </style>
 </head>
 <body>
 
-  <!-- Underwater Onboarding Screen -->
+  <!-- Global Underwater Bubbles with Cute Dumbbells (Active always) -->
+  <div id="globalBg" class="underwater-bg">
+    <!-- Bubble Template -->
+    <svg class="bubble-dumbbell db-1" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+      <path d="M80 30 A 35 35 0 0 0 30 80" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g transform="rotate(45 50 50)">
+        <rect x="25" y="46" width="50" height="8" rx="3" fill="rgba(255,255,255,0.3)"/>
+        <rect x="18" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+        <rect x="70" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+      </g>
+    </svg>
+    <svg class="bubble-dumbbell db-2" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+      <path d="M80 30 A 35 35 0 0 0 30 80" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g transform="rotate(45 50 50)">
+        <rect x="25" y="46" width="50" height="8" rx="3" fill="rgba(255,255,255,0.3)"/>
+        <rect x="18" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+        <rect x="70" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+      </g>
+    </svg>
+    <svg class="bubble-dumbbell db-3" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+      <path d="M80 30 A 35 35 0 0 0 30 80" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g transform="rotate(-30 50 50)">
+        <rect x="25" y="46" width="50" height="8" rx="3" fill="rgba(255,255,255,0.3)"/>
+        <rect x="18" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+        <rect x="70" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+      </g>
+    </svg>
+    <svg class="bubble-dumbbell db-4" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+      <path d="M80 30 A 35 35 0 0 0 30 80" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g transform="rotate(70 50 50)">
+        <rect x="25" y="46" width="50" height="8" rx="3" fill="rgba(255,255,255,0.3)"/>
+        <rect x="18" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+        <rect x="70" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+      </g>
+    </svg>
+    <svg class="bubble-dumbbell db-5" viewBox="0 0 100 100">
+      <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
+      <path d="M80 30 A 35 35 0 0 0 30 80" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/>
+      <g transform="rotate(-15 50 50)">
+        <rect x="25" y="46" width="50" height="8" rx="3" fill="rgba(255,255,255,0.3)"/>
+        <rect x="18" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+        <rect x="70" y="35" width="12" height="30" rx="4" fill="rgba(255,255,255,0.5)"/>
+      </g>
+    </svg>
+  </div>
+  
+  <!-- Onboarding Screen (Transparent background to see bubbles) -->
   <div id="onboardingScreen" class="onboarding">
-    <div class="underwater-bg">
-      <svg class="bubble-dumbbell db-1" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
-      <svg class="bubble-dumbbell db-2" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
-      <svg class="bubble-dumbbell db-3" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
-      <svg class="bubble-dumbbell db-4" viewBox="0 0 24 24" fill="currentColor"><path d="M19 6v12h-2v-3h-2v4H9v-4H7v3H5V6h2v3h2V5h6v4h2V6h2zm-4 5v2h-6v-2h6z"/></svg>
-    </div>
-    
     <div class="floating-card">
       
       <!-- STEP 1: Age & Gender -->
@@ -110,19 +173,23 @@
           <!-- Boy Card -->
           <div class="gender-card" id="card-male" onclick="selectGender('male')">
             <svg viewBox="0 0 24 24" width="60" height="60">
-              <g class="state-neutral" fill="currentColor">
-                <circle cx="12" cy="5" r="2.5" />
-                <path d="M9.5 9h5a1.5 1.5 0 0 1 1.5 1.5V16h-2v6h-4v-6h-2v-5.5A1.5 1.5 0 0 1 9.5 9z" />
+              <!-- Arms slide up from behind the body -->
+              <g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+                <path d="M8.5 9 Q 5.5 8, 4 4" />
+                <path d="M15.5 9 Q 18.5 8, 20 4" />
               </g>
-              <g class="state-happy" fill="currentColor">
+              <!-- Solid Body (drawn over the arms) -->
+              <path d="M9.5 9h5a1.5 1.5 0 0 1 1.5 1.5V16h-2v6h-4v-6h-2v-5.5A1.5 1.5 0 0 1 9.5 9z" fill="currentColor" />
+              <!-- Face Neutral -->
+              <g class="face-neutral" fill="currentColor">
+                <circle cx="12" cy="5" r="2.5" />
+              </g>
+              <!-- Face Happy -->
+              <g class="face-happy" fill="currentColor">
                 <circle cx="12" cy="5" r="2.5" />
                 <path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/>
                 <circle cx="11" cy="4.5" r="0.5" fill="#0f172a"/>
                 <circle cx="13" cy="4.5" r="0.5" fill="#0f172a"/>
-                <path d="M10 9h4v7h-1v6h-2v-6H10V9z" />
-                <!-- Hands Up -->
-                <path d="M10 9.5 Q 7 8, 6 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                <path d="M14 9.5 Q 17 8, 18 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
               </g>
             </svg>
             <span>Boy</span>
@@ -131,19 +198,23 @@
           <!-- Girl Card -->
           <div class="gender-card" id="card-female" onclick="selectGender('female')">
             <svg viewBox="0 0 24 24" width="60" height="60">
-              <g class="state-neutral" fill="currentColor">
-                <circle cx="12" cy="5" r="2.5" />
-                <path d="M12 8 L7.5 16 H10 V22 H14 V16 H16.5 Z" />
+              <!-- Arms slide up from behind the body -->
+              <g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
+                <path d="M9.5 9 Q 6 7, 5 3" />
+                <path d="M14.5 9 Q 18 7, 19 3" />
               </g>
-              <g class="state-happy" fill="currentColor">
+              <!-- Solid Body (drawn over the arms) -->
+              <path d="M12 8 L7.5 16 H10 V22 H14 V16 H16.5 Z" fill="currentColor" />
+              <!-- Face Neutral -->
+              <g class="face-neutral" fill="currentColor">
+                <circle cx="12" cy="5" r="2.5" />
+              </g>
+              <!-- Face Happy -->
+              <g class="face-happy" fill="currentColor">
                 <circle cx="12" cy="5" r="2.5" />
                 <path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/>
                 <circle cx="11" cy="4.5" r="0.5" fill="#0f172a"/>
                 <circle cx="13" cy="4.5" r="0.5" fill="#0f172a"/>
-                <path d="M12 8 L7.5 16 H10 V22 H14 V16 H16.5 Z" />
-                <!-- Hands Up -->
-                <path d="M11 9 Q 7 7, 6 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
-                <path d="M13 9 Q 17 7, 18 4" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"/>
               </g>
             </svg>
             <span>Girl</span>
@@ -155,7 +226,7 @@
         <button class="action-btn" style="margin-top: 32px;" onclick="nextStep(2)">Next ➔</button>
       </div>
 
-      <!-- STEP 2: The rest of the questions (temporary grouping) -->
+      <!-- STEP 2: The rest of the questions -->
       <div id="step2" class="step">
         <h2>Your Targets</h2>
         
@@ -257,7 +328,7 @@
       if (!savedGoals) {
         document.getElementById('onboardingScreen').style.display = 'flex';
         document.getElementById('mainApp').style.display = 'none';
-        nextStep(1); // Ensure step 1 is active
+        nextStep(1); 
       } else {
         GOAL_CAL = savedGoals.cal;
         GOAL_PRO = savedGoals.pro;
