@@ -10,14 +10,12 @@
     :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --pink: #ec4899; --green: #4ade80; --purple: #c084fc; }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; }
     
-    /* Global App Styles & Underwater Theme */
     body { 
-      background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); /* Deep ocean gradient */
+      background: linear-gradient(180deg, #0f172a 0%, #082f49 100%);
       background-attachment: fixed;
       color: var(--text); margin: 0; padding: 20px 16px 40px; min-height: 100vh;
     }
     
-    /* Global Background Bubbles (Active on all pages) */
     .underwater-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; }
     .bubble-dumbbell { position: absolute; bottom: -15%; opacity: 0; animation: rise linear infinite; }
     @keyframes rise { 
@@ -32,7 +30,6 @@
     .db-4 { left: 85%; width: 65px; animation-duration: 14s; animation-delay: 4s; }
     .db-5 { left: 55%; width: 50px; animation-duration: 9s; animation-delay: 6s; }
 
-    /* Main Interface Elements */
     .header { display: flex; justify-content: space-between; align-items: center; margin: 10px 0 16px; }
     h2 { margin: 0; font-size: 1.4rem; }
     .header-controls { position: relative; }
@@ -40,7 +37,7 @@
     .gear-btn.spin { transform: rotate(180deg); }
     .dropdown { position: absolute; right: 0; top: 100%; margin-top: 8px; background: #334155; border-radius: 8px; width: 170px; display: none; flex-direction: column; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.5); z-index: 100; }
     .dropdown.show { display: flex; }
-    .dropdown button { background: transparent; margin: 0; padding: 12px 16px; border-radius: 0; text-align: left; font-size: 0.95rem; font-weight: 500; color: #f8fafc; border-bottom: 1px solid #1e293b; border-top: none; border-left: none; border-right: none; }
+    .dropdown button { background: transparent; margin: 0; padding: 12px 16px; border-radius: 0; text-align: left; font-size: 0.95rem; font-weight: 500; color: #f8fafc; border-bottom: 1px solid #1e293b; border-top: none; border-left: none; border-right: none; cursor: pointer; }
     .card { background: rgba(30, 41, 59, 0.8); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); padding: 16px; border-radius: 14px; margin-bottom: 16px; border: 1px solid rgba(255,255,255,0.05); }
     .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; text-align: center; }
     .stat-box { background: rgba(255,255,255,0.05); padding: 12px; border-radius: 10px; }
@@ -54,7 +51,6 @@
     .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 8px; margin: 0; font-weight: 600; cursor: pointer; }
     #status { font-size: 0.85rem; color: var(--purple); text-align: center; margin-top: 6px; display: none; }
 
-    /* Onboarding Overlay */
     .onboarding {
       position: fixed; top: 0; left: 0; width: 100%; height: 100%;
       z-index: 1000; display: none; align-items: center; justify-content: center;
@@ -68,12 +64,10 @@
     .floating-card label { font-size: 0.85rem; color: #cbd5e1; margin-top: 10px; display: block; font-weight: 600;}
     @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
 
-    /* Step Logic */
     .step { display: none; animation: fadeIn 0.4s ease; }
     .step.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
 
-    /* Gender Selection Cards */
     .gender-selector { display: flex; gap: 16px; margin-top: 8px; }
     .gender-card {
       flex: 1; background: rgba(0,0,0,0.3); border: 2px solid rgba(255,255,255,0.1);
@@ -82,19 +76,15 @@
     }
     .gender-card span { display: block; margin-top: 12px; font-weight: 600; font-size: 0.9rem; }
     
-    /* Boy Selected State */
     #card-male.selected {
       background: rgba(56, 189, 248, 0.15); border-color: var(--accent); color: var(--accent);
       transform: scale(1.05); box-shadow: 0 8px 20px rgba(56, 189, 248, 0.2);
     }
-    
-    /* Girl Selected State (Pink) */
     #card-female.selected {
       background: rgba(236, 72, 153, 0.15); border-color: var(--pink); color: var(--pink);
       transform: scale(1.05); box-shadow: 0 8px 20px rgba(236, 72, 153, 0.2);
     }
     
-    /* SVG Animations: Raising Hands from Behind */
     .gender-card svg { overflow: visible; }
     .arms-group { transform: translateY(18px); opacity: 0; transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.2s ease; }
     .gender-card.selected .arms-group { transform: translateY(0); opacity: 1; }
@@ -103,13 +93,46 @@
     .face-happy { opacity: 0; transition: opacity 0.3s ease; }
     .gender-card.selected .face-neutral { opacity: 0; }
     .gender-card.selected .face-happy { opacity: 1; }
+
+    /* --- Cancel button + confirm modal --- */
+    .cancel-btn {
+      position: fixed; top: 20px; left: 16px; z-index: 1001;
+      background: rgba(255,255,255,0.1); color: #f8fafc; border: 1px solid rgba(255,255,255,0.2);
+      padding: 8px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600;
+      cursor: pointer; display: none; align-items: center; gap: 4px; width: auto; margin: 0;
+      backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
+    }
+    .cancel-btn.show { display: flex; }
+
+    .cancel-modal-overlay {
+      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0,0,0,0.6); z-index: 2000; display: none;
+      align-items: center; justify-content: center; backdrop-filter: blur(4px);
+    }
+    .cancel-modal-overlay.show { display: flex; }
+    .cancel-modal-card {
+      background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.15);
+      border-radius: 20px; padding: 24px; width: 85%; max-width: 340px; text-align: center;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6); animation: popIn 0.3s ease;
+    }
+    @keyframes popIn { from { opacity: 0; transform: scale(0.85); } to { opacity: 1; transform: scale(1); } }
+    .cancel-modal-card h3 { margin: 12px 0 20px; font-size: 1.1rem; color: #fff; }
+    .stickman-wiggle { animation: wiggle 1.8s ease-in-out infinite; }
+    @keyframes wiggle { 0%, 100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
+    .cancel-modal-btns { display: flex; flex-direction: column; gap: 10px; }
+    .cancel-yes-btn {
+      background: #f87171; color: #fff; font-weight: 700; border: none; padding: 12px;
+      border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0;
+    }
+    .cancel-no-btn {
+      background: rgba(255,255,255,0.1); color: #f8fafc; font-weight: 600; border: none; padding: 12px;
+      border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Global Underwater Bubbles with Cute Dumbbells (Active always) -->
   <div id="globalBg" class="underwater-bg">
-    <!-- Bubble Template -->
     <svg class="bubble-dumbbell db-1" viewBox="0 0 100 100">
       <circle cx="50" cy="50" r="45" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.15)" stroke-width="2"/>
       <path d="M80 30 A 35 35 0 0 0 30 80" stroke="rgba(255,255,255,0.4)" stroke-width="4" fill="none" stroke-linecap="round"/>
@@ -156,12 +179,12 @@
       </g>
     </svg>
   </div>
+
+  <button id="cancelOnboardingBtn" class="cancel-btn" onclick="confirmCancel()">⬅ Cancel</button>
   
-  <!-- Onboarding Screen (Transparent background to see bubbles) -->
   <div id="onboardingScreen" class="onboarding">
     <div class="floating-card">
       
-      <!-- STEP 1: Age & Gender -->
       <div id="step1" class="step active">
         <h2>About You</h2>
         <label>Age</label> 
@@ -170,21 +193,16 @@
         <label style="margin-top: 24px;">Biological Sex</label> 
         <div class="gender-selector">
           
-          <!-- Boy Card -->
           <div class="gender-card" id="card-male" onclick="selectGender('male')">
             <svg viewBox="0 0 24 24" width="60" height="60">
-              <!-- Arms slide up from behind the body -->
               <g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
                 <path d="M8.5 9 Q 5.5 8, 4 4" />
                 <path d="M15.5 9 Q 18.5 8, 20 4" />
               </g>
-              <!-- Solid Body (drawn over the arms) -->
               <path d="M9.5 9h5a1.5 1.5 0 0 1 1.5 1.5V16h-2v6h-4v-6h-2v-5.5A1.5 1.5 0 0 1 9.5 9z" fill="currentColor" />
-              <!-- Face Neutral -->
               <g class="face-neutral" fill="currentColor">
                 <circle cx="12" cy="5" r="2.5" />
               </g>
-              <!-- Face Happy -->
               <g class="face-happy" fill="currentColor">
                 <circle cx="12" cy="5" r="2.5" />
                 <path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/>
@@ -195,21 +213,16 @@
             <span>Boy</span>
           </div>
 
-          <!-- Girl Card -->
           <div class="gender-card" id="card-female" onclick="selectGender('female')">
             <svg viewBox="0 0 24 24" width="60" height="60">
-              <!-- Arms slide up from behind the body -->
               <g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none">
                 <path d="M9.5 9 Q 6 7, 5 3" />
                 <path d="M14.5 9 Q 18 7, 19 3" />
               </g>
-              <!-- Solid Body (drawn over the arms) -->
               <path d="M12 8 L7.5 16 H10 V22 H14 V16 H16.5 Z" fill="currentColor" />
-              <!-- Face Neutral -->
               <g class="face-neutral" fill="currentColor">
                 <circle cx="12" cy="5" r="2.5" />
               </g>
-              <!-- Face Happy -->
               <g class="face-happy" fill="currentColor">
                 <circle cx="12" cy="5" r="2.5" />
                 <path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/>
@@ -226,7 +239,6 @@
         <button class="action-btn" style="margin-top: 32px;" onclick="nextStep(2)">Next ➔</button>
       </div>
 
-      <!-- STEP 2: The rest of the questions -->
       <div id="step2" class="step">
         <h2>Your Targets</h2>
         
@@ -267,7 +279,39 @@
     </div>
   </div>
 
-  <!-- Main Tracking App -->
+  <div id="cancelConfirmModal" class="cancel-modal-overlay">
+    <div class="cancel-modal-card">
+      <svg class="stickman-wiggle" viewBox="0 0 100 100" width="110" height="110">
+        <!-- head -->
+        <circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/>
+        <!-- confused eyebrows -->
+        <path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <!-- eyes -->
+        <circle cx="44" cy="24" r="1.6" fill="#f8fafc"/>
+        <circle cx="57" cy="24" r="1.6" fill="#f8fafc"/>
+        <!-- confused squiggle mouth -->
+        <path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/>
+        <!-- body -->
+        <line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- arm scratching head -->
+        <path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <!-- other arm resting out -->
+        <path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <!-- legs -->
+        <path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/>
+        <!-- confusion marks -->
+        <text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text>
+      </svg>
+      <h3>Are you sure you want to cancel?</h3>
+      <div class="cancel-modal-btns">
+        <button class="cancel-yes-btn" onclick="doCancelOnboarding()">Yes, I am!</button>
+        <button class="cancel-no-btn" onclick="closeCancelModal()">No, i hate myself</button>
+      </div>
+    </div>
+  </div>
+
   <div id="mainApp" style="display:none;">
     <div class="header">
       <h2>Today's Macros</h2>
@@ -322,12 +366,12 @@
     let GOAL_PRO = 0;
     const todayKey = new Date().toISOString().split('T')[0];
 
-    // --- ONBOARDING & SETUP LOGIC ---
     function initApp() {
       const savedGoals = JSON.parse(localStorage.getItem('user_goals'));
       if (!savedGoals) {
         document.getElementById('onboardingScreen').style.display = 'flex';
         document.getElementById('mainApp').style.display = 'none';
+        document.getElementById('cancelOnboardingBtn').classList.remove('show'); // no cancel on first-time setup
         nextStep(1); 
       } else {
         GOAL_CAL = savedGoals.cal;
@@ -341,10 +385,26 @@
     function openOnboarding() {
       document.getElementById('onboardingScreen').style.display = 'flex';
       document.getElementById('mainApp').style.display = 'none';
+      document.getElementById('cancelOnboardingBtn').classList.add('show'); // allow cancel since data already exists
       nextStep(1);
     }
 
-    // New Multi-Step & Gender Logic
+    function confirmCancel() {
+      document.getElementById('cancelConfirmModal').classList.add('show');
+    }
+
+    function closeCancelModal() {
+      document.getElementById('cancelConfirmModal').classList.remove('show');
+    }
+
+    function doCancelOnboarding() {
+      closeCancelModal();
+      document.getElementById('onboardingScreen').style.display = 'none';
+      document.getElementById('cancelOnboardingBtn').classList.remove('show');
+      document.getElementById('mainApp').style.display = 'block';
+      render();
+    }
+
     function selectGender(gender) {
       document.getElementById('obSex').value = gender;
       document.getElementById('card-male').classList.remove('selected');
@@ -413,11 +473,11 @@
       GOAL_PRO = targetPro;
       
       document.getElementById('onboardingScreen').style.display = 'none';
+      document.getElementById('cancelOnboardingBtn').classList.remove('show');
       document.getElementById('mainApp').style.display = 'block';
       render();
     }
 
-    // --- UI & DROPDOWN CONTROLS ---
     function toggleMenu() {
       document.getElementById('dropdownMenu').classList.toggle('show');
       document.getElementById('gearBtn').classList.toggle('spin');
@@ -432,7 +492,6 @@
       }
     });
 
-    // --- AI CAMERA & LOGGING ---
     function setApiKey() {
       const current = localStorage.getItem('gemini_key') || '';
       const key = prompt('Paste your Gemini API Key (saved locally on your iPhone):', current);
@@ -556,7 +615,6 @@
       document.getElementById('proTotal').textContent = `${totalPro} / ${GOAL_PRO}g`;
     }
 
-    // Start App
     initApp();
   </script>
 </body>
