@@ -131,22 +131,29 @@
     .exercise-card.selected { transform: scale(1.05); color: var(--text); border-color: var(--accent); background: rgba(56, 189, 248, 0.15); box-shadow: 0 0 24px rgba(56, 189, 248, 0.3); }
     .exercise-card.selected svg { color: var(--accent); }
 
-    /* REPLACED: New Animations for updated Icons */
+    /* Animations for Exercise Cards */
     .exercise-card.selected .anim-z-1 { animation: z-rise-new 2s linear infinite; }
     .exercise-card.selected .anim-z-2 { animation: z-rise-new 2s linear 0.6s infinite; opacity: 0; }
     .exercise-card.selected .anim-z-3 { animation: z-rise-new 2s linear 1.2s infinite; opacity: 0; }
     @keyframes z-rise-new { 0% { transform: translate(0, 0) scale(0.8); opacity: 0; } 20% { opacity: 1; } 80% { opacity: 1; } 100% { transform: translate(-6px, -10px) scale(1.2); opacity: 0; } }
 
-    .exercise-card.selected .anim-up-down { animation: up-down 1.5s ease-in-out infinite; }
-    @keyframes up-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+    /* Forearm Curl & Bicep Squish Animation */
+    .exercise-card.selected .anim-forearm { animation: forearm-curl 1.4s ease-in-out infinite; }
+    @keyframes forearm-curl { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-38deg); } }
+    
+    .exercise-card.selected .anim-bicep { animation: bicep-squish 1.4s ease-in-out infinite; }
+    @keyframes bicep-squish { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.25, 1.3); } }
 
+    /* Bicycle Wheel Spin */
     .wheel-1 { transform-origin: 18px 30px; }
     .wheel-2 { transform-origin: 38px 30px; }
     .exercise-card.selected .anim-wheel { animation: wheel-spin 1.5s linear infinite; }
     @keyframes wheel-spin { to { transform: rotate(360deg); } }
 
-    .exercise-card.selected .anim-float { animation: float-up-down 2s ease-in-out infinite; }
-    @keyframes float-up-down { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-3px); } }
+    /* Sequential 6 and 7 Animation */
+    .exercise-card.selected .anim-seq-1 { animation: seq-bounce 1.2s ease-in-out infinite; }
+    .exercise-card.selected .anim-seq-2 { animation: seq-bounce 1.2s ease-in-out 0.6s infinite; }
+    @keyframes seq-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
 
     .metrics-visual { display: flex; align-items: flex-end; justify-content: center; gap: 20px; margin: 10px 0 20px; }
     .height-slider-wrap { position: relative; padding-left: 30px; touch-action: none; user-select: none; }
@@ -233,15 +240,15 @@
         <div id="timelineField"><label>Timeline (Weeks)</label><input type="number" id="obTimeline" placeholder="e.g. 12" value="12" inputmode="numeric"></div>
         <label>Exercise per week</label>
         
-        <!-- MOD: Completely replaced the 4 exercise icons with your requested reference designs -->
         <div class="exercise-selector">
+            <!-- 0 days: Bed icon with Z's -->
             <div class="exercise-card" id="ex-card-0" onclick="selectExercise(0)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <path d="M8 26 L 46 26" /> <!-- floor/base -->
-                    <path d="M10 26 V 18 H 40 V 26" /> <!-- mattress box -->
-                    <path d="M40 26 V 10" stroke-width="3" /> <!-- headboard -->
-                    <circle cx="34" cy="14" r="3.5" /> <!-- head -->
+                    <path d="M8 26 L 46 26" />
+                    <path d="M10 26 V 18 H 40 V 26" />
+                    <path d="M40 26 V 10" stroke-width="3" />
+                    <circle cx="34" cy="14" r="3.5" />
                   </g>
                   <text class="anim-z-1" x="24" y="10" font-size="5" fill="currentColor" font-weight="bold">Z</text>
                   <text class="anim-z-2" x="18" y="7" font-size="7" fill="currentColor" font-weight="bold">Z</text>
@@ -250,16 +257,28 @@
                 <span>None</span>
             </div>
             
+            <!-- 1-3 days: Squishing Bicep with Hinging Forearm Curl -->
             <div class="exercise-card" id="ex-card-2" onclick="selectExercise(2)">
                 <svg viewBox="0 0 60 40">
-                  <g class="anim-up-down" transform="translate(0, 4)">
-                    <path d="M20 32 C 14 32, 14 20, 18 14 C 20 11, 26 9, 30 13 C 30 13, 31 18, 29 23 C 34 16, 44 17, 47 24 C 49 29, 43 33, 33 32 C 28 31, 24 32, 20 32 Z" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-                    <path d="M25 14 C 26 16, 28 16, 29 14 M 28 12 C 29 14, 31 14, 32 12 M 22 16 C 23 18, 25 18, 26 16" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+                  <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Base Shoulder / Tricep Frame -->
+                    <path d="M 10 32 C 10 22, 16 18, 20 18" />
+                    <path d="M 10 32 C 18 34, 26 32, 30 24" />
+                    <!-- Flexing & Bulging Bicep -->
+                    <path class="anim-bicep" d="M 20 18 C 23 10, 29 11, 30 20" transform-origin="25px 14px"/>
+                    <!-- Curling Forearm & Fist Hinging at Elbow (30, 24) -->
+                    <g class="anim-forearm" transform-origin="30px 24px">
+                      <path d="M 30 21 L 44 15" stroke-width="2.5" />
+                      <path d="M 30 24 L 43 19" stroke-width="2" />
+                      <!-- Fist / Clenched Hand -->
+                      <path d="M 44 13 C 48 11, 50 16, 45 19 C 42 21, 42 16, 44 13 Z" fill="currentColor" />
+                    </g>
                   </g>
                 </svg>
                 <span>1-3 days</span>
             </div>
             
+            <!-- 4-5 days: Bicycle with spinning wheels -->
             <div class="exercise-card" id="ex-card-4" onclick="selectExercise(4)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -287,21 +306,26 @@
                 <span>4-5 days</span>
             </div>
             
+            <!-- 6-7 days: 6 and 7 with Hands underneath moving in sequence -->
             <div class="exercise-card" id="ex-card-6" onclick="selectExercise(6)">
                  <svg viewBox="0 0 60 40">
-                  <!-- Floating 6 and 7 -->
-                  <g class="anim-float">
-                    <text x="16" y="18" font-family="Arial, sans-serif" font-weight="900" font-size="18" fill="none" stroke="currentColor" stroke-width="1.5">6</text>
-                    <text x="32" y="18" font-family="Arial, sans-serif" font-weight="900" font-size="18" fill="none" stroke="currentColor" stroke-width="1.5">7</text>
+                  <!-- Left side: Number 6 + Hand underneath -->
+                  <g class="anim-seq-1">
+                    <text x="17" y="16" font-family="Arial, sans-serif" font-weight="900" font-size="15" text-anchor="middle" fill="none" stroke="currentColor" stroke-width="1.5">6</text>
+                    <g transform="translate(1, 0)">
+                      <path d="M 6 24 C 3 24, 3 27, 8 29 C 11 31, 16 29, 19 27 C 21 25, 23 23, 21 22 C 19 21, 18 22, 16 23 C 14 24, 11 22, 9 20 C 7 18, 6 18, 6 24 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                      <path d="M 19 27 C 21 28, 23 26, 21 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </g>
                   </g>
-                  <!-- Custom Open Left Hand -->
-                  <path d="M 10 24 C 6 24, 6 28, 12 30 C 16 32, 22 30, 26 28 C 29 26, 31 24, 29 23 C 27 22, 25 23, 23 24 C 20 25, 16 23, 14 20 C 12 18, 10 18, 10 24 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
-                  <path d="M 26 28 C 28 29, 31 27, 29 25 C 27 24, 26 24, 24 25" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                  <path d="M 27 29 C 30 30, 32 28, 30 26" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                  <!-- Custom Open Right Hand (Mirrored) -->
-                  <path d="M 50 24 C 54 24, 54 28, 48 30 C 44 32, 38 30, 34 28 C 31 26, 29 24, 31 23 C 33 22, 35 23, 37 24 C 40 25, 44 23, 46 20 C 48 18, 50 18, 50 24 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
-                  <path d="M 34 28 C 32 29, 29 27, 31 25 C 33 24, 34 24, 36 25" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-                  <path d="M 33 29 C 30 30, 28 28, 30 26" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+
+                  <!-- Right side: Number 7 + Hand underneath -->
+                  <g class="anim-seq-2">
+                    <text x="43" y="16" font-family="Arial, sans-serif" font-weight="900" font-size="15" text-anchor="middle" fill="none" stroke="currentColor" stroke-width="1.5">7</text>
+                    <g transform="translate(15, 0)">
+                      <path d="M 44 24 C 47 24, 47 27, 42 29 C 39 31, 34 29, 31 27 C 29 25, 27 23, 29 22 C 31 21, 32 22, 34 23 C 36 24, 39 22, 41 20 C 43 18, 44 18, 44 24 Z" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linejoin="round"/>
+                      <path d="M 31 27 C 29 28, 27 26, 29 24" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+                    </g>
+                  </g>
                 </svg>
                 <span>6-7 days</span>
             </div>
