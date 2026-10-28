@@ -28,12 +28,11 @@
     .b-4 { left: 85%; width: 65px; animation-duration: 19s; animation-delay: 4s; }
     .b-5 { left: 55%; width: 50px; animation-duration: 14s; animation-delay: 6s; }
 
-    /* New Animation for Tiny Popping Bubble */
     .tiny-popping { animation: tinyPop 2.5s infinite ease-out; transform-origin: center; }
     @keyframes tinyPop {
       0% { opacity: 0; transform: translateY(0) scale(0.5); }
       5% { opacity: 1; transform: translateY(0) scale(1); }
-      65% { opacity: 0; transform: translateY(-20px) scale(1.3); } /* Fades out 1.5s after appearing (60% of 2.5s) */
+      65% { opacity: 0; transform: translateY(-20px) scale(1.3); }
       100% { opacity: 0; }
     }
 
@@ -214,7 +213,6 @@
   <div id="globalBg" class="underwater-bg">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
-        <!-- MOD: Updated bubble symbol to include dumbbell and popping mini-bubble -->
         <symbol id="bubble-symbol" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="48" fill="rgba(186, 230, 253, 0.15)" stroke="rgba(186, 230, 253, 0.25)" stroke-width="1.5"/>
           <circle cx="50" cy="50" r="40" fill="rgba(186, 230, 253, 0.1)"/>
@@ -279,25 +277,16 @@
                 <span>None</span>
             </div>
             
-            <!-- 1-3 days: MODIFIED Perfectly clean flexing arm & fist -->
+            <!-- 1-3 days: Perfectly clean flexing arm & fist -->
             <div class="exercise-card" id="ex-card-2" onclick="selectExercise(2)">
                 <svg viewBox="0 0 60 40">
                   <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <!-- Static Base (Shoulder & Tricep) -->
                     <path d="M 16 34 C 16 22, 22 18, 28 22 C 25 28, 24 34, 24 34" />
-                    
-                    <!-- Flexing Bicep -->
                     <path class="anim-bicep" d="M 28 22 C 30 10, 40 12, 38 22" transform-origin="33px 22px" />
-                    
-                    <!-- Hinging Forearm & Fist -->
                     <g class="anim-forearm" transform-origin="36px 24px">
-                      <!-- Outer forearm -->
                       <path d="M 38 22 C 44 14, 46 10, 42 6" />
-                      <!-- Inner forearm -->
                       <path d="M 29 27 C 32 23, 38 18, 36 12" />
-                      <!-- Fist Body -->
                       <path d="M 42 6 C 44 2, 36 0, 33 4 C 30 8, 32 12, 36 12 Z" fill="currentColor" />
-                      <!-- Fist Knuckle detail -->
                       <path d="M 39 4 L 37 6" stroke="#0f172a" stroke-width="1.5" />
                     </g>
                   </g>
@@ -309,20 +298,16 @@
             <div class="exercise-card" id="ex-card-4" onclick="selectExercise(4)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <!-- Static Man -->
                     <circle cx="28" cy="8" r="3" fill="currentColor" />
                     <path d="M28 11 C 25 18, 26 23, 27 24 L 29 29" stroke-width="2"/>
                     <path d="M28 13 C 33 16, 38 15, 39 14" stroke-width="2"/>
-                    <!-- Static Bike Frame -->
                     <path d="M18 30 L 29 30 L 23 20 Z" />
                     <path d="M23 20 L 21 16 M 29 30 L 37 16 L 35 14 M 37 16 L 39 14" />
-                    <!-- Animated Back Wheel -->
                     <g class="anim-wheel wheel-1">
                       <circle cx="18" cy="30" r="7" />
                       <circle cx="18" cy="30" r="5" stroke-width="0.5" />
                       <path d="M18 23 V 37 M 11 30 H 25 M 13 25 L 23 35 M 13 35 L 23 25" stroke-width="0.5" />
                     </g>
-                    <!-- Animated Front Wheel -->
                     <g class="anim-wheel wheel-2">
                       <circle cx="38" cy="30" r="7" />
                       <circle cx="38" cy="30" r="5" stroke-width="0.5" />
@@ -368,7 +353,8 @@
   </div>
 
   <div id="cancelConfirmModal" class="cancel-modal-overlay"> <div class="cancel-modal-card"><svg class="stickman-wiggle" viewBox="0 0 100 100" width="110" height="110"><circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/><path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="44" cy="24" r="1.6" fill="#f8fafc"/><circle cx="57" cy="24" r="1.6" fill="#f8fafc"/><path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/><path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text></svg><h3>Are you sure you want to cancel?</h3><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doCancelOnboarding()">Yes, I am!</button><button class="cancel-no-btn" onclick="closeCancelModal()">No, I'm not</button></div></div></div>
-  <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
+  <!-- MOD: Updated API Key Modal for NVIDIA -->
+  <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 NVIDIA API Key</h3><p class="api-key-sub">Get a key from NVIDIA AI Foundation Endpoints. Stored locally.</p><input type="text" id="apiKeyInput" placeholder="Paste your nvapi- key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
   <div id="onboardingSuccessOverlay"><div class="success-card"><svg class="success-checkmark-svg" viewBox="0 0 104 104"><circle class="checkmark-circle" cx="52" cy="52" r="50" fill="none" stroke="#4ade80" stroke-width="5"/><path class="checkmark-check" fill="none" d="M30 54 l14 14 30 -30" stroke="#4ade80" stroke-width="6" stroke-linecap="round"/></svg><h2>Your data has been updated</h2></div></div>
 
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="document.getElementById('cameraInput').click()">📷 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)"><div class="macro-input-grid"><input type="number" id="foodCal" placeholder="Calories" inputmode="numeric"><input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric"><input type="number" id="foodCarb" placeholder="Carbs (g)" inputmode="numeric"><input type="number" id="foodFat" placeholder="Fat (g)" inputmode="numeric"></div><button class="liquid-btn log-btn" onclick="addEntry()">+ Log Meal</button></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
@@ -472,27 +458,91 @@
 
     function toggleMenu() { document.getElementById('dropdownMenu').classList.toggle('show'); document.getElementById('gearBtn').classList.toggle('spin'); }
     document.addEventListener('click', (e) => { const menu = document.getElementById('dropdownMenu'); const btn = document.getElementById('gearBtn'); if (!e.target.closest('.header-controls') && menu.classList.contains('show')) { menu.classList.remove('show'); btn.classList.remove('spin'); } });
+    
+    // MOD: Updated API key functions for NVIDIA
     function setApiKey() { openApiKeyModal(); }
-    function openApiKeyModal() { const current = localStorage.getItem('gemini_key') || ''; document.getElementById('apiKeyInput').value = current; document.getElementById('apiKeyModal').classList.add('show'); }
+    function openApiKeyModal() { const current = localStorage.getItem('nvidia_api_key') || ''; document.getElementById('apiKeyInput').value = current; document.getElementById('apiKeyModal').classList.add('show'); }
     function closeApiKeyModal() { document.getElementById('apiKeyModal').classList.remove('show'); }
-    function saveApiKeyFn() { const key = document.getElementById('apiKeyInput').value.trim(); localStorage.setItem('gemini_key', key); closeApiKeyModal(); }
+    function saveApiKeyFn() { const key = document.getElementById('apiKeyInput').value.trim(); localStorage.setItem('nvidia_api_key', key); closeApiKeyModal(); }
 
     function startProgress() { const wrap = document.getElementById('progressWrap'); const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); document.getElementById('scanSuccessAnimation').classList.remove('show'); wrap.style.display = 'block'; fill.style.width = '0%'; text.textContent = '0%'; let pct = 0; clearInterval(progressTimer); progressTimer = setInterval(() => { const remaining = 92 - pct; pct += Math.max(remaining * 0.06, 0.3); if (pct >= 92) pct = 92; fill.style.width = pct + '%'; text.textContent = Math.floor(pct) + '%'; }, 120); }
     function finishProgress(success) { clearInterval(progressTimer); const wrap = document.getElementById('progressWrap'); const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); if (success) { fill.style.width = '100%'; text.textContent = '100%'; setTimeout(() => { wrap.style.display = 'none'; }, 600); } else { text.textContent = 'ERROR'; setTimeout(() => { wrap.style.display = 'none'; }, 1400); } }
-    async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
+    async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
+    
+    // MOD: Rewritten for NVIDIA Llama 3.1 API
     async function analyzePhoto(event) {
-      const file = event.target.files[0]; if (!file) return; const apiKey = localStorage.getItem('gemini_key'); if (!apiKey) { alert('AI scanning requires a Gemini API key. Please add one in the settings menu (⚙️).'); return; }
+      const file = event.target.files[0]; if (!file) return; 
+      const apiKey = localStorage.getItem('nvidia_api_key'); 
+      if (!apiKey) { alert('AI scanning requires an NVIDIA API key. Please add one in the settings menu (⚙️).'); return; }
       const statusEl = document.getElementById('status'); statusEl.style.display = 'none'; startProgress();
+      
       try {
-        const base64Image = await compressImage(file, 800, 0.7); const thumb = await compressImage(file, 160, 0.5); lastScanThumb = 'data:image/jpeg;base64,' + thumb; document.getElementById('scannedPreviewImg').src = lastScanThumb; document.getElementById('scannedPreviewWrap').style.display = 'block';
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [ { text: 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}' }, { inline_data: { mime_type: 'image/jpeg', data: base64Image } } ] }], generationConfig: { responseMimeType: "application/json" } }) });
-        if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
-        const data = await res.json(); const rawText = data.candidates[0].content.parts[0].text; const parsed = JSON.parse(rawText);
-        document.getElementById('foodName').value = parsed.name || 'Scanned Meal'; document.getElementById('foodCal').value = parsed.cal || 0; document.getElementById('foodPro').value = parsed.pro || 0; document.getElementById('foodCarb').value = parsed.carb || 0; document.getElementById('foodFat').value = parsed.fat || 0;
-        finishProgress(true); const successAnim = document.getElementById('scanSuccessAnimation'); successAnim.classList.add('show'); setTimeout(() => successAnim.classList.remove('show'), 2500);
-      } catch (err) { console.error(err); finishProgress(false); statusEl.textContent = '❌ Error analyzing image. Check API key.'; statusEl.style.display = 'block'; }
+        const fullBase64Image = await compressImage(file, 800, 0.7); // This now includes the 'data:image/jpeg;base64,' prefix
+        lastScanThumb = await compressImage(file, 160, 0.5);
+        document.getElementById('scannedPreviewImg').src = lastScanThumb;
+        document.getElementById('scannedPreviewWrap').style.display = 'block';
+
+        const model = "meta/llama-3.1-8b-instruct";
+        const promptText = 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}';
+        
+        const payload = {
+            model: model,
+            messages: [
+                {
+                    "role": "user",
+                    "content": [
+                        { "type": "text", "text": promptText },
+                        { "type": "image_url", "image_url": { "url": fullBase64Image } }
+                    ]
+                }
+            ],
+            temperature: 0.2,
+            top_p: 0.7,
+            max_tokens: 1024,
+            stream: false
+        };
+
+        const res = await fetch("https://api.nvcf.nvidia.com/v2/nvcf/chat/completions", {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${apiKey}`,
+                'Content-Type': 'application/json',
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+        
+        if (!res.ok) {
+            const errorBody = await res.text();
+            throw new Error(`API Error: ${res.status} ${res.statusText}. Response: ${errorBody}`);
+        }
+
+        const data = await res.json();
+        const rawText = data.choices[0].message.content;
+        // Clean the response in case the model adds backticks or "json" prefix
+        const cleanedText = rawText.replace(/```json\n|```/g, '').trim();
+        const parsed = JSON.parse(cleanedText);
+        
+        document.getElementById('foodName').value = parsed.name || 'Scanned Meal'; 
+        document.getElementById('foodCal').value = parsed.cal || 0; 
+        document.getElementById('foodPro').value = parsed.pro || 0; 
+        document.getElementById('foodCarb').value = parsed.carb || 0; 
+        document.getElementById('foodFat').value = parsed.fat || 0;
+        
+        finishProgress(true); 
+        const successAnim = document.getElementById('scanSuccessAnimation'); 
+        successAnim.classList.add('show'); 
+        setTimeout(() => successAnim.classList.remove('show'), 2500);
+
+      } catch (err) { 
+        console.error(err); 
+        finishProgress(false); 
+        statusEl.textContent = '❌ Error analyzing image. Check API key and console for details.'; 
+        statusEl.style.display = 'block'; 
+      }
       event.target.value = '';
     }
+
     function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey] || []; }
     function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
     function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
