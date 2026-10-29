@@ -208,46 +208,132 @@
     @keyframes success-stroke { 100% { stroke-dashoffset: 0; } }
     @keyframes success-check-pop { 0% { transform: scale(0.7); opacity: 0; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
-    /* ===== NEW SCAN OVERLAY STYLES ===== */
+    /* ===== NEW SCAN OVERLAY (popup window) ===== */
     .scan-overlay {
       position: fixed; inset: 0; z-index: 2500;
-      background: radial-gradient(ellipse at center, rgba(8, 40, 70, 0.94) 0%, rgba(6, 20, 40, 0.97) 100%);
-      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      background: rgba(4, 12, 28, 0.65);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
       display: none; align-items: center; justify-content: center;
-      padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+      padding: 20px;
       opacity: 0; transition: opacity 0.35s ease;
     }
     .scan-overlay.show { display: flex; opacity: 1; }
 
+    .scan-window {
+      position: relative;
+      width: 100%; max-width: 340px;
+      background: linear-gradient(180deg, rgba(15, 23, 42, 0.97), rgba(8, 47, 73, 0.97));
+      border: 1px solid rgba(148, 197, 253, 0.28);
+      border-radius: 26px;
+      padding: 22px 18px;
+      box-shadow: 0 24px 70px rgba(0,0,0,0.6), 0 0 50px rgba(56, 189, 248, 0.18);
+      overflow: hidden;
+      animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1);
+      max-height: 88vh; overflow-y: auto;
+    }
+    @keyframes scanWindowPop {
+      from { opacity: 0; transform: scale(0.82) translateY(24px); }
+      to { opacity: 1; transform: scale(1) translateY(0); }
+    }
+
+    /* Bubbles rising inside the popup */
+    .scan-window-bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: 26px; }
+    .sw-bubble {
+      position: absolute; bottom: -24px; border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%, rgba(186, 230, 253, 0.45), rgba(186, 230, 253, 0.08));
+      border: 1px solid rgba(186, 230, 253, 0.28);
+      opacity: 0;
+      animation: swBubbleRise linear infinite;
+    }
+    .sw-b1 { left: 8%; width: 16px; height: 16px; animation-duration: 4.2s; animation-delay: 0s; }
+    .sw-b2 { left: 28%; width: 10px; height: 10px; animation-duration: 3.4s; animation-delay: 0.8s; }
+    .sw-b3 { left: 52%; width: 14px; height: 14px; animation-duration: 4.6s; animation-delay: 1.6s; }
+    .sw-b4 { left: 74%; width: 8px; height: 8px; animation-duration: 3.2s; animation-delay: 0.4s; }
+    .sw-b5 { left: 88%; width: 12px; height: 12px; animation-duration: 5s; animation-delay: 2.1s; }
+    @keyframes swBubbleRise {
+      0% { transform: translateY(0) scale(0.5); opacity: 0; }
+      12% { opacity: 0.85; }
+      88% { opacity: 0.85; }
+      100% { transform: translateY(-460px) scale(1.35); opacity: 0; }
+    }
+
     .scan-phase {
+      position: relative; z-index: 2;
       display: none; flex-direction: column; align-items: center; justify-content: center;
-      width: 100%; max-width: 400px; gap: 20px;
+      width: 100%; gap: 16px;
     }
     .scan-phase.active { display: flex; animation: scanPhaseFadeIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
     @keyframes scanPhaseFadeIn {
-      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      from { opacity: 0; transform: translateY(10px) scale(0.96); }
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* --- Phase 1: Running stick man + water scan bar --- */
-    .runner-scene { position: relative; width: 100%; height: 140px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
-    .runner-svg { width: 110px; height: 130px; animation: runnerBob 0.32s ease-in-out infinite alternate; }
-    @keyframes runnerBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
-    .runner-ground {
-      position: absolute; left: 0; right: 0; bottom: 6px; height: 2px;
-      background: repeating-linear-gradient(90deg, rgba(186, 230, 253, 0.7) 0px, rgba(186, 230, 253, 0.7) 8px, transparent 8px, transparent 16px);
-      background-size: 16px 100%;
-      animation: groundScroll 0.32s linear infinite;
+    /* --- Phase 1: dinosaur runner --- */
+    .dino-scene {
+      position: relative; width: 100%; height: 110px;
+      display: flex; align-items: flex-end; justify-content: center;
+      overflow: hidden;
+      border-radius: 14px;
+      background: linear-gradient(180deg, rgba(8, 47, 73, 0.5), rgba(8, 20, 40, 0.6));
+      border: 1px solid rgba(148, 197, 253, 0.15);
     }
-    @keyframes groundScroll { from { background-position: 0 0; } to { background-position: -16px 0; } }
+    .dino-runner {
+      position: relative;
+      width: 76px; height: 88px;
+      margin-bottom: 6px;
+      animation: dinoJump 2.2s ease-in-out infinite;
+      will-change: transform;
+    }
+    @keyframes dinoJump {
+      0%, 20%, 62%, 100% { transform: translateY(0); }
+      34%, 48% { transform: translateY(-24px); }
+    }
+    .dino-svg { width: 100%; height: 100%; overflow: visible; display: block; }
+
+    .dino-ground {
+      position: absolute; left: 0; right: 0; bottom: 0; height: 3px;
+      background: repeating-linear-gradient(90deg, rgba(186, 230, 253, 0.75) 0 10px, transparent 10px 20px);
+      animation: dinoGroundScroll 0.35s linear infinite;
+    }
+    @keyframes dinoGroundScroll {
+      from { background-position: 0 0; }
+      to { background-position: -20px 0; }
+    }
+
+    .dino-cactus {
+      position: absolute;
+      bottom: 3px; right: -34px;
+      width: 18px; height: 26px;
+      animation: dinoCactusScroll 2.2s linear infinite;
+      will-change: transform;
+    }
+    .dino-cactus svg { width: 100%; height: 100%; display: block; }
+    @keyframes dinoCactusScroll {
+      from { transform: translateX(0); }
+      to { transform: translateX(-380px); }
+    }
+
+    /* --- Sprint: dino accelerates at end of scan --- */
+    .dino-scene.sprint .dino-ground { animation-duration: 0.12s; }
+    .dino-scene.sprint .dino-cactus { animation-duration: 0.4s; }
+    .dino-scene.sprint .dino-runner {
+      animation: dinoLunge 0.7s cubic-bezier(0.55, 0, 0.35, 1) forwards;
+    }
+    @keyframes dinoLunge {
+      0% { transform: translate(0, 0) scale(1); }
+      25% { transform: translate(28px, -16px) scale(1.06); }
+      55% { transform: translate(90px, -6px) scale(1.02); }
+      100% { transform: translate(180px, 0) scale(1); }
+    }
 
     .scan-scan-label {
-      font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px;
+      font-size: 0.98rem; font-weight: 700; letter-spacing: 0.5px;
       color: #bae6fd; text-shadow: 0 2px 8px rgba(56, 189, 248, 0.5);
+      text-align: center;
     }
     .scan-bar-outer {
-      position: relative; width: 100%; height: 28px; border-radius: 16px;
-      background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 197, 253, 0.35);
+      position: relative; width: 100%; height: 26px; border-radius: 16px;
+      background: rgba(15, 23, 42, 0.7); border: 1px solid rgba(148, 197, 253, 0.35);
       overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 4px 18px rgba(56, 189, 248, 0.15);
     }
     .scan-bar-fill {
@@ -262,21 +348,19 @@
     .scan-bar-text {
       position: absolute; top: 0; left: 0; width: 100%; height: 100%;
       display: flex; align-items: center; justify-content: center;
-      font-weight: 800; font-size: 0.8rem; color: #ffffff; letter-spacing: 1.5px;
+      font-weight: 800; font-size: 0.78rem; color: #ffffff; letter-spacing: 1.5px;
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
     }
 
-    /* --- Phase 2: Results with popping image + water macro bars --- */
-    .scan-result-img-wrap {
-      animation: foodPopIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
+    /* --- Phase 2: results --- */
+    .scan-result-img-wrap { animation: foodPopIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); }
     @keyframes foodPopIn {
       0% { opacity: 0; transform: scale(0.2) rotate(-8deg); }
       60% { opacity: 1; transform: scale(1.12) rotate(3deg); }
       100% { opacity: 1; transform: scale(1) rotate(0deg); }
     }
     .scan-result-img {
-      width: 130px; height: 130px; object-fit: cover; border-radius: 24px;
+      width: 118px; height: 118px; object-fit: cover; border-radius: 22px;
       border: 3px solid rgba(125, 211, 252, 0.5);
       display: block;
       animation: foodGlow 2.4s ease-in-out infinite;
@@ -287,35 +371,31 @@
       50% { box-shadow: 0 8px 40px rgba(56, 189, 248, 0.6), 0 0 28px 4px rgba(125, 211, 252, 0.25); }
     }
     .scan-result-name {
-      font-size: 1.05rem; font-weight: 700; color: #e0f2fe; text-align: center;
+      font-size: 1rem; font-weight: 700; color: #e0f2fe; text-align: center;
       text-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
       animation: fadeUp 0.5s ease 0.2s both;
     }
     @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
 
-    .scan-macro-list { width: 100%; display: flex; flex-direction: column; gap: 14px; }
-
+    .scan-macro-list { width: 100%; display: flex; flex-direction: column; gap: 12px; }
     .scan-macro-item { width: 100%; animation: fadeUp 0.5s ease both; }
     .scan-macro-item[data-macro="cal"] { animation-delay: 0.15s; }
     .scan-macro-item[data-macro="pro"] { animation-delay: 0.3s; }
     .scan-macro-item[data-macro="carb"] { animation-delay: 0.45s; }
     .scan-macro-item[data-macro="fat"] { animation-delay: 0.6s; }
 
-    .scan-macro-top {
-      display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; padding-left: 2px;
-    }
+    .scan-macro-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; padding-left: 2px; }
     .scan-macro-value {
-      font-size: 1.1rem; font-weight: 800; color: #f0f9ff;
-      min-width: 44px; letter-spacing: 0.3px; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      font-size: 1.05rem; font-weight: 800; color: #f0f9ff;
+      min-width: 42px; letter-spacing: 0.3px; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
       font-variant-numeric: tabular-nums;
     }
     .scan-macro-label {
-      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+      font-size: 0.72rem; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
       color: #bae6fd; opacity: 0.8;
     }
-
     .scan-macro-bar {
-      position: relative; width: 100%; height: 12px; background: rgba(15, 23, 42, 0.7);
+      position: relative; width: 100%; height: 11px; background: rgba(15, 23, 42, 0.7);
       border: 1px solid rgba(148, 197, 253, 0.25); border-radius: 8px; overflow: hidden;
       box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
     }
@@ -331,10 +411,10 @@
     .scan-macro-fill-fat { background-image: linear-gradient(90deg, #be185d, #f472b6, #f9a8d4, #f472b6, #be185d); box-shadow: 0 0 10px rgba(244, 114, 182, 0.5); }
 
     .scan-log-btn {
-      margin-top: 8px; width: 100%; padding: 15px;
-      border-radius: 16px; border: 1px solid rgba(74, 222, 128, 0.5);
+      margin-top: 6px; width: 100%; padding: 13px;
+      border-radius: 14px; border: 1px solid rgba(74, 222, 128, 0.5);
       background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(16, 185, 129, 0.35));
-      color: #f0fdf4; font-weight: 800; font-size: 1.02rem; letter-spacing: 0.5px;
+      color: #f0fdf4; font-weight: 800; font-size: 0.98rem; letter-spacing: 0.5px;
       cursor: pointer; touch-action: manipulation;
       box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35), inset 0 1px 1px rgba(255,255,255,0.15);
       backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -343,9 +423,9 @@
     }
     .scan-log-btn:active { transform: scale(0.97); box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5), inset 0 1px 1px rgba(255,255,255,0.15); }
 
-    /* --- Phase 3: Apple Pay style success --- */
-    .scan-success-wrap { display: flex; flex-direction: column; align-items: center; gap: 24px; }
-    .scan-success-svg { width: 130px; height: 130px; overflow: visible; }
+    /* --- Phase 3: success --- */
+    .scan-success-wrap { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 12px 0; }
+    .scan-success-svg { width: 118px; height: 118px; overflow: visible; }
     .scan-success-circle {
       transform-origin: 50% 50%;
       transform: scale(0);
@@ -363,12 +443,12 @@
     }
     @keyframes checkDraw { to { stroke-dashoffset: 0; } }
     .scan-success-text {
-      font-size: 1.15rem; font-weight: 700; color: #bbf7d0; text-align: center;
+      font-size: 1.05rem; font-weight: 700; color: #bbf7d0; text-align: center;
       text-shadow: 0 2px 16px rgba(74, 222, 128, 0.6);
       opacity: 0;
       animation: fadeUp 0.55s ease 0.85s forwards;
     }
-    /* ===== END NEW SCAN OVERLAY STYLES ===== */
+    /* ===== END NEW SCAN OVERLAY ===== */
   </style>
 </head>
 <body>
@@ -441,27 +521,40 @@
                 <span>None</span>
             </div>
             
-            <!-- 1-3 days: MODIFIED Perfectly clean flexing arm & fist -->
+            <!-- 1-3 days: NATURAL FLEXING MUSCLE ARM with bicep + forearm + fist -->
             <div class="exercise-card" id="ex-card-2" onclick="selectExercise(2)">
                 <svg viewBox="0 0 60 40">
-                  <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
-                    <!-- Static Base (Shoulder & Tricep) -->
-                    <path d="M 16 34 C 16 22, 22 18, 28 22 C 25 28, 24 34, 24 34" />
-                    
-                    <!-- Flexing Bicep -->
-                    <path class="anim-bicep" d="M 28 22 C 30 10, 40 12, 38 22" transform-origin="33px 22px" />
-                    
-                    <!-- Hinging Forearm & Fist -->
-                    <g class="anim-forearm" transform-origin="36px 24px">
-                      <!-- Outer forearm -->
-                      <path d="M 38 22 C 44 14, 46 10, 42 6" />
-                      <!-- Inner forearm -->
-                      <path d="M 29 27 C 32 23, 38 18, 36 12" />
-                      <!-- Fist Body -->
-                      <path d="M 42 6 C 44 2, 36 0, 33 4 C 30 8, 32 12, 36 12 Z" fill="currentColor" />
-                      <!-- Fist Knuckle detail -->
-                      <path d="M 39 4 L 37 6" stroke="#0f172a" stroke-width="1.5" />
-                    </g>
+                  <!-- Upper arm / shoulder body -->
+                  <path d="M 8 38
+                           L 14 38
+                           C 18 30, 22 24, 28 22
+                           L 32 24
+                           C 26 28, 22 34, 20 38
+                           Z"
+                        fill="currentColor"/>
+                  <!-- Bicep bulge (animated squish) -->
+                  <path class="anim-bicep"
+                        d="M 22 22
+                           C 22 14, 26 10, 32 12
+                           C 36 16, 34 22, 30 24
+                           Z"
+                        fill="currentColor"
+                        transform-origin="28px 18px"/>
+                  <!-- Forearm + fist (animated curl) -->
+                  <g class="anim-forearm" transform-origin="30px 23px">
+                    <!-- Forearm taper -->
+                    <path d="M 30 22
+                             L 40 10
+                             L 44 9
+                             L 44 14
+                             L 34 24
+                             Z"
+                          fill="currentColor"/>
+                    <!-- Fist -->
+                    <circle cx="44" cy="8" r="5.5" fill="currentColor"/>
+                    <!-- Knuckle lines -->
+                    <path d="M 41 5 L 41 7 M 44 4 L 44 6 M 47 5 L 47 7"
+                          stroke="#0f172a" stroke-width="0.7" stroke-linecap="round" opacity="0.35"/>
                   </g>
                 </svg>
                 <span>1-3 days</span>
@@ -533,103 +626,108 @@
   <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
   <div id="onboardingSuccessOverlay"><div class="success-card"><svg class="success-checkmark-svg" viewBox="0 0 104 104"><circle class="checkmark-circle" cx="52" cy="52" r="50" fill="none" stroke="#4ade80" stroke-width="5"/><path class="checkmark-check" fill="none" d="M30 54 l14 14 30 -30" stroke="#4ade80" stroke-width="6" stroke-linecap="round"/></svg><h2>Your data has been updated</h2></div></div>
 
-  <!-- ===== NEW SCAN OVERLAY ===== -->
+  <!-- ===== NEW SCAN OVERLAY (FLOATING POPUP WINDOW) ===== -->
   <div id="scanOverlay" class="scan-overlay">
-    <div class="scan-phase scan-phase-running active" id="scanPhaseRunning">
-      <div class="runner-scene">
-        <svg class="runner-svg" viewBox="0 0 60 70" aria-hidden="true">
-          <!-- speed lines -->
-          <g stroke="rgba(224, 242, 254, 0.5)" stroke-width="1.6" stroke-linecap="round">
-            <line x1="2" y1="22" x2="11" y2="22">
-              <animate attributeName="opacity" values="0.7;0;0.7" dur="0.4s" repeatCount="indefinite"/>
-            </line>
-            <line x1="0" y1="34" x2="13" y2="34">
-              <animate attributeName="opacity" values="0.3;0;0.3" dur="0.33s" repeatCount="indefinite"/>
-            </line>
-            <line x1="4" y1="46" x2="10" y2="46">
-              <animate attributeName="opacity" values="0.5;0;0.5" dur="0.46s" repeatCount="indefinite"/>
-            </line>
-          </g>
-          <!-- body group -->
-          <g>
-            <!-- head -->
-            <circle cx="32" cy="14" r="8" fill="none" stroke="#e0f2fe" stroke-width="2.5"/>
-            <!-- serious eyebrows (angled inward) -->
-            <line x1="25" y1="10" x2="29" y2="12" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
-            <line x1="39" y1="10" x2="35" y2="12" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
-            <!-- eyes (narrow/serious) -->
-            <circle cx="28.5" cy="15" r="1.3" fill="#e0f2fe"/>
-            <circle cx="35.5" cy="15" r="1.3" fill="#e0f2fe"/>
-            <!-- straight mouth -->
-            <line x1="28" y1="19" x2="36" y2="19" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
-            <!-- body -->
-            <line x1="32" y1="22" x2="32" y2="40" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
-            <!-- back arm -->
-            <g>
-              <line x1="32" y1="26" x2="26" y2="33" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
-              <animateTransform attributeName="transform" type="rotate" values="-15 32 26;22 32 26;-15 32 26" dur="0.32s" repeatCount="indefinite"/>
-            </g>
-            <!-- front arm -->
-            <g>
-              <line x1="32" y1="26" x2="38" y2="33" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
-              <animateTransform attributeName="transform" type="rotate" values="22 32 26;-15 32 26;22 32 26" dur="0.32s" repeatCount="indefinite"/>
-            </g>
-            <!-- back leg -->
-            <g>
-              <line x1="32" y1="40" x2="27" y2="56" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
-              <line x1="27" y1="56" x2="23" y2="59" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
-              <animateTransform attributeName="transform" type="rotate" values="-28 32 40;28 32 40;-28 32 40" dur="0.32s" repeatCount="indefinite"/>
-            </g>
-            <!-- front leg -->
-            <g>
-              <line x1="32" y1="40" x2="37" y2="56" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
-              <line x1="37" y1="56" x2="41" y2="59" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
-              <animateTransform attributeName="transform" type="rotate" values="28 32 40;-28 32 40;28 32 40" dur="0.32s" repeatCount="indefinite"/>
-            </g>
-          </g>
-        </svg>
-        <div class="runner-ground"></div>
+    <div class="scan-window">
+      <!-- Bubbles rising inside the floating window -->
+      <div class="scan-window-bubbles">
+        <span class="sw-bubble sw-b1"></span>
+        <span class="sw-bubble sw-b2"></span>
+        <span class="sw-bubble sw-b3"></span>
+        <span class="sw-bubble sw-b4"></span>
+        <span class="sw-bubble sw-b5"></span>
       </div>
-      <div class="scan-scan-label">Scanning your meal…</div>
-      <div class="scan-bar-outer">
-        <div class="scan-bar-fill" id="scanBarFill"></div>
-        <div class="scan-bar-text" id="scanBarText">0%</div>
-      </div>
-    </div>
 
-    <div class="scan-phase scan-phase-result" id="scanPhaseResult">
-      <div class="scan-result-img-wrap">
-        <img id="scanResultImg" class="scan-result-img" alt="Scanned meal">
-      </div>
-      <div class="scan-result-name" id="scanResultName">Scanned Meal</div>
-      <div class="scan-macro-list">
-        <div class="scan-macro-item" data-macro="cal">
-          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🔥 Calories</span></div>
-          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-cal"></div></div>
-        </div>
-        <div class="scan-macro-item" data-macro="pro">
-          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">💪 Protein</span></div>
-          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro"></div></div>
-        </div>
-        <div class="scan-macro-item" data-macro="carb">
-          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🌾 Carbs</span></div>
-          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-carb"></div></div>
-        </div>
-        <div class="scan-macro-item" data-macro="fat">
-          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🧈 Fat</span></div>
-          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
-        </div>
-      </div>
-      <button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button>
-    </div>
+      <div class="scan-phase scan-phase-running active" id="scanPhaseRunning">
+        <div class="dino-scene" id="dinoScene">
+          <!-- Cactus scrolling from right -->
+          <div class="dino-cactus">
+            <svg viewBox="0 0 20 26" preserveAspectRatio="xMidYMax meet">
+              <path d="M 8 26 L 8 4 Q 8 1 10 1 Q 12 1 12 4 L 12 26 Z M 8 12 L 4 12 Q 2 12 2 14 L 2 18 Q 2 20 4 20 L 8 20 M 12 14 L 16 14 Q 18 14 18 16 L 18 20 Q 18 22 16 22 L 12 22" fill="#22c55e" stroke="#16a34a" stroke-width="0.7" stroke-linejoin="round"/>
+            </svg>
+          </div>
 
-    <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
-      <div class="scan-success-wrap">
-        <svg class="scan-success-svg" viewBox="0 0 100 100" aria-hidden="true">
-          <circle class="scan-success-circle" cx="50" cy="50" r="42" fill="#4ade80"/>
-          <path class="scan-success-check" d="M 32 52 L 45 65 L 68 38" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        <div class="scan-success-text">Your meal has been logged</div>
+          <!-- Dinosaur runner -->
+          <div class="dino-runner" id="dinoRunner">
+            <svg class="dino-svg" viewBox="0 0 80 80">
+              <g fill="#e0f2fe">
+                <!-- Tail -->
+                <path d="M 10 46 L 2 40 L 6 50 L 16 50 Z"/>
+                <!-- Body -->
+                <ellipse cx="38" cy="45" rx="22" ry="13"/>
+                <!-- Neck -->
+                <path d="M 50 40 L 54 22 L 64 22 L 62 38 Z"/>
+                <!-- Head -->
+                <rect x="52" y="14" width="22" height="13" rx="4"/>
+                <!-- Little arm -->
+                <path d="M 54 42 L 62 40 L 64 45 L 58 46 Z"/>
+              </g>
+              <!-- Eye -->
+              <circle cx="66" cy="20" r="1.8" fill="#0f172a"/>
+              <!-- Mouth line -->
+              <path d="M 58 26 L 72 24" stroke="#0f172a" stroke-width="1.1" stroke-linecap="round"/>
+              <!-- Back leg (animated) -->
+              <g class="dino-leg dino-leg-back">
+                <line x1="28" y1="57" x2="24" y2="70" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round"/>
+                <line x1="24" y1="70" x2="18" y2="72" stroke="#e0f2fe" stroke-width="4" stroke-linecap="round"/>
+                <animateTransform attributeName="transform" type="rotate"
+                  values="22 28 57;-22 28 57;22 28 57"
+                  dur="0.28s" repeatCount="indefinite"/>
+              </g>
+              <!-- Front leg (animated) -->
+              <g class="dino-leg dino-leg-front">
+                <line x1="50" y1="57" x2="54" y2="70" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round"/>
+                <line x1="54" y1="70" x2="60" y2="72" stroke="#e0f2fe" stroke-width="4" stroke-linecap="round"/>
+                <animateTransform attributeName="transform" type="rotate"
+                  values="-22 50 57;22 50 57;-22 50 57"
+                  dur="0.28s" repeatCount="indefinite"/>
+              </g>
+            </svg>
+          </div>
+
+          <div class="dino-ground"></div>
+        </div>
+        <div class="scan-scan-label">Scanning your meal…</div>
+        <div class="scan-bar-outer">
+          <div class="scan-bar-fill" id="scanBarFill"></div>
+          <div class="scan-bar-text" id="scanBarText">0%</div>
+        </div>
+      </div>
+
+      <div class="scan-phase scan-phase-result" id="scanPhaseResult">
+        <div class="scan-result-img-wrap">
+          <img id="scanResultImg" class="scan-result-img" alt="Scanned meal">
+        </div>
+        <div class="scan-result-name" id="scanResultName">Scanned Meal</div>
+        <div class="scan-macro-list">
+          <div class="scan-macro-item" data-macro="cal">
+            <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🔥 Calories</span></div>
+            <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-cal"></div></div>
+          </div>
+          <div class="scan-macro-item" data-macro="pro">
+            <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">💪 Protein</span></div>
+            <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro"></div></div>
+          </div>
+          <div class="scan-macro-item" data-macro="carb">
+            <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🌾 Carbs</span></div>
+            <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-carb"></div></div>
+          </div>
+          <div class="scan-macro-item" data-macro="fat">
+            <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🧈 Fat</span></div>
+            <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
+          </div>
+        </div>
+        <button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button>
+      </div>
+
+      <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
+        <div class="scan-success-wrap">
+          <svg class="scan-success-svg" viewBox="0 0 100 100" aria-hidden="true">
+            <circle class="scan-success-circle" cx="50" cy="50" r="42" fill="#4ade80"/>
+            <path class="scan-success-check" d="M 32 52 L 45 65 L 68 38" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <div class="scan-success-text">Your meal has been logged</div>
+        </div>
       </div>
     </div>
   </div>
@@ -642,8 +740,8 @@
     let GOAL_PRO = 0;
     let lastScanThumb = null;
     let progressTimer = null;
-    let scanProgressTimer = null;         // NEW — timer for the rotating scan bar
-    let currentScanData = null;           // NEW — holds the current scan values until logged
+    let scanProgressTimer = null;
+    let currentScanData = null;
     const todayKey = new Date().toISOString().split('T')[0];
 
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -732,6 +830,8 @@
       targetCal = Math.round(targetCal); if (targetCal < 1200) targetCal = 1200; targetPro = Math.round(targetPro);
       localStorage.setItem('user_goals', JSON.stringify({ cal: targetCal, pro: targetPro })); localStorage.setItem('user_profile', JSON.stringify({ age, sex, height, weight, goal, goalWeight, timeline, exercise }));
       GOAL_CAL = targetCal; GOAL_PRO = targetPro;
+      // NEW: play success chime when data is updated
+      playSuccessSound();
       const successOverlay = document.getElementById('onboardingSuccessOverlay'); successOverlay.classList.add('show');
       setTimeout(() => { successOverlay.classList.remove('show'); document.getElementById('onboardingScreen').style.display = 'none'; document.getElementById('cancelOnboardingBtn').classList.remove('show'); document.getElementById('mainApp').style.display = 'block'; render(); }, 2200);
     }
@@ -753,7 +853,7 @@
     const TEST_MODE = true;
     // ==========================
 
-    // ===== NEW SCAN OVERLAY HELPERS =====
+    // ===== SHARED SOUND (used by onboarding success AND meal logged) =====
     function playSuccessSound() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -783,6 +883,16 @@
       } catch(e) { console.warn('Audio unavailable:', e); }
     }
 
+    // ===== SCAN OVERLAY HELPERS =====
+    function resetDinoScene() {
+      const scene = document.getElementById('dinoScene');
+      if (!scene) return;
+      scene.classList.remove('sprint');
+      scene.querySelectorAll('animateTransform').forEach(a => {
+        try { a.setAttribute('dur', '0.28s'); } catch(e) {}
+      });
+    }
+
     function animateNumber(el, to, duration, suffix) {
       const start = performance.now();
       const update = (now) => {
@@ -797,6 +907,7 @@
     function showScanOverlay() {
       const overlay = document.getElementById('scanOverlay');
       overlay.classList.add('show');
+      resetDinoScene();
       document.getElementById('scanPhaseRunning').classList.add('active');
       document.getElementById('scanPhaseResult').classList.remove('active');
       document.getElementById('scanPhaseSuccess').classList.remove('active');
@@ -811,6 +922,14 @@
         if (pct >= 95) pct = 95;
         fill.style.width = pct + '%';
         document.getElementById('scanBarText').textContent = Math.floor(pct) + '%';
+        // NEW: trigger sprint at 85%
+        const scene = document.getElementById('dinoScene');
+        if (pct >= 85 && !scene.classList.contains('sprint')) {
+          scene.classList.add('sprint');
+          scene.querySelectorAll('animateTransform').forEach(a => {
+            try { a.setAttribute('dur', '0.1s'); } catch(e) {}
+          });
+        }
       }, 100);
     }
 
@@ -826,7 +945,6 @@
         document.getElementById('scanResultImg').src = lastScanThumb || '';
         document.getElementById('scanResultName').textContent = data.name || 'Scanned Meal';
 
-        // Reset bars and animate
         document.querySelectorAll('.scan-macro-item').forEach(item => {
           item.querySelector('.scan-macro-fill').style.width = '0%';
           item.querySelector('.scan-macro-value').textContent = '0';
@@ -854,24 +972,24 @@
     function hideScanOverlay() {
       clearInterval(scanProgressTimer);
       document.getElementById('scanOverlay').classList.remove('show');
+      setTimeout(resetDinoScene, 400);
     }
 
     function confirmScanLog() {
       playSuccessSound();
       document.getElementById('scanPhaseResult').classList.remove('active');
       document.getElementById('scanPhaseSuccess').classList.add('active');
-      // Actually log the meal ~0.4s after checkmark draws in
       setTimeout(() => { try { addEntry(); } catch(e) { console.error('Log failed', e); } }, 400);
-      // Hide overlay once success animation settles
       setTimeout(() => {
         document.getElementById('scanOverlay').classList.remove('show');
         setTimeout(() => {
           document.getElementById('scanPhaseSuccess').classList.remove('active');
           document.getElementById('scanPhaseRunning').classList.add('active');
+          resetDinoScene();
         }, 300);
       }, 2200);
     }
-    // ===== END NEW SCAN OVERLAY HELPERS =====
+    // ===== END SCAN OVERLAY HELPERS =====
 
     async function analyzePhoto(event) {
       const file = event.target.files[0]; if (!file) return;
