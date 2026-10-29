@@ -28,11 +28,12 @@
     .b-4 { left: 85%; width: 65px; animation-duration: 19s; animation-delay: 4s; }
     .b-5 { left: 55%; width: 50px; animation-duration: 14s; animation-delay: 6s; }
 
+    /* New Animation for Tiny Popping Bubble */
     .tiny-popping { animation: tinyPop 2.5s infinite ease-out; transform-origin: center; }
     @keyframes tinyPop {
       0% { opacity: 0; transform: translateY(0) scale(0.5); }
       5% { opacity: 1; transform: translateY(0) scale(1); }
-      65% { opacity: 0; transform: translateY(-20px) scale(1.3); }
+      65% { opacity: 0; transform: translateY(-20px) scale(1.3); } /* Fades out 1.5s after appearing (60% of 2.5s) */
       100% { opacity: 0; }
     }
 
@@ -68,6 +69,24 @@
     .liquid-btn:active { transform: scale(0.97); background: rgba(13,25,48,0.7); }
     .scan-btn { margin-bottom: 10px; }
     .log-btn { margin-top: 12px; }
+
+    .progress-wrap { display: none; margin-top: 10px; height: 30px; }
+    .progress-track { position: relative; height: 100%; border-radius: 16px; overflow: hidden; background: rgba(15,23,42,0.45); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+    .progress-fill { position: relative; height: 100%; width: 0%; background: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #38bdf8, #0369a1); background-size: 300% 100%; animation: waterFlow 2.4s linear infinite; transition: width 0.15s linear; }
+    @keyframes waterFlow { 0% { background-position: 150% 50%; } 100% { background-position: 0% 50%; } }
+    .progress-text { position: absolute; top: 0; left: 0; width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 0.85rem; color: #ffffff; letter-spacing: 1px; text-shadow: 0 1px 3px rgba(0,0,0,0.5); }
+
+    .success-anim-wrap { display: none; align-items: center; justify-content: center; flex-direction: column; gap: 12px; margin: 10px 0; }
+    .success-anim-wrap.show { display: flex; animation: successPopIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes successPopIn { from { opacity: 0; transform: scale(0.7); } }
+    .success-checkmark-svg { width: 50px; height: 50px; }
+    .checkmark-circle { stroke-dasharray: 166; stroke-dashoffset: 166; }
+    .checkmark-check { transform-origin: 50% 50%; stroke-dasharray: 48; stroke-dashoffset: 48; }
+    .success-anim-wrap.show .checkmark-circle { animation: stroke 0.6s cubic-bezier(0.65, 0, 0.45, 1) 0.1s forwards; }
+    .success-anim-wrap.show .checkmark-check { animation: stroke 0.4s cubic-bezier(0.65, 0, 0.45, 1) 0.5s forwards, check-pop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s forwards; }
+    @keyframes stroke { 100% { stroke-dashoffset: 0; } }
+    @keyframes check-pop { 0% { transform: scale(0.8); opacity: 0; } 50% { transform: scale(1.1); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+    .success-anim-text { font-size: 0.9rem; font-weight: 600; color: var(--green); text-shadow: 0 0 10px rgba(74, 222, 128, 0.3); }
 
     #scannedPreviewWrap { display: none; text-align: center; margin: 8px 0; }
     #scannedPreviewImg { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); }
@@ -121,6 +140,7 @@
     .exercise-card.selected { transform: scale(1.05); color: var(--text); border-color: var(--accent); background: rgba(56, 189, 248, 0.15); box-shadow: 0 0 24px rgba(56, 189, 248, 0.3); }
     .exercise-card.selected svg { color: var(--accent); }
 
+    /* Animations for Exercise Cards */
     .exercise-card.selected .anim-z-1 { animation: z-rise-new 2s linear infinite; }
     .exercise-card.selected .anim-z-2 { animation: z-rise-new 2s linear 0.6s infinite; opacity: 0; }
     .exercise-card.selected .anim-z-3 { animation: z-rise-new 2s linear 1.2s infinite; opacity: 0; }
@@ -132,11 +152,13 @@
     .exercise-card.selected .anim-bicep { animation: bicep-squish 1.4s ease-in-out infinite; }
     @keyframes bicep-squish { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.15, 1.3) translateY(-2px); } }
 
+    /* Bicycle Wheel Spin */
     .wheel-1 { transform-origin: 18px 30px; }
     .wheel-2 { transform-origin: 38px 30px; }
     .exercise-card.selected .anim-wheel { animation: wheel-spin 1.5s linear infinite; }
     @keyframes wheel-spin { to { transform: rotate(360deg); } }
 
+    /* Sequential 6 and 7 Animation */
     .exercise-card.selected .anim-seq-1 { animation: seq-bounce 1.2s ease-in-out infinite; }
     .exercise-card.selected .anim-seq-2 { animation: seq-bounce 1.2s ease-in-out 0.6s infinite; }
     @keyframes seq-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -192,11 +214,13 @@
   <div id="globalBg" class="underwater-bg">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
+        <!-- MOD: Updated bubble symbol to include dumbbell and popping mini-bubble -->
         <symbol id="bubble-symbol" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="48" fill="rgba(186, 230, 253, 0.15)" stroke="rgba(186, 230, 253, 0.25)" stroke-width="1.5"/>
           <circle cx="50" cy="50" r="40" fill="rgba(186, 230, 253, 0.1)"/>
           <ellipse cx="38" cy="35" rx="15" ry="8" fill="rgba(255,255,255,0.5)" transform="rotate(-25 38 35)"/>
           
+          <!-- Embedded Dumbbell -->
           <g transform="translate(50, 50) rotate(-25) translate(-50, -50)" fill="rgba(186, 230, 253, 0.4)">
             <rect x="36" y="47" width="28" height="6" rx="2" />
             <rect x="26" y="36" width="8" height="28" rx="3" />
@@ -205,6 +229,7 @@
             <rect x="76" y="40" width="4" height="20" rx="2" />
           </g>
 
+          <!-- Tiny popping bubble at the bottom -->
           <circle class="tiny-popping" cx="40" cy="95" r="10" fill="rgba(186, 230, 253, 0.2)" stroke="rgba(186, 230, 253, 0.3)" stroke-width="1"/>
         </symbol>
 
@@ -238,6 +263,7 @@
         <label>Exercise per week</label>
         
         <div class="exercise-selector">
+            <!-- 0 days: Bed icon with Z's -->
             <div class="exercise-card" id="ex-card-0" onclick="selectExercise(0)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -253,15 +279,25 @@
                 <span>None</span>
             </div>
             
+            <!-- 1-3 days: MODIFIED Perfectly clean flexing arm & fist -->
             <div class="exercise-card" id="ex-card-2" onclick="selectExercise(2)">
                 <svg viewBox="0 0 60 40">
                   <g stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Static Base (Shoulder & Tricep) -->
                     <path d="M 16 34 C 16 22, 22 18, 28 22 C 25 28, 24 34, 24 34" />
+                    
+                    <!-- Flexing Bicep -->
                     <path class="anim-bicep" d="M 28 22 C 30 10, 40 12, 38 22" transform-origin="33px 22px" />
+                    
+                    <!-- Hinging Forearm & Fist -->
                     <g class="anim-forearm" transform-origin="36px 24px">
+                      <!-- Outer forearm -->
                       <path d="M 38 22 C 44 14, 46 10, 42 6" />
+                      <!-- Inner forearm -->
                       <path d="M 29 27 C 32 23, 38 18, 36 12" />
+                      <!-- Fist Body -->
                       <path d="M 42 6 C 44 2, 36 0, 33 4 C 30 8, 32 12, 36 12 Z" fill="currentColor" />
+                      <!-- Fist Knuckle detail -->
                       <path d="M 39 4 L 37 6" stroke="#0f172a" stroke-width="1.5" />
                     </g>
                   </g>
@@ -269,19 +305,24 @@
                 <span>1-3 days</span>
             </div>
             
+            <!-- 4-5 days: Bicycle with spinning wheels -->
             <div class="exercise-card" id="ex-card-4" onclick="selectExercise(4)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <!-- Static Man -->
                     <circle cx="28" cy="8" r="3" fill="currentColor" />
                     <path d="M28 11 C 25 18, 26 23, 27 24 L 29 29" stroke-width="2"/>
                     <path d="M28 13 C 33 16, 38 15, 39 14" stroke-width="2"/>
+                    <!-- Static Bike Frame -->
                     <path d="M18 30 L 29 30 L 23 20 Z" />
                     <path d="M23 20 L 21 16 M 29 30 L 37 16 L 35 14 M 37 16 L 39 14" />
+                    <!-- Animated Back Wheel -->
                     <g class="anim-wheel wheel-1">
                       <circle cx="18" cy="30" r="7" />
                       <circle cx="18" cy="30" r="5" stroke-width="0.5" />
                       <path d="M18 23 V 37 M 11 30 H 25 M 13 25 L 23 35 M 13 35 L 23 25" stroke-width="0.5" />
                     </g>
+                    <!-- Animated Front Wheel -->
                     <g class="anim-wheel wheel-2">
                       <circle cx="38" cy="30" r="7" />
                       <circle cx="38" cy="30" r="5" stroke-width="0.5" />
@@ -292,6 +333,7 @@
                 <span>4-5 days</span>
             </div>
             
+            <!-- 6-7 days: Detailed 6 and 7 -->
             <div class="exercise-card" id="ex-card-6" onclick="selectExercise(6)">
                  <svg viewBox="0 0 60 40">
                   <g class="anim-seq-1">
@@ -326,15 +368,16 @@
   </div>
 
   <div id="cancelConfirmModal" class="cancel-modal-overlay"> <div class="cancel-modal-card"><svg class="stickman-wiggle" viewBox="0 0 100 100" width="110" height="110"><circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/><path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="44" cy="24" r="1.6" fill="#f8fafc"/><circle cx="57" cy="24" r="1.6" fill="#f8fafc"/><path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/><path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text></svg><h3>Are you sure you want to cancel?</h3><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doCancelOnboarding()">Yes, I am!</button><button class="cancel-no-btn" onclick="closeCancelModal()">No, I'm not</button></div></div></div>
-  <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Settings</h3><p class="api-key-sub">Local configuration storage.</p><input type="text" id="apiKeyInput" placeholder="Optional settings key" autocomplete="off"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
+  <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
   <div id="onboardingSuccessOverlay"><div class="success-card"><svg class="success-checkmark-svg" viewBox="0 0 104 104"><circle class="checkmark-circle" cx="52" cy="52" r="50" fill="none" stroke="#4ade80" stroke-width="5"/><path class="checkmark-check" fill="none" d="M30 54 l14 14 30 -30" stroke="#4ade80" stroke-width="6" stroke-linecap="round"/></svg><h2>Your data has been updated</h2></div></div>
 
-  <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 Settings</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="document.getElementById('cameraInput').click()">📷 Select/Capture Meal Photo</button><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)"><div class="macro-input-grid"><input type="number" id="foodCal" placeholder="Calories" inputmode="numeric"><input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric"><input type="number" id="foodCarb" placeholder="Carbs (g)" inputmode="numeric"><input type="number" id="foodFat" placeholder="Fat (g)" inputmode="numeric"></div><button class="liquid-btn log-btn" onclick="addEntry()">+ Log Meal</button></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
+  <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="document.getElementById('cameraInput').click()">📷 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)"><div class="macro-input-grid"><input type="number" id="foodCal" placeholder="Calories" inputmode="numeric"><input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric"><input type="number" id="foodCarb" placeholder="Carbs (g)" inputmode="numeric"><input type="number" id="foodFat" placeholder="Fat (g)" inputmode="numeric"></div><button class="liquid-btn log-btn" onclick="addEntry()">+ Log Meal</button></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
 
   <script>
     let GOAL_CAL = 0;
     let GOAL_PRO = 0;
     let lastScanThumb = null;
+    let progressTimer = null;
     const todayKey = new Date().toISOString().split('T')[0];
 
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -429,28 +472,30 @@
 
     function toggleMenu() { document.getElementById('dropdownMenu').classList.toggle('show'); document.getElementById('gearBtn').classList.toggle('spin'); }
     document.addEventListener('click', (e) => { const menu = document.getElementById('dropdownMenu'); const btn = document.getElementById('gearBtn'); if (!e.target.closest('.header-controls') && menu.classList.contains('show')) { menu.classList.remove('show'); btn.classList.remove('spin'); } });
-    
     function setApiKey() { openApiKeyModal(); }
-    function openApiKeyModal() { document.getElementById('apiKeyModal').classList.add('show'); }
+    function openApiKeyModal() { const current = localStorage.getItem('gemini_key') || ''; document.getElementById('apiKeyInput').value = current; document.getElementById('apiKeyModal').classList.add('show'); }
     function closeApiKeyModal() { document.getElementById('apiKeyModal').classList.remove('show'); }
-    function saveApiKeyFn() { closeApiKeyModal(); }
+    function saveApiKeyFn() { const key = document.getElementById('apiKeyInput').value.trim(); localStorage.setItem('gemini_key', key); closeApiKeyModal(); }
 
-    async function compressImage(file, maxDim = 160, quality = 0.5) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
-    
+    function startProgress() { const wrap = document.getElementById('progressWrap'); const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); document.getElementById('scanSuccessAnimation').classList.remove('show'); wrap.style.display = 'block'; fill.style.width = '0%'; text.textContent = '0%'; let pct = 0; clearInterval(progressTimer); progressTimer = setInterval(() => { const remaining = 92 - pct; pct += Math.max(remaining * 0.06, 0.3); if (pct >= 92) pct = 92; fill.style.width = pct + '%'; text.textContent = Math.floor(pct) + '%'; }, 120); }
+    function finishProgress(success) { clearInterval(progressTimer); const wrap = document.getElementById('progressWrap'); const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); if (success) { fill.style.width = '100%'; text.textContent = '100%'; setTimeout(() => { wrap.style.display = 'none'; }, 600); } else { text.textContent = 'ERROR'; setTimeout(() => { wrap.style.display = 'none'; }, 1400); } }
+    async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
     async function analyzePhoto(event) {
-      const file = event.target.files[0]; if (!file) return; 
+      const file = event.target.files[0]; if (!file) return; const apiKey = localStorage.getItem('gemini_key'); if (!apiKey) { alert('AI scanning requires a Gemini API key. Please add one in the settings menu (⚙️).'); return; }
+      const statusEl = document.getElementById('status'); statusEl.style.display = 'none'; startProgress();
       try {
-        lastScanThumb = await compressImage(file, 160, 0.5);
-        document.getElementById('scannedPreviewImg').src = lastScanThumb;
-        document.getElementById('scannedPreviewWrap').style.display = 'block';
-        document.getElementById('foodName').value = 'Captured Meal';
-      } catch (err) { console.error(err); }
+        const base64Image = await compressImage(file, 800, 0.7); const thumb = await compressImage(file, 160, 0.5); lastScanThumb = 'data:image/jpeg;base64,' + thumb; document.getElementById('scannedPreviewImg').src = lastScanThumb; document.getElementById('scannedPreviewWrap').style.display = 'block';
+        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [ { text: 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}' }, { inline_data: { mime_type: 'image/jpeg', data: base64Image } } ] }], generationConfig: { responseMimeType: "application/json" } }) });
+        if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
+        const data = await res.json(); const rawText = data.candidates[0].content.parts[0].text; const parsed = JSON.parse(rawText);
+        document.getElementById('foodName').value = parsed.name || 'Scanned Meal'; document.getElementById('foodCal').value = parsed.cal || 0; document.getElementById('foodPro').value = parsed.pro || 0; document.getElementById('foodCarb').value = parsed.carb || 0; document.getElementById('foodFat').value = parsed.fat || 0;
+        finishProgress(true); const successAnim = document.getElementById('scanSuccessAnimation'); successAnim.classList.add('show'); setTimeout(() => successAnim.classList.remove('show'), 2500);
+      } catch (err) { console.error(err); finishProgress(false); statusEl.textContent = '❌ Error analyzing image. Check API key.'; statusEl.style.display = 'block'; }
       event.target.value = '';
     }
-
     function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey] || []; }
     function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
-    function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
+    function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
     function removeEntry(id) { const logs = getLogs().filter(item => item.id !== id); saveLogs(logs); }
     function renderGauge(type, current, goal) { const pct = goal > 0 ? clamp(current / goal * 100, 0, 100) : 0; const angle = -90 + pct * 1.8; const needleGroup = document.getElementById(type + 'Needle'); needleGroup.setAttribute('transform', `rotate(${angle} 100 100)`); const needleLine = needleGroup.querySelector('line'); document.getElementById(type + 'Text').textContent = `${current} / ${goal}${type === 'pro' ? 'g' : ''}`; const box = document.getElementById(type + 'Box'); const rawPct = goal > 0 ? (current / goal * 100) : 0; if (type === 'pro') { if (rawPct >= 100) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else { box.classList.remove('target-reached', 'over-limit'); needleLine.setAttribute('stroke', '#cbd5e1'); } } else { if (rawPct > 100) { box.classList.add('over-limit'); box.classList.remove('target-reached'); needleLine.setAttribute('stroke', '#f87171'); } else { box.classList.remove('over-limit', 'target-reached'); needleLine.setAttribute('stroke', '#cbd5e1'); } } }
     function render() {
