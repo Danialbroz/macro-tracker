@@ -647,6 +647,7 @@
       animation: fadeUp 0.55s ease 0.85s forwards;
     }
 
+    /* ========== NEW: SPLASH — SHORE + DIVE TRANSITION ========== */
     .splash-screen {
       position: fixed;
       top: 0;
@@ -661,13 +662,36 @@
       overflow: hidden;
       background: linear-gradient(180deg, #0f172a 0%, #082f49 100%);
     }
-    .splash-screen.rising {
-      animation: splashRiseUp 2.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
-      will-change: transform;
+    .splash-screen.diving {
+      animation: splashDive 1.6s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
+      will-change: transform, opacity;
     }
-    @keyframes splashRiseUp {
-      0%   { transform: translateY(0); }
-      100% { transform: translateY(-125vh); }
+    @keyframes splashDive {
+      0%   { transform: translateY(0) scale(1); opacity: 1; }
+      15%  { transform: translateY(-6vh) scale(0.97); opacity: 1; }
+      100% { transform: translateY(130vh) scale(1.15); opacity: 0.85; }
+    }
+
+    /* subtle shore / surface hint: soft sunlight glow near the top */
+    .splash-surface-glow {
+      position: absolute;
+      top: -180px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 460px;
+      height: 460px;
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        rgba(255, 237, 213, 0.18) 0%,
+        rgba(251, 191, 36, 0.09) 25%,
+        rgba(56, 189, 248, 0) 65%);
+      pointer-events: none;
+      z-index: 1;
+      animation: sunPulse 4.5s ease-in-out infinite;
+    }
+    @keyframes sunPulse {
+      0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
+      50%      { opacity: 1;    transform: translateX(-50%) scale(1.08); }
     }
 
     .splash-bg-copy {
@@ -678,9 +702,7 @@
       height: 100%;
       overflow: hidden;
       pointer-events: none;
-      transition: opacity 0.5s ease;
     }
-    .splash-bg-copy.fade-out { opacity: 0; }
 
     .splash-center {
       position: relative;
@@ -773,69 +795,38 @@
       100% { transform: translate(-50%, -50%) rotate(7deg); }
     }
 
-    .splash-burst {
+    /* NEW: water speed streaks that rush UP as we dive DOWN */
+    .splash-streaks {
       position: absolute;
       inset: 0;
       overflow: hidden;
       pointer-events: none;
       z-index: 3;
-    }
-    .burst-bubble {
-      position: absolute;
-      bottom: -90px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 32% 30%,
-        rgba(255,255,255,0.9) 0%,
-        rgba(186,230,253,0.55) 22%,
-        rgba(125,211,252,0.32) 52%,
-        rgba(56,189,248,0.12) 74%,
-        rgba(8,47,73,0.05) 100%);
-      border: 1px solid rgba(186, 230, 253, 0.55);
-      box-shadow: inset -2px -3px 6px rgba(8,47,73,0.3);
-      animation: burstRise linear forwards;
       opacity: 0;
+      transition: opacity 0.35s ease;
     }
-    @keyframes burstRise {
-      0%   { transform: translateY(0) scale(0.45); opacity: 0; }
-      7%   { opacity: 1; }
-      100% { transform: translateY(-118vh) scale(1.15); opacity: 1; }
-    }
-
-    /* NEW: SpongeBob-style natural soap bubbles for the finale transition */
-    .splash-mini-bubble {
+    .splash-screen.diving .splash-streaks { opacity: 1; }
+    .splash-streak {
       position: absolute;
-      bottom: calc(-80px - env(safe-area-inset-bottom, 0px));
-      border-radius: 50%;
-      background:
-        radial-gradient(circle at 32% 28%,
-          rgba(255, 255, 255, 0.98) 0%,
-          rgba(255, 255, 255, 0.75) 3%,
-          rgba(255, 255, 255, 0.15) 8%,
-          transparent 16%),
-        radial-gradient(circle at 72% 78%,
-          rgba(125, 211, 252, 0.3) 0%,
-          rgba(56, 189, 248, 0.08) 25%,
-          transparent 50%),
-        radial-gradient(circle at 50% 50%,
-          rgba(186, 230, 253, 0.04) 0%,
-          rgba(125, 211, 252, 0.1) 65%,
-          rgba(56, 189, 248, 0.22) 100%);
-      border: 1.2px solid rgba(186, 230, 253, 0.5);
-      box-shadow:
-        inset -1.5px -2px 4px rgba(56, 189, 248, 0.15),
-        inset 1px 1px 2px rgba(255, 255, 255, 0.35),
-        0 0 6px rgba(125, 211, 252, 0.25);
+      bottom: -60px;
+      border-radius: 2px;
+      background: linear-gradient(180deg,
+        rgba(255, 255, 255, 0) 0%,
+        rgba(186, 230, 253, 0.85) 25%,
+        rgba(255, 255, 255, 1) 50%,
+        rgba(186, 230, 253, 0.85) 75%,
+        rgba(255, 255, 255, 0) 100%);
+      filter: blur(0.4px);
       opacity: 0;
-      animation: splashBubbleRise linear forwards;
+      animation: streakRush linear forwards;
       will-change: transform, opacity;
-      pointer-events: none;
     }
-    @keyframes splashBubbleRise {
-      0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
-      8% { opacity: 1; }
-      92% { opacity: 0.9; }
-      100% { transform: translate(var(--drift, 0px), var(--own-rise, -15vh)) scale(1.05); opacity: 0; }
+    @keyframes streakRush {
+      0%   { transform: translateY(0); opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translateY(-200vh); opacity: 0; }
     }
+    /* ========== END SPLASH DIVE ========== */
 
     .start-overlay {
       position: fixed;
@@ -975,13 +966,10 @@
     <svg class="bubble b-5"><use xlink:href="#bubble-symbol"></use></svg>
   </div>
 
+  <!-- ========== NEW SPLASH: SHORE (LOADING) + DIVE (TRANSITION) ========== -->
   <div id="splashScreen" class="splash-screen" style="display:none;">
     <div class="splash-bg-copy">
-      <svg class="bubble b-1"><use xlink:href="#bubble-symbol"></use></svg>
-      <svg class="bubble b-2"><use xlink:href="#bubble-symbol"></use></svg>
-      <svg class="bubble b-3"><use xlink:href="#bubble-symbol"></use></svg>
-      <svg class="bubble b-4"><use xlink:href="#bubble-symbol"></use></svg>
-      <svg class="bubble b-5"><use xlink:href="#bubble-symbol"></use></svg>
+      <div class="splash-surface-glow"></div>
     </div>
 
     <div class="splash-center">
@@ -1022,8 +1010,9 @@
       </div>
     </div>
 
-    <div class="splash-burst" id="splashBurst"></div>
+    <div class="splash-streaks" id="splashStreaks"></div>
   </div>
+  <!-- ========== END SPLASH ========== -->
 
   <div id="startScreen" class="start-overlay">
     <div class="start-card">
@@ -1561,75 +1550,81 @@
           requestAnimationFrame(frame);
         } else {
           setSplashProgress(100);
-          setTimeout(startBubbleFinale, 320);
+          setTimeout(startDiveSequence, 320);
         }
       }
       requestAnimationFrame(frame);
     }
 
     /* ============================================================
-       NEW SPONGEBOB-STYLE FINALE
-       - Ambient dumbbell bubbles hidden during the transition
-         (they were the ones appearing mid-screen on mobile).
-       - 500 natural soap bubbles spawn from the very bottom
-         (using calc + safe-area so they're truly off-screen).
-       - Bubbles rise with the page (bubbles + splash both move
-         upward together so the movement feels synced).
+       NEW: DIVE TRANSITION
+       - Loading was at "the shore" (logo + progress + fish visible)
+       - On completion: fade the loading UI out, spawn water speed
+         streaks rushing UP, then plunge the whole splash DOWN fast
+         (correct physics for diving — water rushes up past a diver).
+       - Cleanup uses animationend with a generous fallback timer.
        ============================================================ */
-    function startBubbleFinale() {
-      const burst = document.getElementById('splashBurst');
+    function startDiveSequence() {
       const screen = document.getElementById('splashScreen');
-      if (!burst || !screen) return;
+      const streakLayer = document.getElementById('splashStreaks');
+      const center = document.querySelector('.splash-center');
+      if (!screen) return;
 
-      burst.innerHTML = '';
-
-      // Hide ambient dumbbell bubbles — the finale takes over
-      const bgCopy = document.querySelector('.splash-bg-copy');
-      if (bgCopy) bgCopy.classList.add('fade-out');
-
-      // Spawn 500 SpongeBob-style soap bubbles clustered naturally
-      const count = 500;
-      const parts = [];
-      for (let i = 0; i < count; i++) {
-        const size = (5 + Math.random() * 22).toFixed(1);          // 5–27px
-        const left = (Math.random() * 100).toFixed(2);              // full width
-        const dur = (1.6 + Math.random() * 1.1).toFixed(2);         // 1.6–2.7s
-        const delay = (Math.random() * 1.4).toFixed(2);             // 0–1.4s
-        const drift = ((Math.random() - 0.5) * 90).toFixed(0);      // ±45px sway
-        const ownRise = -(8 + Math.random() * 22).toFixed(0);       // -8 to -30vh
-        parts.push(`<span class="splash-mini-bubble" style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;--own-rise:${ownRise}vh;"></span>`);
+      // 1) Fade out the loading UI (logo, title, progress, fish)
+      if (center) {
+        center.style.transition = 'opacity 0.35s ease, transform 0.45s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
+        center.style.opacity = '0';
+        center.style.transform = 'scale(0.85)';
       }
-      burst.innerHTML = parts.join('');
 
-      // Page rise kicks off just after bubbles begin — synced movement
+      // 2) Spawn water speed streaks — vertical lines rushing UP
+      if (streakLayer) {
+        const count = 70;
+        const parts = [];
+        for (let i = 0; i < count; i++) {
+          const left = (Math.random() * 100).toFixed(2);
+          const height = (18 + Math.random() * 55).toFixed(0);
+          const thick = (1 + Math.random() * 1.8).toFixed(1);
+          const delay = (Math.random() * 0.55).toFixed(2);
+          const dur = (0.7 + Math.random() * 0.7).toFixed(2);
+          parts.push(`<span class="splash-streak" style="left:${left}%;height:${height}px;width:${thick}px;animation-duration:${dur}s;animation-delay:${delay}s;"></span>`);
+        }
+        streakLayer.innerHTML = parts.join('');
+      }
+
+      // 3) Kick off the dive
       setTimeout(() => {
-        screen.classList.add('rising');
-      }, 180);
+        screen.classList.add('diving');
+      }, 400);
 
-      // Cleanup: animationend is primary, generous fallback otherwise
+      // 4) Cleanup — animationend is primary, generous fallback otherwise
       let cleaned = false;
       const doCleanup = () => {
         if (cleaned) return;
         cleaned = true;
         screen.style.display = 'none';
-        screen.classList.remove('rising');
-        burst.innerHTML = '';
-        if (bgCopy) bgCopy.classList.remove('fade-out');
+        screen.classList.remove('diving');
+        if (streakLayer) streakLayer.innerHTML = '';
+        if (center) {
+          center.style.opacity = '';
+          center.style.transform = '';
+          center.style.transition = '';
+        }
         if (pendingStartScreen) {
           pendingStartScreen = false;
           showStartScreen();
         }
       };
 
-      screen.addEventListener('animationend', function onRiseEnd(e) {
-        if (e.target === screen && e.animationName === 'splashRiseUp') {
-          screen.removeEventListener('animationend', onRiseEnd);
+      screen.addEventListener('animationend', function onDiveEnd(e) {
+        if (e.target === screen && e.animationName === 'splashDive') {
+          screen.removeEventListener('animationend', onDiveEnd);
           doCleanup();
         }
       });
 
       clearTimeout(splashFinishTimer);
-      splashFinishTimer = setTimeout(doCleanup, 180 + 2300 + 1500);
+      splashFinishTimer = setTimeout(doCleanup, 400 + 1600 + 1500);
     }
 
     function showStartScreen() {
