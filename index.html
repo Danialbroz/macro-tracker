@@ -207,6 +207,168 @@
     #onboardingSuccessOverlay.show .checkmark-check { animation: success-stroke 0.5s cubic-bezier(0.65, 0, 0.45, 1) 0.8s forwards, success-check-pop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) 0.7s forwards; }
     @keyframes success-stroke { 100% { stroke-dashoffset: 0; } }
     @keyframes success-check-pop { 0% { transform: scale(0.7); opacity: 0; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
+
+    /* ===== NEW SCAN OVERLAY STYLES ===== */
+    .scan-overlay {
+      position: fixed; inset: 0; z-index: 2500;
+      background: radial-gradient(ellipse at center, rgba(8, 40, 70, 0.94) 0%, rgba(6, 20, 40, 0.97) 100%);
+      backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+      display: none; align-items: center; justify-content: center;
+      padding: calc(24px + env(safe-area-inset-top)) 24px calc(24px + env(safe-area-inset-bottom));
+      opacity: 0; transition: opacity 0.35s ease;
+    }
+    .scan-overlay.show { display: flex; opacity: 1; }
+
+    .scan-phase {
+      display: none; flex-direction: column; align-items: center; justify-content: center;
+      width: 100%; max-width: 400px; gap: 20px;
+    }
+    .scan-phase.active { display: flex; animation: scanPhaseFadeIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    @keyframes scanPhaseFadeIn {
+      from { opacity: 0; transform: translateY(12px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    /* --- Phase 1: Running stick man + water scan bar --- */
+    .runner-scene { position: relative; width: 100%; height: 140px; display: flex; align-items: flex-end; justify-content: center; overflow: hidden; }
+    .runner-svg { width: 110px; height: 130px; animation: runnerBob 0.32s ease-in-out infinite alternate; }
+    @keyframes runnerBob { from { transform: translateY(0); } to { transform: translateY(-4px); } }
+    .runner-ground {
+      position: absolute; left: 0; right: 0; bottom: 6px; height: 2px;
+      background: repeating-linear-gradient(90deg, rgba(186, 230, 253, 0.7) 0px, rgba(186, 230, 253, 0.7) 8px, transparent 8px, transparent 16px);
+      background-size: 16px 100%;
+      animation: groundScroll 0.32s linear infinite;
+    }
+    @keyframes groundScroll { from { background-position: 0 0; } to { background-position: -16px 0; } }
+
+    .scan-scan-label {
+      font-size: 1.05rem; font-weight: 700; letter-spacing: 0.5px;
+      color: #bae6fd; text-shadow: 0 2px 8px rgba(56, 189, 248, 0.5);
+    }
+    .scan-bar-outer {
+      position: relative; width: 100%; height: 28px; border-radius: 16px;
+      background: rgba(15, 23, 42, 0.6); border: 1px solid rgba(148, 197, 253, 0.35);
+      overflow: hidden; box-shadow: inset 0 1px 2px rgba(0,0,0,0.4), 0 4px 18px rgba(56, 189, 248, 0.15);
+    }
+    .scan-bar-fill {
+      position: relative; height: 100%; width: 0%;
+      background: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #bae6fd, #7dd3fc, #38bdf8, #0369a1);
+      background-size: 300% 100%;
+      animation: waterFlow 2.4s linear infinite;
+      transition: width 0.12s linear;
+      border-radius: 16px;
+      box-shadow: 0 0 16px rgba(56, 189, 248, 0.5);
+    }
+    .scan-bar-text {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; font-size: 0.8rem; color: #ffffff; letter-spacing: 1.5px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.6);
+    }
+
+    /* --- Phase 2: Results with popping image + water macro bars --- */
+    .scan-result-img-wrap {
+      animation: foodPopIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+    @keyframes foodPopIn {
+      0% { opacity: 0; transform: scale(0.2) rotate(-8deg); }
+      60% { opacity: 1; transform: scale(1.12) rotate(3deg); }
+      100% { opacity: 1; transform: scale(1) rotate(0deg); }
+    }
+    .scan-result-img {
+      width: 130px; height: 130px; object-fit: cover; border-radius: 24px;
+      border: 3px solid rgba(125, 211, 252, 0.5);
+      display: block;
+      animation: foodGlow 2.4s ease-in-out infinite;
+      background: rgba(15, 23, 42, 0.5);
+    }
+    @keyframes foodGlow {
+      0%, 100% { box-shadow: 0 8px 32px rgba(56, 189, 248, 0.35), 0 0 0 0 rgba(125, 211, 252, 0); }
+      50% { box-shadow: 0 8px 40px rgba(56, 189, 248, 0.6), 0 0 28px 4px rgba(125, 211, 252, 0.25); }
+    }
+    .scan-result-name {
+      font-size: 1.05rem; font-weight: 700; color: #e0f2fe; text-align: center;
+      text-shadow: 0 2px 10px rgba(56, 189, 248, 0.4);
+      animation: fadeUp 0.5s ease 0.2s both;
+    }
+    @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+    .scan-macro-list { width: 100%; display: flex; flex-direction: column; gap: 14px; }
+
+    .scan-macro-item { width: 100%; animation: fadeUp 0.5s ease both; }
+    .scan-macro-item[data-macro="cal"] { animation-delay: 0.15s; }
+    .scan-macro-item[data-macro="pro"] { animation-delay: 0.3s; }
+    .scan-macro-item[data-macro="carb"] { animation-delay: 0.45s; }
+    .scan-macro-item[data-macro="fat"] { animation-delay: 0.6s; }
+
+    .scan-macro-top {
+      display: flex; align-items: baseline; gap: 8px; margin-bottom: 6px; padding-left: 2px;
+    }
+    .scan-macro-value {
+      font-size: 1.1rem; font-weight: 800; color: #f0f9ff;
+      min-width: 44px; letter-spacing: 0.3px; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
+      font-variant-numeric: tabular-nums;
+    }
+    .scan-macro-label {
+      font-size: 0.78rem; font-weight: 600; letter-spacing: 0.4px; text-transform: uppercase;
+      color: #bae6fd; opacity: 0.8;
+    }
+
+    .scan-macro-bar {
+      position: relative; width: 100%; height: 12px; background: rgba(15, 23, 42, 0.7);
+      border: 1px solid rgba(148, 197, 253, 0.25); border-radius: 8px; overflow: hidden;
+      box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
+    }
+    .scan-macro-fill {
+      height: 100%; width: 0%; border-radius: 8px;
+      background-size: 300% 100%; animation: waterFlow 2.2s linear infinite;
+      transition: width 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      box-shadow: 0 0 10px rgba(125, 211, 252, 0.4);
+    }
+    .scan-macro-fill-cal { background-image: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #38bdf8, #0369a1); box-shadow: 0 0 10px rgba(56, 189, 248, 0.5); }
+    .scan-macro-fill-pro { background-image: linear-gradient(90deg, #15803d, #4ade80, #86efac, #4ade80, #15803d); box-shadow: 0 0 10px rgba(74, 222, 128, 0.5); }
+    .scan-macro-fill-carb { background-image: linear-gradient(90deg, #a16207, #facc15, #fde68a, #facc15, #a16207); box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
+    .scan-macro-fill-fat { background-image: linear-gradient(90deg, #be185d, #f472b6, #f9a8d4, #f472b6, #be185d); box-shadow: 0 0 10px rgba(244, 114, 182, 0.5); }
+
+    .scan-log-btn {
+      margin-top: 8px; width: 100%; padding: 15px;
+      border-radius: 16px; border: 1px solid rgba(74, 222, 128, 0.5);
+      background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(16, 185, 129, 0.35));
+      color: #f0fdf4; font-weight: 800; font-size: 1.02rem; letter-spacing: 0.5px;
+      cursor: pointer; touch-action: manipulation;
+      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35), inset 0 1px 1px rgba(255,255,255,0.15);
+      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
+      transition: transform 0.15s ease, box-shadow 0.2s ease;
+      animation: fadeUp 0.5s ease 0.85s both;
+    }
+    .scan-log-btn:active { transform: scale(0.97); box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5), inset 0 1px 1px rgba(255,255,255,0.15); }
+
+    /* --- Phase 3: Apple Pay style success --- */
+    .scan-success-wrap { display: flex; flex-direction: column; align-items: center; gap: 24px; }
+    .scan-success-svg { width: 130px; height: 130px; overflow: visible; }
+    .scan-success-circle {
+      transform-origin: 50% 50%;
+      transform: scale(0);
+      animation: circlePop 0.55s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, circleGlow 1.6s ease-out 0.6s forwards;
+    }
+    @keyframes circlePop { to { transform: scale(1); } }
+    @keyframes circleGlow {
+      0% { filter: drop-shadow(0 0 0 rgba(74, 222, 128, 0)); }
+      50% { filter: drop-shadow(0 0 28px rgba(74, 222, 128, 0.9)); }
+      100% { filter: drop-shadow(0 0 12px rgba(74, 222, 128, 0.4)); }
+    }
+    .scan-success-check {
+      stroke-dasharray: 60; stroke-dashoffset: 60;
+      animation: checkDraw 0.45s cubic-bezier(0.65, 0, 0.45, 1) 0.45s forwards;
+    }
+    @keyframes checkDraw { to { stroke-dashoffset: 0; } }
+    .scan-success-text {
+      font-size: 1.15rem; font-weight: 700; color: #bbf7d0; text-align: center;
+      text-shadow: 0 2px 16px rgba(74, 222, 128, 0.6);
+      opacity: 0;
+      animation: fadeUp 0.55s ease 0.85s forwards;
+    }
+    /* ===== END NEW SCAN OVERLAY STYLES ===== */
   </style>
 </head>
 <body>
@@ -371,6 +533,108 @@
   <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
   <div id="onboardingSuccessOverlay"><div class="success-card"><svg class="success-checkmark-svg" viewBox="0 0 104 104"><circle class="checkmark-circle" cx="52" cy="52" r="50" fill="none" stroke="#4ade80" stroke-width="5"/><path class="checkmark-check" fill="none" d="M30 54 l14 14 30 -30" stroke="#4ade80" stroke-width="6" stroke-linecap="round"/></svg><h2>Your data has been updated</h2></div></div>
 
+  <!-- ===== NEW SCAN OVERLAY ===== -->
+  <div id="scanOverlay" class="scan-overlay">
+    <div class="scan-phase scan-phase-running active" id="scanPhaseRunning">
+      <div class="runner-scene">
+        <svg class="runner-svg" viewBox="0 0 60 70" aria-hidden="true">
+          <!-- speed lines -->
+          <g stroke="rgba(224, 242, 254, 0.5)" stroke-width="1.6" stroke-linecap="round">
+            <line x1="2" y1="22" x2="11" y2="22">
+              <animate attributeName="opacity" values="0.7;0;0.7" dur="0.4s" repeatCount="indefinite"/>
+            </line>
+            <line x1="0" y1="34" x2="13" y2="34">
+              <animate attributeName="opacity" values="0.3;0;0.3" dur="0.33s" repeatCount="indefinite"/>
+            </line>
+            <line x1="4" y1="46" x2="10" y2="46">
+              <animate attributeName="opacity" values="0.5;0;0.5" dur="0.46s" repeatCount="indefinite"/>
+            </line>
+          </g>
+          <!-- body group -->
+          <g>
+            <!-- head -->
+            <circle cx="32" cy="14" r="8" fill="none" stroke="#e0f2fe" stroke-width="2.5"/>
+            <!-- serious eyebrows (angled inward) -->
+            <line x1="25" y1="10" x2="29" y2="12" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
+            <line x1="39" y1="10" x2="35" y2="12" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
+            <!-- eyes (narrow/serious) -->
+            <circle cx="28.5" cy="15" r="1.3" fill="#e0f2fe"/>
+            <circle cx="35.5" cy="15" r="1.3" fill="#e0f2fe"/>
+            <!-- straight mouth -->
+            <line x1="28" y1="19" x2="36" y2="19" stroke="#e0f2fe" stroke-width="2" stroke-linecap="round"/>
+            <!-- body -->
+            <line x1="32" y1="22" x2="32" y2="40" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+            <!-- back arm -->
+            <g>
+              <line x1="32" y1="26" x2="26" y2="33" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
+              <animateTransform attributeName="transform" type="rotate" values="-15 32 26;22 32 26;-15 32 26" dur="0.32s" repeatCount="indefinite"/>
+            </g>
+            <!-- front arm -->
+            <g>
+              <line x1="32" y1="26" x2="38" y2="33" stroke="#e0f2fe" stroke-width="2.5" stroke-linecap="round"/>
+              <animateTransform attributeName="transform" type="rotate" values="22 32 26;-15 32 26;22 32 26" dur="0.32s" repeatCount="indefinite"/>
+            </g>
+            <!-- back leg -->
+            <g>
+              <line x1="32" y1="40" x2="27" y2="56" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+              <line x1="27" y1="56" x2="23" y2="59" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+              <animateTransform attributeName="transform" type="rotate" values="-28 32 40;28 32 40;-28 32 40" dur="0.32s" repeatCount="indefinite"/>
+            </g>
+            <!-- front leg -->
+            <g>
+              <line x1="32" y1="40" x2="37" y2="56" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+              <line x1="37" y1="56" x2="41" y2="59" stroke="#e0f2fe" stroke-width="3" stroke-linecap="round"/>
+              <animateTransform attributeName="transform" type="rotate" values="28 32 40;-28 32 40;28 32 40" dur="0.32s" repeatCount="indefinite"/>
+            </g>
+          </g>
+        </svg>
+        <div class="runner-ground"></div>
+      </div>
+      <div class="scan-scan-label">Scanning your meal…</div>
+      <div class="scan-bar-outer">
+        <div class="scan-bar-fill" id="scanBarFill"></div>
+        <div class="scan-bar-text" id="scanBarText">0%</div>
+      </div>
+    </div>
+
+    <div class="scan-phase scan-phase-result" id="scanPhaseResult">
+      <div class="scan-result-img-wrap">
+        <img id="scanResultImg" class="scan-result-img" alt="Scanned meal">
+      </div>
+      <div class="scan-result-name" id="scanResultName">Scanned Meal</div>
+      <div class="scan-macro-list">
+        <div class="scan-macro-item" data-macro="cal">
+          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🔥 Calories</span></div>
+          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-cal"></div></div>
+        </div>
+        <div class="scan-macro-item" data-macro="pro">
+          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">💪 Protein</span></div>
+          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro"></div></div>
+        </div>
+        <div class="scan-macro-item" data-macro="carb">
+          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🌾 Carbs</span></div>
+          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-carb"></div></div>
+        </div>
+        <div class="scan-macro-item" data-macro="fat">
+          <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🧈 Fat</span></div>
+          <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
+        </div>
+      </div>
+      <button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button>
+    </div>
+
+    <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
+      <div class="scan-success-wrap">
+        <svg class="scan-success-svg" viewBox="0 0 100 100" aria-hidden="true">
+          <circle class="scan-success-circle" cx="50" cy="50" r="42" fill="#4ade80"/>
+          <path class="scan-success-check" d="M 32 52 L 45 65 L 68 38" fill="none" stroke="#fff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="scan-success-text">Your meal has been logged</div>
+      </div>
+    </div>
+  </div>
+  <!-- ===== END SCAN OVERLAY ===== -->
+
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="document.getElementById('cameraInput').click()">📷 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)"><div class="macro-input-grid"><input type="number" id="foodCal" placeholder="Calories" inputmode="numeric"><input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric"><input type="number" id="foodCarb" placeholder="Carbs (g)" inputmode="numeric"><input type="number" id="foodFat" placeholder="Fat (g)" inputmode="numeric"></div><button class="liquid-btn log-btn" onclick="addEntry()">+ Log Meal</button></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
 
   <script>
@@ -378,6 +642,8 @@
     let GOAL_PRO = 0;
     let lastScanThumb = null;
     let progressTimer = null;
+    let scanProgressTimer = null;         // NEW — timer for the rotating scan bar
+    let currentScanData = null;           // NEW — holds the current scan values until logged
     const todayKey = new Date().toISOString().split('T')[0];
 
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -482,44 +748,179 @@
     async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
 
     // ===== TEST MODE FLAG =====
-    // true  = simulated scan (no API key needed): fills 2500 cal / 200g protein
+    // true  = simulated scan (no API key needed): fills 2500 / 200 / 250 / 80
     // false = calls the real Gemini API below
     const TEST_MODE = true;
     // ==========================
 
+    // ===== NEW SCAN OVERLAY HELPERS =====
+    function playSuccessSound() {
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        const ctx = new AC();
+        const now = ctx.currentTime;
+        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+        notes.forEach((freq, i) => {
+          const start = now + i * 0.07;
+          const dur = 0.5;
+          const osc = ctx.createOscillator(); const g = ctx.createGain();
+          osc.type = 'sine'; osc.frequency.value = freq;
+          g.gain.setValueAtTime(0, start);
+          g.gain.linearRampToValueAtTime(0.12, start + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.001, start + dur);
+          osc.connect(g); g.connect(ctx.destination);
+          osc.start(start); osc.stop(start + dur + 0.05);
+          const osc2 = ctx.createOscillator(); const g2 = ctx.createGain();
+          osc2.type = 'sine'; osc2.frequency.value = freq * 2;
+          g2.gain.setValueAtTime(0, start);
+          g2.gain.linearRampToValueAtTime(0.035, start + 0.01);
+          g2.gain.exponentialRampToValueAtTime(0.001, start + dur * 0.7);
+          osc2.connect(g2); g2.connect(ctx.destination);
+          osc2.start(start); osc2.stop(start + dur + 0.05);
+        });
+        setTimeout(() => { try { ctx.close(); } catch(e){} }, 1600);
+      } catch(e) { console.warn('Audio unavailable:', e); }
+    }
+
+    function animateNumber(el, to, duration, suffix) {
+      const start = performance.now();
+      const update = (now) => {
+        const t = Math.min((now - start) / duration, 1);
+        const eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = Math.round(to * eased) + suffix;
+        if (t < 1) requestAnimationFrame(update);
+      };
+      requestAnimationFrame(update);
+    }
+
+    function showScanOverlay() {
+      const overlay = document.getElementById('scanOverlay');
+      overlay.classList.add('show');
+      document.getElementById('scanPhaseRunning').classList.add('active');
+      document.getElementById('scanPhaseResult').classList.remove('active');
+      document.getElementById('scanPhaseSuccess').classList.remove('active');
+      const fill = document.getElementById('scanBarFill');
+      fill.style.width = '0%';
+      document.getElementById('scanBarText').textContent = '0%';
+      let pct = 0;
+      clearInterval(scanProgressTimer);
+      scanProgressTimer = setInterval(() => {
+        const remaining = 95 - pct;
+        pct += Math.max(remaining * 0.05, 0.35);
+        if (pct >= 95) pct = 95;
+        fill.style.width = pct + '%';
+        document.getElementById('scanBarText').textContent = Math.floor(pct) + '%';
+      }, 100);
+    }
+
+    function showScanResults(data) {
+      currentScanData = data;
+      clearInterval(scanProgressTimer);
+      document.getElementById('scanBarFill').style.width = '100%';
+      document.getElementById('scanBarText').textContent = '100%';
+
+      setTimeout(() => {
+        document.getElementById('scanPhaseRunning').classList.remove('active');
+        document.getElementById('scanPhaseResult').classList.add('active');
+        document.getElementById('scanResultImg').src = lastScanThumb || '';
+        document.getElementById('scanResultName').textContent = data.name || 'Scanned Meal';
+
+        // Reset bars and animate
+        document.querySelectorAll('.scan-macro-item').forEach(item => {
+          item.querySelector('.scan-macro-fill').style.width = '0%';
+          item.querySelector('.scan-macro-value').textContent = '0';
+        });
+
+        const macros = [
+          { key: 'cal', value: data.cal || 0, pct: 88 },
+          { key: 'pro', value: data.pro || 0, pct: 75 },
+          { key: 'carb', value: data.carb || 0, pct: 68 },
+          { key: 'fat', value: data.fat || 0, pct: 55 }
+        ];
+
+        macros.forEach((m, i) => {
+          const item = document.querySelector(`.scan-macro-item[data-macro="${m.key}"]`);
+          const fillBar = item.querySelector('.scan-macro-fill');
+          const valueEl = item.querySelector('.scan-macro-value');
+          setTimeout(() => {
+            fillBar.style.width = m.pct + '%';
+            animateNumber(valueEl, m.value, 1100, '');
+          }, 180 + i * 140);
+        });
+      }, 500);
+    }
+
+    function hideScanOverlay() {
+      clearInterval(scanProgressTimer);
+      document.getElementById('scanOverlay').classList.remove('show');
+    }
+
+    function confirmScanLog() {
+      playSuccessSound();
+      document.getElementById('scanPhaseResult').classList.remove('active');
+      document.getElementById('scanPhaseSuccess').classList.add('active');
+      // Actually log the meal ~0.4s after checkmark draws in
+      setTimeout(() => { try { addEntry(); } catch(e) { console.error('Log failed', e); } }, 400);
+      // Hide overlay once success animation settles
+      setTimeout(() => {
+        document.getElementById('scanOverlay').classList.remove('show');
+        setTimeout(() => {
+          document.getElementById('scanPhaseSuccess').classList.remove('active');
+          document.getElementById('scanPhaseRunning').classList.add('active');
+        }, 300);
+      }, 2200);
+    }
+    // ===== END NEW SCAN OVERLAY HELPERS =====
+
     async function analyzePhoto(event) {
       const file = event.target.files[0]; if (!file) return;
+      event.target.value = '';
       const statusEl = document.getElementById('status'); statusEl.style.display = 'none';
 
-      // ===== TEST MODE: fake scan, plays the full animation =====
-      if (TEST_MODE) {
-        startProgress();
-        try {
-          const thumb = await compressImage(file, 160, 0.5); lastScanThumb = 'data:image/jpeg;base64,' + thumb; document.getElementById('scannedPreviewImg').src = lastScanThumb; document.getElementById('scannedPreviewWrap').style.display = 'block';
-          await new Promise(resolve => setTimeout(resolve, 3500));
-          document.getElementById('foodName').value = 'Test Scan Meal';
-          document.getElementById('foodCal').value = 2500;
-          document.getElementById('foodPro').value = 200;
-          document.getElementById('foodCarb').value = 0;
-          document.getElementById('foodFat').value = 0;
-          finishProgress(true); const successAnim = document.getElementById('scanSuccessAnimation'); successAnim.classList.add('show'); setTimeout(() => successAnim.classList.remove('show'), 2500);
-        } catch (err) { console.error(err); finishProgress(false); statusEl.textContent = '❌ Error analyzing image. Check API key.'; statusEl.style.display = 'block'; }
-        event.target.value = '';
-        return;
-      }
-      // ===== END TEST MODE =====
+      showScanOverlay();
 
-      const apiKey = localStorage.getItem('gemini_key'); if (!apiKey) { alert('AI scanning requires a Gemini API key. Please add one in the settings menu (⚙️).'); return; }
-      startProgress();
       try {
-        const base64Image = await compressImage(file, 800, 0.7); const thumb = await compressImage(file, 160, 0.5); lastScanThumb = 'data:image/jpeg;base64,' + thumb; document.getElementById('scannedPreviewImg').src = lastScanThumb; document.getElementById('scannedPreviewWrap').style.display = 'block';
-        const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [ { text: 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}' }, { inline_data: { mime_type: 'image/jpeg', data: base64Image } } ] }], generationConfig: { responseMimeType: "application/json" } }) });
-        if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
-        const data = await res.json(); const rawText = data.candidates[0].content.parts[0].text; const parsed = JSON.parse(rawText);
-        document.getElementById('foodName').value = parsed.name || 'Scanned Meal'; document.getElementById('foodCal').value = parsed.cal || 0; document.getElementById('foodPro').value = parsed.pro || 0; document.getElementById('foodCarb').value = parsed.carb || 0; document.getElementById('foodFat').value = parsed.fat || 0;
-        finishProgress(true); const successAnim = document.getElementById('scanSuccessAnimation'); successAnim.classList.add('show'); setTimeout(() => successAnim.classList.remove('show'), 2500);
-      } catch (err) { console.error(err); finishProgress(false); statusEl.textContent = '❌ Error analyzing image. Check API key.'; statusEl.style.display = 'block'; }
-      event.target.value = '';
+        let data;
+
+        if (TEST_MODE) {
+          // Fake 2.6s "analysis" so the running animation plays out
+          const thumb = await compressImage(file, 160, 0.5);
+          lastScanThumb = 'data:image/jpeg;base64,' + thumb;
+          await new Promise(r => setTimeout(r, 2600));
+          data = { name: 'Test Scan Meal', cal: 2500, pro: 200, carb: 250, fat: 80 };
+        } else {
+          const apiKey = localStorage.getItem('gemini_key');
+          if (!apiKey) {
+            hideScanOverlay();
+            alert('AI scanning requires a Gemini API key. Please add one in the settings menu (⚙️).');
+            return;
+          }
+          const base64Image = await compressImage(file, 800, 0.7);
+          const thumb = await compressImage(file, 160, 0.5);
+          lastScanThumb = 'data:image/jpeg;base64,' + thumb;
+          const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ contents: [{ parts: [ { text: 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}' }, { inline_data: { mime_type: 'image/jpeg', data: base64Image } } ] }], generationConfig: { responseMimeType: "application/json" } }) });
+          if (!res.ok) throw new Error(`API Error: ${res.statusText}`);
+          const resData = await res.json();
+          const rawText = resData.candidates[0].content.parts[0].text;
+          const parsed = JSON.parse(rawText);
+          data = { name: parsed.name || 'Scanned Meal', cal: parsed.cal || 0, pro: parsed.pro || 0, carb: parsed.carb || 0, fat: parsed.fat || 0 };
+        }
+
+        // Populate the form inputs so addEntry() picks up the values
+        document.getElementById('foodName').value = data.name;
+        document.getElementById('foodCal').value = data.cal;
+        document.getElementById('foodPro').value = data.pro;
+        document.getElementById('foodCarb').value = data.carb;
+        document.getElementById('foodFat').value = data.fat;
+
+        showScanResults(data);
+      } catch (err) {
+        console.error(err);
+        hideScanOverlay();
+        statusEl.textContent = '❌ Error analyzing image. Check API key.';
+        statusEl.style.display = 'block';
+      }
     }
     function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey] || []; }
     function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
