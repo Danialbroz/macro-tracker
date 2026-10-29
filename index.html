@@ -89,6 +89,19 @@
       filter: drop-shadow(0 0 5px #39ff88) drop-shadow(0 0 18px rgba(57,255,136,0.85));
       animation: neonBreathe 2.6s ease-in-out infinite;
     }
+
+    /* NEW: calories inside the expected range (90%–100% of goal) get the same green outline as protein */
+    #calBox.target-reached {
+      border-color: rgba(57, 255, 136, 0.8);
+      box-shadow: 0 0 0 1px rgba(57,255,136,0.3), 0 0 26px rgba(57,255,136,0.32), inset 0 0 26px rgba(57,255,136,0.10);
+      background: rgba(57,255,136,0.05);
+    }
+    #calBox.target-reached #calArc { stroke: #39ff88; }
+    #calBox.target-reached .gauge-svg {
+      filter: drop-shadow(0 0 5px #39ff88) drop-shadow(0 0 18px rgba(57,255,136,0.85));
+      animation: neonBreathe 2.6s ease-in-out infinite;
+    }
+
     @keyframes neonBreathe { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
     /* ===== END NEW METER STYLES ===== */
 
@@ -292,6 +305,9 @@
     .save-key-btn { background: rgba(56,189,248,0.25); color: #f0f9ff; font-weight: 700; border: 1px solid rgba(186,230,253,0.35); padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); touch-action: manipulation; }
     .cancel-key-btn { background: rgba(255,255,255,0.08); color: #e0f2fe; font-weight: 600; border: 1px solid rgba(255,255,255,0.12); padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0; touch-action: manipulation; }
 
+    /* NEW: edit-food card drifts up and down, same underwater motion as the meal-updated popup */
+    #editFoodCard { animation: popIn 0.3s ease, bob 4s ease-in-out 0.3s infinite; }
+
     #onboardingSuccessOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.4s ease; }
     #onboardingSuccessOverlay.show { display: flex; opacity: 1; }
     #onboardingSuccessOverlay .success-card { display: flex; flex-direction: column; align-items: center; justify-content: center; transform: scale(0.8); opacity: 0; }
@@ -312,8 +328,17 @@
     .thumbs-stickman { width: 140px; height: 140px; overflow: visible; }
     .thumbs-stickman .tk-line { fill: none; stroke: #f8fafc; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
     .thumbs-stickman .tk-fill { fill: #f8fafc; }
-    .thumbs-stickman .tk-wink { animation: winkPop 1.6s ease-in-out infinite; transform-box: fill-box; transform-origin: center; }
-    @keyframes winkPop { 0%, 80%, 100% { transform: scaleY(1); } 88% { transform: scaleY(0.15); } }
+    /* NEW: eye starts wide open, then closes smoothly into a wink */
+    .thumbs-stickman .tk-eye-open { transform-box: fill-box; transform-origin: center; animation: eyeOpenToWink 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    .thumbs-stickman .tk-wink { transform-box: fill-box; transform-origin: center; opacity: 0; animation: winkFadeIn 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+    @keyframes eyeOpenToWink {
+      0%, 25%   { transform: scaleY(1); opacity: 1; }
+      45%, 100% { transform: scaleY(0.06); opacity: 0; }
+    }
+    @keyframes winkFadeIn {
+      0%, 32%   { opacity: 0; }
+      52%, 100% { opacity: 1; }
+    }
     .edit-success-text { font-size: 1.25rem; font-weight: 700; color: #bbf7d0; text-shadow: 0 2px 16px rgba(74, 222, 128, 0.55); margin: 0; }
     .edit-success-sub { font-size: 0.82rem; color: #bae6fd; opacity: 0.8; margin: 0; }
     /* ===== END thumbs-up ===== */
@@ -743,7 +768,7 @@
 
   <!-- NEW: edit food modal -->
   <div id="editFoodModal" class="cancel-modal-overlay">
-    <div class="glass-modal-card">
+    <div class="glass-modal-card" id="editFoodCard">
       <h3>✏️ Edit this food</h3>
       <p class="api-key-sub">Update the values for this meal.</p>
       <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">CALORIES</label>
@@ -776,9 +801,10 @@
       <svg class="thumbs-stickman" viewBox="0 0 120 120" aria-hidden="true">
         <!-- head -->
         <circle cx="52" cy="42" r="18" class="tk-line"/>
-        <!-- winking eye (closed, animated) -->
+        <!-- left eye: wide open first, then smoothly closes into a wink -->
+        <ellipse class="tk-fill tk-eye-open" cx="45" cy="36.8" rx="3.2" ry="3.8"/>
         <path class="tk-line tk-wink" d="M40 38 q5 -5 10 0"/>
-        <!-- open eye -->
+        <!-- right eye stays open -->
         <circle cx="62" cy="38" r="2.6" class="tk-fill"/>
         <!-- smile -->
         <path class="tk-line" d="M43 49 q9 9 18 0"/>
@@ -1327,10 +1353,13 @@
       editingFoodId = null;
       showEditSuccess();
     }
+    let editWinkTimer = null;
     function showEditSuccess() {
       const ov = document.getElementById('editSuccessOverlay');
       ov.classList.add('show');
-      playWinkSound();
+      // NEW: eyes stay open first — the wink (and its sound) lands about 1s in
+      clearTimeout(editWinkTimer);
+      editWinkTimer = setTimeout(playWinkSound, 1050);
       setTimeout(() => { ov.classList.remove('show'); }, 2400);
     }
 
@@ -1351,7 +1380,7 @@
     }
     // ===== END food options menu =====
 
-    function renderGauge(type, current, goal) { const pct = goal > 0 ? clamp(current / goal * 100, 0, 100) : 0; const angle = -90 + pct * 1.8; const needleGroup = document.getElementById(type + 'Needle'); needleGroup.style.transform = `rotate(${angle}deg)`; const needleLine = needleGroup.querySelector('line'); document.getElementById(type + 'Text').textContent = `${current} / ${goal}${type === 'pro' ? 'g' : ''}`; const box = document.getElementById(type + 'Box'); const rawPct = goal > 0 ? (current / goal * 100) : 0; if (type === 'pro') { if (rawPct >= 100) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else { box.classList.remove('target-reached', 'over-limit'); needleLine.setAttribute('stroke', '#cbd5e1'); } } else { if (rawPct > 100) { box.classList.add('over-limit'); box.classList.remove('target-reached'); needleLine.setAttribute('stroke', '#f87171'); } else { box.classList.remove('over-limit', 'target-reached'); needleLine.setAttribute('stroke', '#cbd5e1'); } } }
+    function renderGauge(type, current, goal) { const pct = goal > 0 ? clamp(current / goal * 100, 0, 100) : 0; const angle = -90 + pct * 1.8; const needleGroup = document.getElementById(type + 'Needle'); needleGroup.style.transform = `rotate(${angle}deg)`; const needleLine = needleGroup.querySelector('line'); document.getElementById(type + 'Text').textContent = `${current} / ${goal}${type === 'pro' ? 'g' : ''}`; const box = document.getElementById(type + 'Box'); const rawPct = goal > 0 ? (current / goal * 100) : 0; if (type === 'pro') { if (rawPct >= 100) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else { box.classList.remove('target-reached', 'over-limit'); needleLine.setAttribute('stroke', '#cbd5e1'); } } else { const inRange = rawPct >= 90 && rawPct <= 100; if (inRange) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else if (rawPct > 100) { box.classList.add('over-limit'); box.classList.remove('target-reached'); needleLine.setAttribute('stroke', '#f87171'); } else { box.classList.remove('over-limit', 'target-reached'); needleLine.setAttribute('stroke', '#cbd5e1'); } } }
     function render() {
       const logs = getLogs(); let totalCal = 0, totalPro = 0; const listEl = document.getElementById('logList'); listEl.innerHTML = ''; if (logs.length === 0) { listEl.innerHTML = `<div class="empty-state">🍽️ No meals logged yet today</div>`; }
       logs.forEach(item => {
