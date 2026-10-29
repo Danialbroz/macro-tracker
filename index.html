@@ -647,86 +647,7 @@
       animation: fadeUp 0.55s ease 0.85s forwards;
     }
 
-    /* ========== NEW: SPLASH — SHORE + DIVE TRANSITION ========== */
-    .splash-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      height: 100dvh;
-      z-index: 6000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      overflow: hidden;
-      background: linear-gradient(180deg, #0f172a 0%, #082f49 100%);
-    }
-    .splash-screen.diving {
-      animation: splashDive 1.6s cubic-bezier(0.55, 0.06, 0.68, 0.19) forwards;
-      will-change: transform, opacity;
-    }
-    @keyframes splashDive {
-      0%   { transform: translateY(0) scale(1); opacity: 1; }
-      15%  { transform: translateY(-6vh) scale(0.97); opacity: 1; }
-      100% { transform: translateY(130vh) scale(1.15); opacity: 0.85; }
-    }
-
-    /* subtle shore / surface hint: soft sunlight glow near the top */
-    .splash-surface-glow {
-      position: absolute;
-      top: -180px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 460px;
-      height: 460px;
-      border-radius: 50%;
-      background: radial-gradient(circle,
-        rgba(255, 237, 213, 0.18) 0%,
-        rgba(251, 191, 36, 0.09) 25%,
-        rgba(56, 189, 248, 0) 65%);
-      pointer-events: none;
-      z-index: 1;
-      animation: sunPulse 4.5s ease-in-out infinite;
-    }
-    @keyframes sunPulse {
-      0%, 100% { opacity: 0.85; transform: translateX(-50%) scale(1); }
-      50%      { opacity: 1;    transform: translateX(-50%) scale(1.08); }
-    }
-
-    .splash-bg-copy {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      pointer-events: none;
-    }
-
-    .splash-center {
-      position: relative;
-      z-index: 2;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 34px;
-      padding: 24px;
-      text-align: center;
-    }
-    .splash-float-group {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
-      animation: splashFloat 5.2s ease-in-out infinite;
-    }
-    @keyframes splashFloat {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-14px); }
-    }
-
+    /* ========== APP LOGO (shared with start screen) ========== */
     .app-logo {
       display: block;
       filter: drop-shadow(0 10px 28px rgba(56, 189, 248, 0.45));
@@ -737,97 +658,9 @@
       display: block;
       overflow: visible;
     }
-    .splash-logo { width: 140px; height: 140px; }
     .start-logo { width: 108px; height: 108px; }
 
-    .splash-title {
-      font-size: 1.32rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-      line-height: 1.4;
-      color: #e0f2fe;
-      max-width: 300px;
-      text-shadow: 0 2px 14px rgba(56, 189, 248, 0.55), 0 0 30px rgba(56, 189, 248, 0.25);
-    }
-
-    .splash-progress-wrap {
-      position: relative;
-      width: min(72vw, 260px);
-      height: 46px;
-      display: flex;
-      align-items: center;
-    }
-    .splash-progress-track {
-      position: relative;
-      width: 100%;
-      height: 18px;
-      border-radius: 10px;
-      background: rgba(15, 23, 42, 0.75);
-      border: 1px solid rgba(148, 197, 253, 0.35);
-      overflow: hidden;
-      box-shadow: inset 0 1px 2px rgba(0,0,0,0.5), 0 4px 18px rgba(56, 189, 248, 0.15);
-    }
-    .splash-progress-fill {
-      position: relative;
-      height: 100%;
-      width: 0%;
-      border-radius: 10px;
-      background: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #bae6fd, #7dd3fc, #38bdf8, #0369a1);
-      background-size: 300% 100%;
-      animation: waterFlow 2.4s linear infinite;
-      box-shadow: 0 0 14px rgba(56, 189, 248, 0.6);
-    }
-    .splash-fish {
-      position: absolute;
-      top: 50%;
-      left: 27px;
-      width: 54px;
-      height: 34px;
-      transform: translate(-50%, -50%);
-      z-index: 3;
-      pointer-events: none;
-      filter: drop-shadow(0 0 10px rgba(251, 146, 60, 0.55));
-      animation: fishWiggle 0.65s ease-in-out infinite alternate;
-    }
-    .splash-fish svg { width: 100%; height: 100%; display: block; overflow: visible; }
-    @keyframes fishWiggle {
-      0%   { transform: translate(-50%, -50%) rotate(-7deg); }
-      100% { transform: translate(-50%, -50%) rotate(7deg); }
-    }
-
-    /* NEW: water speed streaks that rush UP as we dive DOWN */
-    .splash-streaks {
-      position: absolute;
-      inset: 0;
-      overflow: hidden;
-      pointer-events: none;
-      z-index: 3;
-      opacity: 0;
-      transition: opacity 0.35s ease;
-    }
-    .splash-screen.diving .splash-streaks { opacity: 1; }
-    .splash-streak {
-      position: absolute;
-      bottom: -60px;
-      border-radius: 2px;
-      background: linear-gradient(180deg,
-        rgba(255, 255, 255, 0) 0%,
-        rgba(186, 230, 253, 0.85) 25%,
-        rgba(255, 255, 255, 1) 50%,
-        rgba(186, 230, 253, 0.85) 75%,
-        rgba(255, 255, 255, 0) 100%);
-      filter: blur(0.4px);
-      opacity: 0;
-      animation: streakRush linear forwards;
-      will-change: transform, opacity;
-    }
-    @keyframes streakRush {
-      0%   { transform: translateY(0); opacity: 0; }
-      10%  { opacity: 1; }
-      100% { transform: translateY(-200vh); opacity: 0; }
-    }
-    /* ========== END SPLASH DIVE ========== */
-
+    /* ========== NEW USER START SCREEN ========== */
     .start-overlay {
       position: fixed;
       inset: 0;
@@ -922,9 +755,638 @@
       border-color: rgba(125, 211, 252, 0.55);
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 26px rgba(56, 189, 248, 0.45);
     }
+
+    /* ========== INTRO: TROPICAL BEACH → OCEAN DIVE ========== */
+    #intro-root {
+      position: fixed;
+      inset: 0;
+      z-index: 9999;
+      overflow: hidden;
+      background: linear-gradient(180deg, #6ec6ff 0%, #a8d8ea 100%);
+      will-change: opacity;
+    }
+
+    .intro-world {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 300vh;
+      will-change: transform;
+      pointer-events: none;
+    }
+
+    .intro-layer {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      pointer-events: none;
+      will-change: transform;
+    }
+
+    .intro-layer--sky {
+      height: 100vh;
+      background: linear-gradient(180deg,
+        #6ec6ff 0%,
+        #a8d8ea 35%,
+        #ffd6a5 80%,
+        #ffb88c 100%);
+      z-index: 1;
+    }
+
+    .intro-sun {
+      position: absolute;
+      top: 14vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: clamp(80px, 12vw, 130px);
+      height: clamp(80px, 12vw, 130px);
+      border-radius: 50%;
+      background: radial-gradient(circle,
+        #fff8e7 0%,
+        #ffe4a0 40%,
+        #ffc93c 62%,
+        #ffb700 82%,
+        rgba(255,183,0,0) 100%);
+      box-shadow: 0 0 80px 30px rgba(255,200,60,0.5);
+      animation: intro-sun-pulse 6s ease-in-out infinite;
+      z-index: 2;
+    }
+    @keyframes intro-sun-pulse {
+      0%, 100% { transform: translateX(-50%) scale(1);    box-shadow: 0 0 80px  30px rgba(255,200,60,0.5); }
+      50%      { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 100px 40px rgba(255,200,60,0.6); }
+    }
+
+    .intro-cloud {
+      position: absolute;
+      background: #ffffff;
+      border-radius: 100px;
+      opacity: 0.85;
+      filter: blur(1px);
+      box-shadow: 0 4px 20px rgba(255,255,255,0.5);
+    }
+    .intro-cloud::before,
+    .intro-cloud::after {
+      content: "";
+      position: absolute;
+      background: #ffffff;
+      border-radius: 50%;
+    }
+    .intro-cloud--1 {
+      top: 20vh; left: -10%;
+      width: 160px; height: 40px;
+      animation: intro-cloud-drift 60s linear infinite;
+    }
+    .intro-cloud--1::before { width: 70px;  height: 70px;  left: 20px;  top: -30px; }
+    .intro-cloud--1::after  { width: 90px;  height: 90px;  right: 20px; top: -40px; }
+    .intro-cloud--2 {
+      top: 30vh; left: -15%;
+      width: 220px; height: 50px;
+      opacity: 0.7;
+      animation: intro-cloud-drift 80s linear infinite 10s;
+    }
+    .intro-cloud--2::before { width: 100px; height: 100px; left: 30px;  top: -45px; }
+    .intro-cloud--2::after  { width: 130px; height: 130px; right: 30px; top: -55px; }
+    .intro-cloud--3 {
+      top: 12vh; left: -8%;
+      width: 120px; height: 30px;
+      opacity: 0.6;
+      animation: intro-cloud-drift 45s linear infinite 5s;
+    }
+    .intro-cloud--3::before { width: 55px; height: 55px; left: 15px;  top: -25px; }
+    .intro-cloud--3::after  { width: 70px; height: 70px; right: 15px; top: -30px; }
+    @keyframes intro-cloud-drift {
+      from { transform: translateX(0); }
+      to   { transform: translateX(calc(100vw + 320px)); }
+    }
+
+    .intro-layer--horizon {
+      top: 75vh;
+      height: 20vh;
+      background: linear-gradient(180deg, #4aa3d4 0%, #2e7bb0 100%);
+      z-index: 2;
+    }
+
+    .intro-layer--water {
+      top: 90vh;
+      height: 210vh;
+      background: linear-gradient(180deg,
+        #4ec5d4 0%,
+        #3aa8c9 10%,
+        #2a8bb0 25%,
+        #1d6e99 45%,
+        #0e4a72 70%,
+        #082f49 100%);
+      z-index: 3;
+    }
+
+    .intro-layer--rays {
+      top: 90vh;
+      height: 130vh;
+      z-index: 4;
+    }
+    .intro-rays-svg { width: 100%; height: 100%; display: block; }
+    .intro-rays-svg g { animation: intro-rays-sway 8s ease-in-out infinite; transform-origin: center top; }
+    @keyframes intro-rays-sway {
+      0%, 100% { opacity: 0.28; transform: skewX(-2deg); }
+      50%      { opacity: 0.45; transform: skewX( 2deg); }
+    }
+
+    .intro-layer--beach {
+      top: 85vh;
+      height: 20vh;
+      z-index: 5;
+    }
+    .intro-beach-svg { width: 100%; height: 100%; display: block; }
+
+    .intro-layer--palms {
+      top: 45vh;
+      height: 55vh;
+      z-index: 6;
+    }
+    .intro-palms-svg { width: 100%; height: 100%; display: block; }
+    .intro-palm-fronds { animation: intro-palm-sway 5s ease-in-out infinite; }
+    @keyframes intro-palm-sway {
+      0%, 100% { transform: rotate(-2deg); }
+      50%      { transform: rotate(2deg); }
+    }
+
+    .intro-layer--waves {
+      top: 83vh;
+      height: 10vh;
+      z-index: 6;
+    }
+    .intro-waves-svg { width: 100%; height: 100%; display: block; }
+    .intro-wave--1 { animation: intro-wave-shift1 4s ease-in-out infinite; }
+    .intro-wave--2 { animation: intro-wave-shift2 5s ease-in-out infinite; }
+    .intro-wave--3 { animation: intro-wave-shift3 6s ease-in-out infinite; }
+    @keyframes intro-wave-shift1 { 0%,100% { transform: translateX(0); }  50% { transform: translateX(-30px); } }
+    @keyframes intro-wave-shift2 { 0%,100% { transform: translateX(0); }  50% { transform: translateX( 30px); } }
+    @keyframes intro-wave-shift3 { 0%,100% { transform: translateX(0); }  50% { transform: translateX(-20px); } }
+
+    .intro-layer--boat {
+      top: 75vh;
+      height: 15vh;
+      z-index: 6;
+    }
+    .intro-boat-svg {
+      position: absolute;
+      left: 65%;
+      bottom: 0;
+      width: clamp(80px, 10vw, 120px);
+      height: auto;
+      transform-origin: center bottom;
+      animation: intro-boat-bob 3s ease-in-out infinite;
+    }
+    @keyframes intro-boat-bob {
+      0%, 100% { transform: rotate(-3deg) translateY(0); }
+      50%      { transform: rotate( 3deg) translateY(-6px); }
+    }
+
+    .intro-fish {
+      position: absolute;
+      width: 60px;
+      height: 30px;
+      background: currentColor;
+      clip-path: polygon(0 50%, 20% 20%, 40% 20%, 70% 0%, 100% 50%, 70% 100%, 40% 80%, 20% 80%);
+    }
+    .intro-layer--fish-far { top: 105vh; height: 80vh; z-index: 4; }
+    .intro-fish--far-1 {
+      top: 20%; left: 10%; color: #0f4a72; opacity: 0.4;
+      filter: blur(0.5px);
+      animation: intro-fish-rtl 20s linear infinite;
+      transform: scale(0.8);
+    }
+    .intro-fish--far-2 {
+      top: 45%; left: 60%; color: #0f4a72; opacity: 0.4;
+      filter: blur(0.5px);
+      animation: intro-fish-ltr 25s linear infinite;
+      transform: scaleX(-1) scale(0.9);
+    }
+    .intro-fish--far-3 {
+      top: 70%; left: 30%; color: #0f4a72; opacity: 0.4;
+      filter: blur(0.5px);
+      animation: intro-fish-rtl 18s linear infinite 5s;
+      transform: scale(0.7);
+    }
+    @keyframes intro-fish-rtl { from { transform: translateX(0) scale(0.8); }            to { transform: translateX(-120vw) scale(0.8); } }
+    @keyframes intro-fish-ltr { from { transform: translateX(0) scaleX(-1) scale(0.9); }  to { transform: translateX(120vw)  scaleX(-1) scale(0.9); } }
+
+    .intro-layer--fish-near { top: 130vh; height: 80vh; z-index: 6; }
+    .intro-fish--near-1 {
+      top: 30%; left: 20%; color: #fbbf24; opacity: 0.7;
+      transform: scale(1.2);
+      filter: drop-shadow(0 0 8px rgba(251,191,36,0.3));
+      animation: intro-fish-rtl-near 12s linear infinite;
+    }
+    .intro-fish--near-2 {
+      top: 60%; left: 70%; color: #f87171; opacity: 0.8;
+      transform: scaleX(-1) scale(1.1);
+      filter: drop-shadow(0 0 8px rgba(248,113,113,0.3));
+      animation: intro-fish-ltr-near 15s linear infinite 3s;
+    }
+    @keyframes intro-fish-rtl-near { from { transform: translateX(0) scale(1.2); }            to { transform: translateX(-120vw) scale(1.2); } }
+    @keyframes intro-fish-ltr-near { from { transform: translateX(0) scaleX(-1) scale(1.1); }  to { transform: translateX(120vw)  scaleX(-1) scale(1.1); } }
+
+    .intro-layer--bubbles { top: 90vh; height: 200vh; z-index: 5; }
+    .intro-bubble {
+      position: absolute;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%,
+        rgba(255,255,255,0.9)   0%,
+        rgba(186,230,253,0.5)  20%,
+        rgba(125,211,252,0.25) 60%,
+        rgba(56,189,248,0.05) 100%);
+      border: 1px solid rgba(186,230,253,0.5);
+      box-shadow: inset -1px -1px 2px rgba(56,189,248,0.2);
+      opacity: 0;
+      animation: intro-bubble-rise linear infinite;
+      will-change: transform, opacity;
+    }
+    @keyframes intro-bubble-rise {
+      0%   { transform: translate(0, 0) scale(1);                     opacity: 0; }
+      10%  { opacity: 0.9; }
+      90%  { opacity: 0.9; }
+      100% { transform: translate(var(--intro-drift, 0px), -100vh) scale(1.1); opacity: 0; }
+    }
+
+    .intro-layer--seaweed { top: 240vh; height: 60vh; z-index: 7; }
+    .intro-seaweed-svg { width: 100%; height: 100%; display: block; }
+    .intro-seaweed-shape { animation: intro-seaweed-sway 4s ease-in-out infinite; }
+    .intro-seaweed-shape--2 { animation-delay: 0.5s; }
+    .intro-seaweed-shape--3 { animation-delay: 1.0s; }
+    .intro-seaweed-shape--4 { animation-delay: 1.5s; }
+    @keyframes intro-seaweed-sway {
+      0%, 100% { transform: rotate(-3deg) skewX(-2deg); }
+      50%      { transform: rotate( 3deg) skewX( 2deg); }
+    }
+
+    .intro-layer--seabed {
+      top: 260vh;
+      height: 40vh;
+      background: linear-gradient(180deg,
+        rgba(15,23,42,0) 0%,
+        rgba(15,23,42,0.6) 40%,
+        #0f172a 100%);
+      z-index: 8;
+    }
+
+    .intro-ui {
+      position: absolute;
+      top: 8vh;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      z-index: 20;
+      pointer-events: none;
+      transition: opacity 0.6s ease;
+    }
+    .intro-logo {
+      width: clamp(70px, 10vw, 100px);
+      height: clamp(70px, 10vw, 100px);
+      filter: drop-shadow(0 8px 20px rgba(56,189,248,0.5));
+      animation: intro-logo-float 4s ease-in-out infinite;
+    }
+    .intro-logo svg { width: 100%; height: 100%; display: block; }
+    @keyframes intro-logo-float {
+      0%, 100% { transform: translateY(0); }
+      50%      { transform: translateY(-8px); }
+    }
+    .intro-title {
+      font-size: clamp(1.2rem, 4vw, 1.9rem);
+      font-weight: 800;
+      letter-spacing: 0.4px;
+      color: #ffffff;
+      text-align: center;
+      white-space: nowrap;
+      text-shadow:
+        0 2px 12px rgba(56,189,248,0.6),
+        0 0 30px rgba(56,189,248,0.3);
+    }
+
+    .intro-progress-wrap {
+      position: absolute;
+      bottom: 8vh;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(72vw, 320px);
+      z-index: 20;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      pointer-events: none;
+      transition: opacity 0.4s ease;
+    }
+    .intro-progress-track {
+      position: relative;
+      width: 100%;
+      height: 10px;
+      border-radius: 6px;
+      background: rgba(255,255,255,0.25);
+      border: 1px solid rgba(255,255,255,0.5);
+      overflow: hidden;
+      box-shadow:
+        inset 0 1px 2px rgba(0,0,0,0.2),
+        0 2px 12px rgba(56,189,248,0.3);
+    }
+    .intro-progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: 6px;
+      background: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #bae6fd);
+      background-size: 200% 100%;
+      animation: intro-progress-shine 1.5s linear infinite;
+      transition: width 0.15s linear;
+      box-shadow: 0 0 12px rgba(56,189,248,0.6);
+    }
+    @keyframes intro-progress-shine {
+      0%   { background-position: 100% 50%; }
+      100% { background-position: -100% 50%; }
+    }
+    .intro-percentage {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 1.5px;
+      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .intro-skip {
+      position: absolute;
+      bottom: 8vh;
+      right: 5vw;
+      z-index: 20;
+      background: rgba(255,255,255,0.15);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255,255,255,0.3);
+      color: #ffffff;
+      font-size: 0.8rem;
+      font-weight: 600;
+      font-family: inherit;
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.2s ease, transform 0.15s ease, opacity 0.4s ease;
+      touch-action: manipulation;
+    }
+    .intro-skip:hover  { background: rgba(255,255,255,0.25); }
+    .intro-skip:active { transform: scale(0.95); }
+
+    .intro-water-crossing {
+      position: absolute;
+      inset: 0;
+      z-index: 15;
+      pointer-events: none;
+      opacity: 0;
+      overflow: hidden;
+      transition: opacity 0.4s ease;
+    }
+    .intro-water-crossing-wave {
+      position: absolute;
+      left: 0; right: 0;
+      top: 50%;
+      height: 4px;
+      transform: translateY(-50%);
+      background: linear-gradient(90deg,
+        transparent 0%,
+        rgba(255,255,255,0.9) 15%,
+        rgba(186,230,253,1)   50%,
+        rgba(255,255,255,0.9) 85%,
+        transparent 100%);
+      filter: blur(2px);
+      box-shadow: 0 0 20px 6px rgba(186,230,253,0.7);
+    }
+    .intro-water-crossing-splash {
+      position: absolute;
+      top: 50%; left: 50%;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      transform: translate(-50%, -50%) scale(0.3);
+      background: radial-gradient(circle,
+        rgba(255,255,255,0.6) 0%,
+        rgba(186,230,253,0.3) 20%,
+        rgba(56,189,248,0.15) 40%,
+        transparent 70%);
+      filter: blur(8px);
+      opacity: 0;
+    }
+    .intro-water-crossing.active .intro-water-crossing-splash {
+      animation: intro-splash-pulse 1.2s ease-out;
+    }
+    @keyframes intro-splash-pulse {
+      0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
+      30%  { opacity: 1; }
+      100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
+    }
+
+    .intro-color-tint {
+      position: absolute;
+      inset: 0;
+      z-index: 12;
+      pointer-events: none;
+      background: #0f172a;
+      opacity: 0;
+      transition: opacity 0.15s linear;
+    }
+
+    @media (max-width: 640px) {
+      .intro-ui { top: 6vh; }
+      .intro-progress-wrap { bottom: 6vh; width: 80vw; }
+      .intro-skip { bottom: 6vh; right: 4vw; font-size: 0.75rem; padding: 6px 12px; }
+      .intro-cloud--2 { display: none; }
+      .intro-boat-svg { left: 55%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .intro-logo,
+      .intro-sun,
+      .intro-cloud,
+      .intro-boat-svg,
+      .intro-wave--1,
+      .intro-wave--2,
+      .intro-wave--3,
+      .intro-fish,
+      .intro-seaweed-shape,
+      .intro-rays-svg g,
+      .intro-progress-fill,
+      .intro-palm-fronds { animation: none !important; }
+      .intro-bubble { animation: none !important; opacity: 0.4 !important; }
+    }
+    /* ========== END INTRO ========== */
   </style>
 </head>
 <body>
+
+  <!-- ========== INTRO: TROPICAL BEACH → OCEAN DIVE ========== -->
+  <div id="intro-root" aria-hidden="true">
+    <div class="intro-world" id="intro-world">
+
+      <div class="intro-layer intro-layer--sky">
+        <div class="intro-sun"></div>
+        <div class="intro-cloud intro-cloud--1"></div>
+        <div class="intro-cloud intro-cloud--2"></div>
+        <div class="intro-cloud intro-cloud--3"></div>
+      </div>
+
+      <div class="intro-layer intro-layer--horizon"></div>
+      <div class="intro-layer intro-layer--water"></div>
+
+      <div class="intro-layer intro-layer--rays">
+        <svg class="intro-rays-svg" viewBox="0 0 1440 800" preserveAspectRatio="none" aria-hidden="true">
+          <defs>
+            <linearGradient id="intro-ray-grad" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.7"/>
+              <stop offset="1" stop-color="#7dd3fc" stop-opacity="0"/>
+            </linearGradient>
+          </defs>
+          <g>
+            <path d="M180,0 L250,800 L300,800 L220,0 Z" fill="url(#intro-ray-grad)" opacity="0.40"/>
+            <path d="M600,0 L660,800 L710,800 L650,0 Z" fill="url(#intro-ray-grad)" opacity="0.50"/>
+            <path d="M950,0 L1020,800 L1080,800 L1000,0 Z" fill="url(#intro-ray-grad)" opacity="0.35"/>
+            <path d="M1250,0 L1320,800 L1370,800 L1300,0 Z" fill="url(#intro-ray-grad)" opacity="0.45"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="intro-layer intro-layer--beach">
+        <svg class="intro-beach-svg" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M0,80 Q360,40 720,70 T1440,60 L1440,200 L0,200 Z" fill="#f4d8a8"/>
+          <path d="M0,110 Q360,80 720,105 T1440,95 L1440,200 L0,200 Z" fill="#e8c48a"/>
+          <path d="M0,140 Q360,120 720,135 T1440,125 L1440,200 L0,200 Z" fill="#d9b276"/>
+          <ellipse cx="180" cy="160" rx="10" ry="5" fill="#c19a60"/>
+          <ellipse cx="450" cy="180" rx="6"  ry="3" fill="#c19a60"/>
+          <ellipse cx="900" cy="165" rx="12" ry="5" fill="#c19a60"/>
+          <ellipse cx="1250" cy="175" rx="8" ry="4" fill="#c19a60"/>
+          <path d="M680,170 q10,-10 20,0 q-10,8 -20,0 Z"  fill="#fef3e2" stroke="#e8c48a" stroke-width="0.5"/>
+          <path d="M1150,155 q8,-8 16,0 q-8,6 -16,0 Z"   fill="#fef3e2" stroke="#e8c48a" stroke-width="0.5"/>
+        </svg>
+      </div>
+
+      <div class="intro-layer intro-layer--palms">
+        <svg class="intro-palms-svg" viewBox="0 0 1440 550" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+          <g class="intro-palm" style="transform-origin: 220px 550px;">
+            <path d="M220,550 Q200,380 240,230" stroke="#5a3e2b" stroke-width="14" fill="none" stroke-linecap="round"/>
+            <path d="M220,550 Q200,380 240,230" stroke="#7a5a3e" stroke-width="8"  fill="none" stroke-linecap="round" opacity="0.5"/>
+            <g class="intro-palm-fronds" style="transform-origin: 240px 230px;">
+              <path d="M240,230 q-90,-25 -140,20 q80,15 140,-20 Z" fill="#2d7a3a"/>
+              <path d="M240,230 q90,-25 140,20 q-80,15 -140,-20 Z" fill="#2d7a3a"/>
+              <path d="M240,230 q-60,-70 -20,-105 q15,70 -20,105 Z" fill="#3a9147"/>
+              <path d="M240,230 q60,-70 20,-105 q-15,70 20,105 Z" fill="#3a9147"/>
+              <path d="M240,230 q-100,15 -120,-15 q70,-15 120,15 Z" fill="#2d7a3a"/>
+              <path d="M240,230 q100,15 120,-15 q-70,-15 -120,15 Z" fill="#2d7a3a"/>
+              <circle cx="235" cy="235" r="7" fill="#4a2e1e"/>
+              <circle cx="245" cy="235" r="7" fill="#4a2e1e"/>
+            </g>
+          </g>
+          <g class="intro-palm" style="transform-origin: 1200px 550px;">
+            <path d="M1200,550 Q1225,400 1180,270" stroke="#5a3e2b" stroke-width="11" fill="none" stroke-linecap="round"/>
+            <g class="intro-palm-fronds" style="transform-origin: 1180px 270px;">
+              <path d="M1180,270 q-75,-20 -110,15 q65,12 110,-15 Z" fill="#2d7a3a"/>
+              <path d="M1180,270 q75,-20 110,15 q-65,12 -110,-15 Z" fill="#2d7a3a"/>
+              <path d="M1180,270 q-50,-55 -15,-85 q12,55 -15,85 Z" fill="#3a9147"/>
+              <path d="M1180,270 q50,-55 15,-85 q-12,55 15,85 Z" fill="#3a9147"/>
+              <circle cx="1175" cy="275" r="5" fill="#4a2e1e"/>
+              <circle cx="1185" cy="275" r="5" fill="#4a2e1e"/>
+            </g>
+          </g>
+        </svg>
+      </div>
+
+      <div class="intro-layer intro-layer--waves">
+        <svg class="intro-waves-svg" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
+          <path class="intro-wave intro-wave--1" d="M0,30 Q180,5  360,30 T720,30 T1080,30 T1440,30 L1440,100 L0,100 Z" fill="#7dd3fc" opacity="0.6"/>
+          <path class="intro-wave intro-wave--2" d="M0,50 Q180,25 360,50 T720,50 T1080,50 T1440,50 L1440,100 L0,100 Z" fill="#38bdf8" opacity="0.7"/>
+          <path class="intro-wave intro-wave--3" d="M0,70 Q180,45 360,70 T720,70 T1080,70 T1440,70 L1440,100 L0,100 Z" fill="#0ea5e9" opacity="0.8"/>
+        </svg>
+      </div>
+
+      <div class="intro-layer intro-layer--boat">
+        <svg class="intro-boat-svg" viewBox="0 0 200 150" aria-hidden="true">
+          <path d="M20,110 L180,110 L160,135 L40,135 Z" fill="#8b4513"/>
+          <path d="M20,110 L180,110 L160,135 L40,135 Z" fill="#6b3410" opacity="0.3"/>
+          <rect x="90" y="30" width="6" height="80" fill="#8b4513"/>
+          <path d="M96,40 L160,100 L96,100 Z" fill="#fafafa"/>
+          <path d="M90,40 L30,100 L90,100 Z"  fill="#ffffff"/>
+          <circle cx="93" cy="100" r="3" fill="#c2410c"/>
+        </svg>
+      </div>
+
+      <div class="intro-layer intro-layer--fish-far">
+        <div class="intro-fish intro-fish--far-1"></div>
+        <div class="intro-fish intro-fish--far-2"></div>
+        <div class="intro-fish intro-fish--far-3"></div>
+      </div>
+
+      <div class="intro-layer intro-layer--bubbles" id="intro-bubbles"></div>
+
+      <div class="intro-layer intro-layer--fish-near">
+        <div class="intro-fish intro-fish--near-1"></div>
+        <div class="intro-fish intro-fish--near-2"></div>
+      </div>
+
+      <div class="intro-layer intro-layer--seaweed">
+        <svg class="intro-seaweed-svg" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+          <g class="intro-seaweed-shape" style="transform-origin: 200px 400px;">
+            <path d="M200,400 Q180,320 210,240 Q180,180 200,120 Q220,180 190,240 Q220,320 200,400 Z" fill="#15803d"/>
+          </g>
+          <g class="intro-seaweed-shape intro-seaweed-shape--2" style="transform-origin: 500px 400px;">
+            <path d="M500,400 Q480,340 510,270 Q480,220 500,170 Q520,220 490,270 Q520,340 500,400 Z" fill="#166534"/>
+          </g>
+          <g class="intro-seaweed-shape intro-seaweed-shape--3" style="transform-origin: 900px 400px;">
+            <path d="M900,400 Q880,300 910,220 Q880,150 900,90 Q920,150 890,220 Q920,300 900,400 Z" fill="#15803d"/>
+          </g>
+          <g class="intro-seaweed-shape intro-seaweed-shape--4" style="transform-origin: 1200px 400px;">
+            <path d="M1200,400 Q1180,350 1210,290 Q1180,240 1200,200 Q1220,240 1190,290 Q1220,350 1200,400 Z" fill="#166534"/>
+          </g>
+        </svg>
+      </div>
+
+      <div class="intro-layer intro-layer--seabed"></div>
+    </div>
+
+    <div class="intro-water-crossing" id="intro-water-crossing">
+      <div class="intro-water-crossing-wave"></div>
+      <div class="intro-water-crossing-splash"></div>
+    </div>
+
+    <div class="intro-color-tint" id="intro-color-tint"></div>
+
+    <div class="intro-ui" id="intro-ui">
+      <div class="intro-logo" id="intro-logo">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="88" fill="rgba(125,211,252,0.35)" stroke="rgba(186,230,253,0.7)" stroke-width="2"/>
+          <ellipse cx="70" cy="58" rx="30" ry="14" fill="rgba(255,255,255,0.4)" transform="rotate(-28 70 58)"/>
+          <g fill="#7dd3fc">
+            <rect x="48"  y="87" width="11" height="26" rx="5"/>
+            <rect x="62"  y="77" width="19" height="46" rx="8"/>
+            <rect x="84"  y="93" width="32" height="14" rx="6"/>
+            <rect x="119" y="77" width="19" height="46" rx="8"/>
+            <rect x="141" y="87" width="11" height="26" rx="5"/>
+          </g>
+        </svg>
+      </div>
+      <div class="intro-title" id="intro-title">Macro Tracker AI</div>
+    </div>
+
+    <div class="intro-progress-wrap" id="intro-progress-wrap">
+      <div class="intro-progress-track" id="intro-progress-track"
+           role="progressbar" aria-valuemin="0" aria-valuemax="100"
+           aria-valuenow="0" aria-label="Loading intro">
+        <div class="intro-progress-fill" id="intro-progress-fill"></div>
+      </div>
+      <div class="intro-percentage" id="intro-percentage">0%</div>
+    </div>
+
+    <button class="intro-skip" id="intro-skip" type="button">Skip intro</button>
+  </div>
+  <!-- ========== END INTRO ========== -->
 
   <div id="globalBg" class="underwater-bg">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -965,54 +1427,6 @@
     <svg class="bubble b-4"><use xlink:href="#bubble-symbol"></use></svg>
     <svg class="bubble b-5"><use xlink:href="#bubble-symbol"></use></svg>
   </div>
-
-  <!-- ========== NEW SPLASH: SHORE (LOADING) + DIVE (TRANSITION) ========== -->
-  <div id="splashScreen" class="splash-screen" style="display:none;">
-    <div class="splash-bg-copy">
-      <div class="splash-surface-glow"></div>
-    </div>
-
-    <div class="splash-center">
-      <div class="splash-float-group">
-        <div class="app-logo splash-logo">
-          <svg viewBox="0 0 200 200" aria-hidden="true">
-            <circle cx="100" cy="100" r="88" fill="url(#logoBubbleGrad)" stroke="rgba(186,230,253,0.55)" stroke-width="2"/>
-            <ellipse cx="70" cy="58" rx="30" ry="14" fill="rgba(255,255,255,0.4)" transform="rotate(-28 70 58)"/>
-            <g fill="url(#logoDumbbellGrad)">
-              <rect x="48" y="87" width="11" height="26" rx="5"/>
-              <rect x="62" y="77" width="19" height="46" rx="8"/>
-              <rect x="84" y="93" width="32" height="14" rx="6"/>
-              <rect x="119" y="77" width="19" height="46" rx="8"/>
-              <rect x="141" y="87" width="11" height="26" rx="5"/>
-            </g>
-          </svg>
-        </div>
-        <div class="splash-title">Welcome to Macro Tracker AI</div>
-      </div>
-
-      <div class="splash-progress-wrap">
-        <div class="splash-progress-track">
-          <div class="splash-progress-fill" id="splashProgressFill"></div>
-        </div>
-        <div class="splash-fish" id="splashFish">
-          <svg viewBox="0 0 64 40" aria-hidden="true">
-            <path d="M6 20 Q 15 5 24 20 Q 15 35 6 20 Z" fill="#fb923c"/>
-            <path d="M8 20 Q 14 12 20 20 Q 14 28 8 20 Z" fill="#f97316" opacity="0.7"/>
-            <path d="M30 8 Q 38 0 44 11 Z" fill="#fb923c"/>
-            <path d="M32 32 Q 38 39 44 31 Z" fill="#fb923c"/>
-            <ellipse cx="40" cy="20" rx="19" ry="11" fill="#f97316"/>
-            <ellipse cx="42" cy="24" rx="14" ry="6" fill="#fdba74" opacity="0.7"/>
-            <circle cx="51" cy="16" r="3" fill="#0f172a"/>
-            <circle cx="52" cy="15" r="1" fill="#ffffff"/>
-            <path d="M57 22 q 2 1 1 3" stroke="#c2410c" stroke-width="1.3" fill="none" stroke-linecap="round"/>
-          </svg>
-        </div>
-      </div>
-    </div>
-
-    <div class="splash-streaks" id="splashStreaks"></div>
-  </div>
-  <!-- ========== END SPLASH ========== -->
 
   <div id="startScreen" class="start-overlay">
     <div class="start-card">
@@ -1326,7 +1740,23 @@
     const todayKey = new Date().toISOString().split('T')[0];
 
     let pendingStartScreen = false;
-    let splashFinishTimer = null;
+
+    // Intro state
+    let introRaf = null;
+    let introElapsed = 0;
+    let introLastNow = 0;
+    let introPaused = false;
+    let introDiveStarted = false;
+    let introLoadingDone = false;
+    let introFontsReady = false;
+    let introPrevOverflow = '';
+    const INTRO_CONFIG = {
+      minLoadTime: 2500,
+      hardTimeout: 4000,
+      diveDuration: 5000,
+      cameraDistance: 200,
+      waterCrossAt: 0.32
+    };
 
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
@@ -1346,7 +1776,279 @@
         document.getElementById('mainApp').style.display = 'block';
         render();
       }
-      startSplashSequence();
+      startIntroSequence();
+    }
+
+    /* ============================================================
+       INTRO SEQUENCE — TROPICAL BEACH → OCEAN DIVE
+       - Shows beach scene + progress bar at the shore
+       - On complete: dives the camera down through a 300vh world
+       - Reveals the app; if new user, opens start screen
+       - Plays once per session (sessionStorage: "intro-played")
+       - Uses RAF for the dive (no external dependency)
+       ============================================================ */
+
+    function startIntroSequence() {
+      const root = document.getElementById('intro-root');
+      if (!root) { onIntroComplete(); return; }
+
+      // Session check
+      let played = false;
+      try { played = sessionStorage.getItem('intro-played') === '1'; } catch (e) {}
+
+      if (played) {
+        root.style.display = 'none';
+        onIntroComplete();
+        return;
+      }
+
+      // Mark as playing immediately
+      try { sessionStorage.setItem('intro-played', '1'); } catch (e) {}
+
+      // Lock scroll
+      introPrevOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+
+      // Reduced motion: skip to a quick fade
+      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      if (prefersReduced) {
+        const fill = document.getElementById('intro-progress-fill');
+        const track = document.getElementById('intro-progress-track');
+        const pct = document.getElementById('intro-percentage');
+        if (fill) fill.style.width = '100%';
+        if (track) track.setAttribute('aria-valuenow', '100');
+        if (pct) pct.textContent = '100%';
+        setTimeout(() => {
+          root.style.transition = 'opacity 0.6s ease';
+          root.style.opacity = '0';
+          setTimeout(onIntroComplete, 650);
+        }, 500);
+        return;
+      }
+
+      // Spawn bubbles
+      spawnIntroBubbles();
+
+      // Skip button
+      const skipBtn = document.getElementById('intro-skip');
+      if (skipBtn) skipBtn.addEventListener('click', skipIntro);
+
+      // Wait for fonts
+      if (document.fonts && document.fonts.ready) {
+        document.fonts.ready.then(() => { introFontsReady = true; }).catch(() => { introFontsReady = true; });
+      } else {
+        introFontsReady = true;
+      }
+
+      // Tab pause/resume
+      document.addEventListener('visibilitychange', onIntroVisibility);
+
+      // Begin loading progress
+      introLoadStart = performance.now();
+      introElapsed = 0;
+      introLastNow = 0;
+      introRaf = requestAnimationFrame(introLoadingTick);
+
+      // Hard fallback — never stay stuck
+      setTimeout(() => {
+        if (!introLoadingDone && !introDiveStarted) {
+          introLoadingDone = true;
+          startIntroDive();
+        }
+      }, INTRO_CONFIG.minLoadTime + 2500);
+    }
+
+    let introLoadStart = 0;
+
+    function introLoadingTick(now) {
+      if (introDiveStarted) return;
+      if (introPaused) { introLastNow = now; introRaf = requestAnimationFrame(introLoadingTick); return; }
+
+      const elapsed = now - introLoadStart;
+      const timeProgress = Math.min(elapsed / INTRO_CONFIG.minLoadTime, 1);
+      const assetsDone = introFontsReady || elapsed > INTRO_CONFIG.hardTimeout;
+      const target = assetsDone ? timeProgress : Math.min(timeProgress, 0.9);
+
+      updateIntroProgress(target);
+
+      if (target >= 1) {
+        introLoadingDone = true;
+        startIntroDive();
+        return;
+      }
+      introRaf = requestAnimationFrame(introLoadingTick);
+    }
+
+    function updateIntroProgress(p) {
+      const pct = Math.round(Math.min(p, 1) * 100);
+      const fill = document.getElementById('intro-progress-fill');
+      const track = document.getElementById('intro-progress-track');
+      const label = document.getElementById('intro-percentage');
+      if (fill) fill.style.width = pct + '%';
+      if (label) label.textContent = pct + '%';
+      if (track) track.setAttribute('aria-valuenow', String(pct));
+    }
+
+    function spawnIntroBubbles() {
+      const host = document.getElementById('intro-bubbles');
+      if (!host) return;
+      const parts = [];
+      for (let i = 0; i < 28; i++) {
+        const size = (4 + Math.random() * 14).toFixed(1);
+        const left = (Math.random() * 100).toFixed(2);
+        const bottom = (Math.random() * 90).toFixed(2);
+        const dur = (5 + Math.random() * 6).toFixed(2);
+        const delay = (Math.random() * 6).toFixed(2);
+        const drift = ((Math.random() - 0.5) * 80).toFixed(0);
+        parts.push('<span class="intro-bubble" style="' +
+          'left:' + left + '%;bottom:' + bottom + '%;' +
+          'width:' + size + 'px;height:' + size + 'px;' +
+          'animation-duration:' + dur + 's;animation-delay:' + delay + 's;' +
+          '--intro-drift:' + drift + 'px;"></span>');
+      }
+      host.innerHTML = parts.join('');
+    }
+
+    function easeInOutQuad(t) {
+      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+    }
+
+    function startIntroDive() {
+      if (introDiveStarted) return;
+      introDiveStarted = true;
+
+      const world = document.getElementById('intro-world');
+      const progressWrap = document.getElementById('intro-progress-wrap');
+      const skipBtn = document.getElementById('intro-skip');
+      const titleEl = document.getElementById('intro-title');
+      const logoEl = document.getElementById('intro-logo');
+      const waterCross = document.getElementById('intro-water-crossing');
+      const colorTint = document.getElementById('intro-color-tint');
+      if (!world) { onIntroComplete(); return; }
+
+      // Hide loading UI
+      if (progressWrap) progressWrap.style.opacity = '0';
+      if (skipBtn) skipBtn.style.opacity = '0';
+
+      // Fade title/logo at end of dive
+      if (titleEl) titleEl.style.transition = 'opacity 0.5s ease';
+      if (logoEl) logoEl.style.transition = 'opacity 0.5s ease';
+
+      // Parallax layers (only layers that should move at different speeds)
+      const layers = [
+        { el: document.querySelector('.intro-layer--sky'), factor: 0.4 },
+        { el: document.querySelector('.intro-layer--horizon'), factor: 0.6 },
+        { el: document.querySelector('.intro-layer--fish-far'), factor: 0.7 },
+        { el: document.querySelector('.intro-layer--fish-near'), factor: 1.15 }
+      ].filter(l => l.el);
+
+      const camDist = INTRO_CONFIG.cameraDistance;
+      let waterCrossFired = false;
+
+      introElapsed = 0;
+      introLastNow = 0;
+
+      function tick(now) {
+        if (introPaused) { introLastNow = now; introRaf = requestAnimationFrame(tick); return; }
+        if (!introLastNow) introLastNow = now;
+        const dt = now - introLastNow;
+        introLastNow = now;
+        introElapsed += dt;
+
+        const t = Math.min(introElapsed / INTRO_CONFIG.diveDuration, 1);
+        const e = easeInOutQuad(t);
+        const worldY = -e * camDist;
+
+        world.style.transform = 'translateY(' + worldY + 'vh)';
+
+        for (let i = 0; i < layers.length; i++) {
+          const extraY = (1 - layers[i].factor) * camDist * e;
+          layers[i].el.style.transform = 'translateY(' + extraY + 'vh)';
+        }
+
+        if (colorTint) colorTint.style.opacity = (e * 0.32).toFixed(3);
+
+        if (!waterCrossFired && t >= INTRO_CONFIG.waterCrossAt) {
+          waterCrossFired = true;
+          if (waterCross) {
+            waterCross.classList.add('active');
+            waterCross.style.opacity = '1';
+            setTimeout(() => { waterCross.style.opacity = '0'; }, 900);
+          }
+        }
+
+        if (t > 0.85 && titleEl && logoEl) {
+          const fadeT = (t - 0.85) / 0.15;
+          const op = (1 - fadeT).toFixed(3);
+          titleEl.style.opacity = op;
+          logoEl.style.opacity = op;
+        }
+
+        if (t < 1) {
+          introRaf = requestAnimationFrame(tick);
+        } else {
+          finishIntroDive();
+        }
+      }
+      introRaf = requestAnimationFrame(tick);
+    }
+
+    function finishIntroDive() {
+      const root = document.getElementById('intro-root');
+      if (!root) { onIntroComplete(); return; }
+      // The intro ends on the seabed which matches the app's dark navy bg
+      root.style.transition = 'opacity 0.6s ease';
+      root.style.opacity = '0';
+      setTimeout(onIntroComplete, 650);
+    }
+
+    function onIntroComplete() {
+      const root = document.getElementById('intro-root');
+      if (root && root.parentNode) root.parentNode.removeChild(root);
+      document.body.style.overflow = introPrevOverflow || '';
+      document.removeEventListener('visibilitychange', onIntroVisibility);
+      if (introRaf) { cancelAnimationFrame(introRaf); introRaf = null; }
+      if (pendingStartScreen) {
+        pendingStartScreen = false;
+        showStartScreen();
+      }
+    }
+
+    function skipIntro() {
+      if (introRaf) { cancelAnimationFrame(introRaf); introRaf = null; }
+      introDiveStarted = true;
+      introLoadingDone = true;
+      finishIntroDive();
+    }
+
+    function onIntroVisibility() {
+      if (!introDiveStarted && !introLoadingDone) return;
+      introPaused = document.hidden;
+      if (!introPaused) {
+        introLastNow = 0;
+        if (introRaf) cancelAnimationFrame(introRaf);
+        introRaf = requestAnimationFrame(introDiveStarted ? startIntroDiveTickResume : introLoadingTick);
+      }
+    }
+
+    // When resuming after tab switch mid-dive, restart RAF loop without resetting elapsed
+    function startIntroDiveTickResume(now) {
+      introLastNow = 0;
+      // The dive tick function is captured in closure from startIntroDive;
+      // to resume cleanly we re-invoke the dive which will pick up elapsed time from 0,
+      // so instead just fade out quickly.
+      finishIntroDive();
+    }
+
+    function showStartScreen() {
+      const s = document.getElementById('startScreen');
+      if (s) s.classList.add('show');
+    }
+    function startOnboarding() {
+      document.getElementById('startScreen').classList.remove('show');
+      document.getElementById('onboardingScreen').style.display = 'flex';
+      document.getElementById('cancelOnboardingBtn').classList.remove('show');
+      nextStep(1);
     }
 
     function openOnboarding() {
@@ -1500,142 +2202,6 @@
         });
         setTimeout(() => { try { ctx.close(); } catch(e){} }, 900);
       } catch(e) { console.warn('Audio unavailable:', e); }
-    }
-
-    function startSplashSequence() {
-      let alreadyShown = false;
-      try { alreadyShown = sessionStorage.getItem('splash_shown') === '1'; } catch (e) { alreadyShown = false; }
-
-      const splash = document.getElementById('splashScreen');
-
-      if (alreadyShown || !splash) {
-        if (splash) splash.style.display = 'none';
-        if (pendingStartScreen) {
-          pendingStartScreen = false;
-          showStartScreen();
-        }
-        return;
-      }
-
-      try { sessionStorage.setItem('splash_shown', '1'); } catch (e) {}
-
-      splash.style.display = 'flex';
-      requestAnimationFrame(() => {
-        setSplashProgress(0);
-        runSplashProgress();
-      });
-    }
-
-    function setSplashProgress(pct) {
-      const track = document.querySelector('.splash-progress-track');
-      const fill = document.getElementById('splashProgressFill');
-      const fish = document.getElementById('splashFish');
-      if (fill) fill.style.width = pct + '%';
-      if (track && fish) {
-        const trackW = track.clientWidth;
-        const fishW = fish.offsetWidth || 54;
-        const x = (fishW / 2) + (pct / 100) * Math.max(trackW - fishW, 0);
-        fish.style.left = x + 'px';
-      }
-    }
-
-    function runSplashProgress() {
-      const duration = 2500;
-      const start = performance.now();
-      function frame(now) {
-        const t = Math.min((now - start) / duration, 1);
-        const eased = 1 - Math.pow(1 - t, 2.2);
-        setSplashProgress(eased * 100);
-        if (t < 1) {
-          requestAnimationFrame(frame);
-        } else {
-          setSplashProgress(100);
-          setTimeout(startDiveSequence, 320);
-        }
-      }
-      requestAnimationFrame(frame);
-    }
-
-    /* ============================================================
-       NEW: DIVE TRANSITION
-       - Loading was at "the shore" (logo + progress + fish visible)
-       - On completion: fade the loading UI out, spawn water speed
-         streaks rushing UP, then plunge the whole splash DOWN fast
-         (correct physics for diving — water rushes up past a diver).
-       - Cleanup uses animationend with a generous fallback timer.
-       ============================================================ */
-    function startDiveSequence() {
-      const screen = document.getElementById('splashScreen');
-      const streakLayer = document.getElementById('splashStreaks');
-      const center = document.querySelector('.splash-center');
-      if (!screen) return;
-
-      // 1) Fade out the loading UI (logo, title, progress, fish)
-      if (center) {
-        center.style.transition = 'opacity 0.35s ease, transform 0.45s cubic-bezier(0.55, 0.06, 0.68, 0.19)';
-        center.style.opacity = '0';
-        center.style.transform = 'scale(0.85)';
-      }
-
-      // 2) Spawn water speed streaks — vertical lines rushing UP
-      if (streakLayer) {
-        const count = 70;
-        const parts = [];
-        for (let i = 0; i < count; i++) {
-          const left = (Math.random() * 100).toFixed(2);
-          const height = (18 + Math.random() * 55).toFixed(0);
-          const thick = (1 + Math.random() * 1.8).toFixed(1);
-          const delay = (Math.random() * 0.55).toFixed(2);
-          const dur = (0.7 + Math.random() * 0.7).toFixed(2);
-          parts.push(`<span class="splash-streak" style="left:${left}%;height:${height}px;width:${thick}px;animation-duration:${dur}s;animation-delay:${delay}s;"></span>`);
-        }
-        streakLayer.innerHTML = parts.join('');
-      }
-
-      // 3) Kick off the dive
-      setTimeout(() => {
-        screen.classList.add('diving');
-      }, 400);
-
-      // 4) Cleanup — animationend is primary, generous fallback otherwise
-      let cleaned = false;
-      const doCleanup = () => {
-        if (cleaned) return;
-        cleaned = true;
-        screen.style.display = 'none';
-        screen.classList.remove('diving');
-        if (streakLayer) streakLayer.innerHTML = '';
-        if (center) {
-          center.style.opacity = '';
-          center.style.transform = '';
-          center.style.transition = '';
-        }
-        if (pendingStartScreen) {
-          pendingStartScreen = false;
-          showStartScreen();
-        }
-      };
-
-      screen.addEventListener('animationend', function onDiveEnd(e) {
-        if (e.target === screen && e.animationName === 'splashDive') {
-          screen.removeEventListener('animationend', onDiveEnd);
-          doCleanup();
-        }
-      });
-
-      clearTimeout(splashFinishTimer);
-      splashFinishTimer = setTimeout(doCleanup, 400 + 1600 + 1500);
-    }
-
-    function showStartScreen() {
-      const s = document.getElementById('startScreen');
-      if (s) s.classList.add('show');
-    }
-    function startOnboarding() {
-      document.getElementById('startScreen').classList.remove('show');
-      document.getElementById('onboardingScreen').style.display = 'flex';
-      document.getElementById('cancelOnboardingBtn').classList.remove('show');
-      nextStep(1);
     }
 
     function resetDinoScene() {
