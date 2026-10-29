@@ -14,10 +14,10 @@
     :root { --bg: #0f172a; --card: #1e293b; --text: #f8fafc; --accent: #38bdf8; --pink: #ec4899; --green: #4ade80; --purple: #c084fc; --red: #ef4444; }
     * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
 
-    html { height: 100%; background: #0f172a; overscroll-behavior: none; }
+    html { height: 100%; background: #082f49; overscroll-behavior: none; }
     body { color: var(--text); margin: 0; padding: calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom)); min-height: 100vh; min-height: 100svh; min-height: 100dvh; overscroll-behavior: none; background: transparent; }
 
-    .underwater-bg { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); }
+    .underwater-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); }
     .bubble { position: absolute; bottom: -15%; opacity: 0; animation: rise linear infinite; will-change: transform, opacity; }
     @keyframes rise {
       0% { transform: translateY(0) scale(1); opacity: 0; }
@@ -31,12 +31,11 @@
     .b-4 { left: 85%; width: 65px; animation-duration: 19s; animation-delay: 4s; }
     .b-5 { left: 55%; width: 50px; animation-duration: 14s; animation-delay: 6s; }
 
-    /* New Animation for Tiny Popping Bubble */
     .tiny-popping { animation: tinyPop 2.5s infinite ease-out; transform-origin: center; }
     @keyframes tinyPop {
       0% { opacity: 0; transform: translateY(0) scale(0.5); }
       5% { opacity: 1; transform: translateY(0) scale(1); }
-      65% { opacity: 0; transform: translateY(-20px) scale(1.3); } /* Fades out 1.5s after appearing (60% of 2.5s) */
+      65% { opacity: 0; transform: translateY(-20px) scale(1.3); }
       100% { opacity: 0; }
     }
 
@@ -61,7 +60,6 @@
     .stat-box.target-reached { border-color: rgba(94,234,212,0.4); box-shadow: 0 0 16px rgba(94,234,212,0.15); background: rgba(94,234,212,0.04); }
     .stat-box.over-limit { border-color: rgba(248,113,113,0.4); box-shadow: 0 0 16px rgba(248,113,113,0.15); background: rgba(248,113,113,0.04); }
 
-    /* ===== NEW: car-meter style numbers + tick dashes drawn by JS ===== */
     .gauge-scale text {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
       fill: #cbd5e1;
@@ -70,16 +68,13 @@
       user-select: none;
     }
 
-    /* NEW: soft white neon on the printed numbers once a target is hit or exceeded */
     #calBox.over-limit .gauge-scale text,
     #calBox.target-reached .gauge-scale text,
     #proBox.target-reached .gauge-scale text {
       fill: #ffffff;
       filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.35));
     }
-    /* ===== END meter scale styles ===== */
 
-    /* ===== NEW: smoother meter movement + neon outlines (no more clipping box) ===== */
     #calNeedle, #proNeedle {
       transform-box: view-box;
       transform-origin: 100px 100px;
@@ -94,7 +89,6 @@
       background: rgba(255,45,85,0.05);
     }
     #calBox.over-limit #calArc { stroke: #ff2d55; }
-    /* glow moved to the whole SVG element so the filter region can no longer clip it into a box */
     #calBox.over-limit .gauge-svg {
       filter: drop-shadow(0 0 5px #ff2d55) drop-shadow(0 0 18px rgba(255,45,85,0.85));
       animation: neonBreathe 2.6s ease-in-out infinite;
@@ -111,7 +105,6 @@
       animation: neonBreathe 2.6s ease-in-out infinite;
     }
 
-    /* NEW: calories inside the expected range (90%–100% of goal) get the same green outline as protein */
     #calBox.target-reached {
       border-color: rgba(57, 255, 136, 0.8);
       box-shadow: 0 0 0 1px rgba(57,255,136,0.3), 0 0 26px rgba(57,255,136,0.32), inset 0 0 26px rgba(57,255,136,0.10);
@@ -124,7 +117,6 @@
     }
 
     @keyframes neonBreathe { 0%, 100% { opacity: 0.9; } 50% { opacity: 1; } }
-    /* ===== END NEW METER STYLES ===== */
 
     input, .action-btn, select { width: 100%; padding: 12px; margin-top: 8px; border-radius: 10px; border: none; font-size: 16px; }
     input, select { background: rgba(15, 23, 42, 0.8); color: #fff; border: 1px solid rgba(255,255,255,0.1); }
@@ -138,7 +130,6 @@
     .scan-btn { margin-bottom: 10px; }
     .log-btn { margin-top: 12px; }
 
-    /* ===== NEW: elegant press + slow, subtle liquid-glass sheen on the scan button ===== */
     .scan-btn {
       position: relative;
       overflow: hidden;
@@ -147,7 +138,6 @@
                   border-color 0.3s ease,
                   background 0.25s ease;
     }
-    /* the travelling glass highlight — slow, wide and very soft */
     .scan-btn::after {
       content: "";
       position: absolute;
@@ -194,7 +184,6 @@
       0%   { transform: scale(0); opacity: 0.9; }
       100% { transform: scale(1); opacity: 0; }
     }
-    /* ===== END scan button fx ===== */
 
     .progress-wrap { display: none; margin-top: 10px; height: 30px; }
     .progress-track { position: relative; height: 100%; border-radius: 16px; overflow: hidden; background: rgba(15,23,42,0.45); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
@@ -229,7 +218,6 @@
     .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 4px; margin: 0; font-weight: 600; cursor: pointer; flex-shrink: 0; }
     .empty-state { text-align: center; padding: 20px 0; color: #94a3b8; font-size: 0.9rem; }
 
-    /* ===== NEW: hamburger + food options menu ===== */
     .food-actions { position: relative; flex-shrink: 0; }
     .hamburger-btn {
       display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
@@ -270,7 +258,6 @@
     }
     .food-menu button:active { background: rgba(255,255,255,0.07); }
     .food-menu button.danger { color: #f87171; border-top: 1px solid rgba(255,255,255,0.08); }
-    /* ===== END hamburger menu ===== */
 
     .onboarding { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 1000; display: none; align-items: center; justify-content: center; padding: calc(16px + env(safe-area-inset-top)) 16px calc(16px + env(safe-area-inset-bottom)); }
     .floating-card { background: rgba(30, 41, 59, 0.65); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); border: 1px solid rgba(255,255,255,0.15); padding: 24px; border-radius: 20px; width: 100%; max-width: 400px; animation: bob 4s ease-in-out infinite; box-shadow: 0 20px 40px rgba(0,0,0,0.6); z-index: 2; max-height: 88vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
@@ -309,7 +296,6 @@
     .exercise-card.selected { transform: scale(1.05); color: var(--text); border-color: var(--accent); background: rgba(56, 189, 248, 0.15); box-shadow: 0 0 24px rgba(56, 189, 248, 0.3); }
     .exercise-card.selected svg { color: var(--accent); }
 
-    /* Animations for Exercise Cards */
     .exercise-card.selected .anim-z-1 { animation: z-rise-new 2s linear infinite; }
     .exercise-card.selected .anim-z-2 { animation: z-rise-new 2s linear 0.6s infinite; opacity: 0; }
     .exercise-card.selected .anim-z-3 { animation: z-rise-new 2s linear 1.2s infinite; opacity: 0; }
@@ -321,7 +307,6 @@
     .exercise-card.selected .anim-bicep { animation: bicep-squish 1.4s ease-in-out infinite; }
     @keyframes bicep-squish { 0%, 100% { transform: scale(1, 1); } 50% { transform: scale(1.15, 1.3) translateY(-2px); } }
 
-    /* NEW: Jumping-jack stickman animation (1-3 days card) */
     .jj-line { fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; }
     .jj-arm-l, .jj-arm-r, .jj-leg-l, .jj-leg-r, .jj-body-g { transform-box: view-box; }
     .jj-arm-l { transform-origin: 30px 15px; }
@@ -339,15 +324,12 @@
     @keyframes jjLegL { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(24deg); } }
     @keyframes jjLegR { 0%, 100% { transform: rotate(0deg); } 50% { transform: rotate(-24deg); } }
     @keyframes jjBob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-1.5px); } }
-    /* END NEW jumping-jack */
 
-    /* Bicycle Wheel Spin */
     .wheel-1 { transform-origin: 18px 30px; }
     .wheel-2 { transform-origin: 38px 30px; }
     .exercise-card.selected .anim-wheel { animation: wheel-spin 1.5s linear infinite; }
     @keyframes wheel-spin { to { transform: rotate(360deg); } }
 
-    /* Sequential 6 and 7 Animation */
     .exercise-card.selected .anim-seq-1 { animation: seq-bounce 1.2s ease-in-out infinite; }
     .exercise-card.selected .anim-seq-2 { animation: seq-bounce 1.2s ease-in-out 0.6s infinite; }
     @keyframes seq-bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
@@ -384,10 +366,8 @@
     .save-key-btn { background: rgba(56,189,248,0.25); color: #f0f9ff; font-weight: 700; border: 1px solid rgba(186,230,253,0.35); padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); touch-action: manipulation; }
     .cancel-key-btn { background: rgba(255,255,255,0.08); color: #e0f2fe; font-weight: 600; border: 1px solid rgba(255,255,255,0.12); padding: 12px; border-radius: 10px; cursor: pointer; font-size: 0.95rem; margin: 0; touch-action: manipulation; }
 
-    /* NEW: edit-food card drifts up and down, same underwater motion as the meal-updated popup */
     #editFoodCard { animation: popIn 0.3s ease, bob 4s ease-in-out 0.3s infinite; }
 
-    /* NEW: keep the CALORIES / PROTEIN / FAT labels snug to their own input instead of hanging above it */
     #editFoodCard label { margin-top: 16px; }
     #editFoodCard label:first-of-type { margin-top: 0; }
     #editFoodCard input { margin-top: 5px; }
@@ -405,14 +385,12 @@
     @keyframes success-stroke { 100% { stroke-dashoffset: 0; } }
     @keyframes success-check-pop { 0% { transform: scale(0.7); opacity: 0; } 50% { transform: scale(1.15); opacity: 1; } 100% { transform: scale(1); opacity: 1; } }
 
-    /* ===== NEW: thumbs-up stickman confirmation ===== */
     #editSuccessOverlay { z-index: 3200; background: rgba(15, 23, 42, 0.72); }
     .edit-success-card { display: flex; flex-direction: column; align-items: center; gap: 6px; transform: scale(0.8); opacity: 0; }
     #editSuccessOverlay.show .edit-success-card { transform: scale(1); opacity: 1; transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
     .thumbs-stickman { width: 140px; height: 140px; overflow: visible; }
     .thumbs-stickman .tk-line { fill: none; stroke: #f8fafc; stroke-width: 4.5; stroke-linecap: round; stroke-linejoin: round; }
     .thumbs-stickman .tk-fill { fill: #f8fafc; }
-    /* NEW: eye starts wide open, then closes smoothly into a wink */
     .thumbs-stickman .tk-eye-open { transform-box: fill-box; transform-origin: center; animation: eyeOpenToWink 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     .thumbs-stickman .tk-wink { transform-box: fill-box; transform-origin: center; opacity: 0; animation: winkFadeIn 2.4s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
     @keyframes eyeOpenToWink {
@@ -425,9 +403,7 @@
     }
     .edit-success-text { font-size: 1.25rem; font-weight: 700; color: #bbf7d0; text-shadow: 0 2px 16px rgba(74, 222, 128, 0.55); margin: 0; }
     .edit-success-sub { font-size: 0.82rem; color: #bae6fd; opacity: 0.8; margin: 0; }
-    /* ===== END thumbs-up ===== */
 
-    /* ===== NEW SCAN OVERLAY (popup window) ===== */
     .scan-overlay {
       position: fixed; inset: 0; z-index: 2500;
       background: rgba(4, 12, 28, 0.65);
@@ -454,7 +430,6 @@
       from { opacity: 0; transform: scale(0.82) translateY(24px); }
       to { opacity: 1; transform: scale(1) translateY(0); }
     }
-    /* NEW: slow underwater up-and-down drift of the whole popup */
     @keyframes scanWindowFloat {
       0%   { transform: translateY(0) rotate(0deg); }
       25%  { transform: translateY(-9px) rotate(-0.5deg); }
@@ -463,7 +438,6 @@
       100% { transform: translateY(0) rotate(0deg); }
     }
 
-    /* Bubbles rising inside the popup */
     .scan-window-bubbles { position: absolute; inset: 0; overflow: hidden; pointer-events: none; border-radius: 26px; }
     .sw-bubble {
       position: absolute; bottom: -24px; border-radius: 50%;
@@ -495,7 +469,6 @@
       to { opacity: 1; transform: translateY(0) scale(1); }
     }
 
-    /* --- Phase 1: dinosaur runner --- */
     .dino-scene {
       position: relative; width: 100%; height: 110px;
       display: flex; align-items: flex-end; justify-content: center;
@@ -506,8 +479,8 @@
     }
     .dino-runner {
       position: relative;
-      width: 76px; height: 72px;   /* NEW: box now hugs the dino so the feet reach the ground */
-      margin-bottom: 2px;          /* NEW: feet rest ON the scrolling platform line, no floating */
+      width: 76px; height: 72px;
+      margin-bottom: 2px;
       animation: dinoJump 2.2s ease-in-out infinite;
       will-change: transform;
     }
@@ -541,7 +514,6 @@
       to { transform: translateX(-380px); }
     }
 
-    /* --- Sprint finale: fired exactly when the scan ends --- */
     .dino-scene.sprint .dino-ground { animation-duration: 0.12s; }
     .dino-scene.sprint .dino-cactus { animation-duration: 0.35s; opacity: 0; }
     .dino-scene.sprint .dino-runner {
@@ -580,7 +552,6 @@
       text-shadow: 0 1px 4px rgba(0,0,0,0.6);
     }
 
-    /* --- Phase 2: results --- */
     .scan-result-img-wrap { animation: foodPopIn 0.7s cubic-bezier(0.34, 1.56, 0.64, 1); }
     @keyframes foodPopIn {
       0% { opacity: 0; transform: scale(0.2) rotate(-8deg); }
@@ -651,7 +622,6 @@
     }
     .scan-log-btn:active { transform: scale(0.97); box-shadow: 0 4px 16px rgba(34, 197, 94, 0.5), inset 0 1px 1px rgba(255,255,255,0.15); }
 
-    /* --- Phase 3: success --- */
     .scan-success-wrap { display: flex; flex-direction: column; align-items: center; gap: 22px; padding: 12px 0; }
     .scan-success-svg { width: 118px; height: 118px; overflow: visible; }
     .scan-success-circle {
@@ -676,9 +646,7 @@
       opacity: 0;
       animation: fadeUp 0.55s ease 0.85s forwards;
     }
-    /* ===== END NEW SCAN OVERLAY ===== */
 
-    /* ===== NEW: startup splash (logo + goldfish progress + bubble finale) ===== */
     .splash-screen {
       position: fixed;
       inset: 0;
@@ -691,6 +659,7 @@
     }
     .splash-screen.rising {
       animation: splashRiseUp 2.3s cubic-bezier(0.45, 0.05, 0.55, 0.95) forwards;
+      will-change: transform;
     }
     @keyframes splashRiseUp {
       0%   { transform: translateY(0); }
@@ -715,7 +684,6 @@
       padding: 24px;
       text-align: center;
     }
-    /* NEW: only the logo + title float, the progress bar stays still */
     .splash-float-group {
       display: flex;
       flex-direction: column;
@@ -823,9 +791,48 @@
       7%   { opacity: 1; }
       100% { transform: translateY(-118vh) scale(1.15); opacity: 1; }
     }
-    /* ===== END splash ===== */
 
-    /* ===== NEW: new-user welcome / Start screen ===== */
+    /* NEW: static big bubble + 500 rising mini bubbles during splash finale */
+    .splash-big-bubble {
+      position: absolute;
+      bottom: -100px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 240px;
+      height: 240px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 35% 30%,
+        rgba(255,255,255,0.55) 0%,
+        rgba(186,230,253,0.35) 25%,
+        rgba(125,211,252,0.22) 55%,
+        rgba(56,189,248,0.10) 78%,
+        rgba(8,47,73,0.05) 100%);
+      border: 2px solid rgba(186, 230, 253, 0.6);
+      box-shadow: inset -4px -6px 18px rgba(8,47,73,0.35), 0 0 40px rgba(56,189,248,0.3);
+      pointer-events: none;
+      z-index: 1;
+    }
+    .splash-mini-bubble {
+      position: absolute;
+      bottom: 60px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 32% 30%,
+        rgba(255,255,255,0.85) 0%,
+        rgba(186,230,253,0.5) 25%,
+        rgba(125,211,252,0.25) 60%,
+        rgba(56,189,248,0.1) 100%);
+      border: 1px solid rgba(186, 230, 253, 0.5);
+      opacity: 0;
+      animation: splashMiniRise linear forwards;
+      will-change: transform, opacity;
+      pointer-events: none;
+    }
+    @keyframes splashMiniRise {
+      0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
+      10%  { opacity: 1; }
+      100% { transform: translate(var(--drift, 0px), -120vh) scale(1.1); opacity: 0.85; }
+    }
+
     .start-overlay {
       position: fixed;
       inset: 0;
@@ -920,7 +927,6 @@
       border-color: rgba(125, 211, 252, 0.55);
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 26px rgba(56, 189, 248, 0.45);
     }
-    /* ===== END start screen ===== */
   </style>
 </head>
 <body>
@@ -928,13 +934,11 @@
   <div id="globalBg" class="underwater-bg">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
       <defs>
-        <!-- MOD: Updated bubble symbol to include dumbbell and popping mini-bubble -->
         <symbol id="bubble-symbol" viewBox="0 0 100 100">
           <circle cx="50" cy="50" r="48" fill="rgba(186, 230, 253, 0.15)" stroke="rgba(186, 230, 253, 0.25)" stroke-width="1.5"/>
           <circle cx="50" cy="50" r="40" fill="rgba(186, 230, 253, 0.1)"/>
           <ellipse cx="38" cy="35" rx="15" ry="8" fill="rgba(255,255,255,0.5)" transform="rotate(-25 38 35)"/>
           
-          <!-- Embedded Dumbbell -->
           <g transform="translate(50, 50) rotate(-25) translate(-50, -50)" fill="rgba(186, 230, 253, 0.4)">
             <rect x="36" y="47" width="28" height="6" rx="2" />
             <rect x="26" y="36" width="8" height="28" rx="3" />
@@ -943,14 +947,12 @@
             <rect x="76" y="40" width="4" height="20" rx="2" />
           </g>
 
-          <!-- Tiny popping bubble at the bottom -->
           <circle class="tiny-popping" cx="40" cy="95" r="10" fill="rgba(186, 230, 253, 0.2)" stroke="rgba(186, 230, 253, 0.3)" stroke-width="1"/>
         </symbol>
 
         <linearGradient id="gaugeGradCal" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#4ade80" /><stop offset="50%" stop-color="#facc15" /><stop offset="100%" stop-color="#ef4444" /></linearGradient>
         <linearGradient id="gaugeGradPro" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" stop-color="#f87171" /><stop offset="50%" stop-color="#facc15" /><stop offset="100%" stop-color="#4ade80" /></linearGradient>
 
-        <!-- NEW: gradients for the app logo -->
         <linearGradient id="logoBubbleGrad" x1="0" y1="0" x2="1" y2="1">
           <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.42"/>
           <stop offset="1" stop-color="#38bdf8" stop-opacity="0.12"/>
@@ -969,7 +971,6 @@
     <svg class="bubble b-5"><use xlink:href="#bubble-symbol"></use></svg>
   </div>
 
-  <!-- ===== NEW: STARTUP SPLASH (logo + goldfish progress + bubble finale) ===== -->
   <div id="splashScreen" class="splash-screen" style="display:none;">
     <div class="splash-bg-copy">
       <svg class="bubble b-1"><use xlink:href="#bubble-symbol"></use></svg>
@@ -1019,9 +1020,7 @@
 
     <div class="splash-burst" id="splashBurst"></div>
   </div>
-  <!-- ===== END STARTUP SPLASH ===== -->
 
-  <!-- ===== NEW: NEW-USER START SCREEN ===== -->
   <div id="startScreen" class="start-overlay">
     <div class="start-card">
       <div class="app-logo start-logo">
@@ -1041,7 +1040,6 @@
       <button class="start-btn" onclick="startOnboarding()">Start</button>
     </div>
   </div>
-  <!-- ===== END START SCREEN ===== -->
 
   <button id="cancelOnboardingBtn" class="cancel-btn" onclick="confirmCancel()">⬅ Cancel</button>
 
@@ -1062,7 +1060,6 @@
         <label>Exercise per week</label>
         
         <div class="exercise-selector">
-            <!-- 0 days: Bed icon with Z's -->
             <div class="exercise-card" id="ex-card-0" onclick="selectExercise(0)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -1078,7 +1075,6 @@
                 <span>None</span>
             </div>
             
-            <!-- 1-3 days: Stickman doing jumping jacks -->
             <div class="exercise-card" id="ex-card-2" onclick="selectExercise(2)">
                 <svg viewBox="0 0 60 40">
                   <g class="jj-body-g">
@@ -1101,24 +1097,19 @@
                 <span>1-3 days</span>
             </div>
             
-            <!-- 4-5 days: Bicycle with spinning wheels -->
             <div class="exercise-card" id="ex-card-4" onclick="selectExercise(4)">
                 <svg viewBox="0 0 60 40">
                   <g fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                    <!-- Static Man -->
                     <circle cx="28" cy="8" r="3" fill="currentColor" />
                     <path d="M28 11 C 25 18, 26 23, 27 24 L 29 29" stroke-width="2"/>
                     <path d="M28 13 C 33 16, 38 15, 39 14" stroke-width="2"/>
-                    <!-- Static Bike Frame -->
                     <path d="M18 30 L 29 30 L 23 20 Z" />
                     <path d="M23 20 L 21 16 M 29 30 L 37 16 L 35 14 M 37 16 L 39 14" />
-                    <!-- Animated Back Wheel -->
                     <g class="anim-wheel wheel-1">
                       <circle cx="18" cy="30" r="7" />
                       <circle cx="18" cy="30" r="5" stroke-width="0.5" />
                       <path d="M18 23 V 37 M 11 30 H 25 M 13 25 L 23 35 M 13 35 L 23 25" stroke-width="0.5" />
                     </g>
-                    <!-- Animated Front Wheel -->
                     <g class="anim-wheel wheel-2">
                       <circle cx="38" cy="30" r="7" />
                       <circle cx="38" cy="30" r="5" stroke-width="0.5" />
@@ -1129,7 +1120,6 @@
                 <span>4-5 days</span>
             </div>
             
-            <!-- 6-7 days: Detailed 6 and 7 -->
             <div class="exercise-card" id="ex-card-6" onclick="selectExercise(6)">
                  <svg viewBox="0 0 60 40">
                   <g class="anim-seq-1">
@@ -1166,7 +1156,6 @@
   <div id="cancelConfirmModal" class="cancel-modal-overlay"> <div class="cancel-modal-card"><svg class="stickman-wiggle" viewBox="0 0 100 100" width="110" height="110"><circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/><path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="44" cy="24" r="1.6" fill="#f8fafc"/><circle cx="57" cy="24" r="1.6" fill="#f8fafc"/><path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/><path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text></svg><h3>Are you sure you want to cancel?</h3><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doCancelOnboarding()">Yes, I am!</button><button class="cancel-no-btn" onclick="closeCancelModal()">No, I'm not</button></div></div></div>
   <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
 
-  <!-- NEW: photo source chooser (mobile only) -->
   <div id="photoSourceModal" class="cancel-modal-overlay">
     <div class="glass-modal-card">
       <h3>📸 Add a meal photo</h3>
@@ -1179,7 +1168,6 @@
     </div>
   </div>
 
-  <!-- NEW: edit food modal -->
   <div id="editFoodModal" class="cancel-modal-overlay">
     <div class="glass-modal-card" id="editFoodCard">
       <h3>✏️ Edit this food</h3>
@@ -1197,7 +1185,6 @@
     </div>
   </div>
 
-  <!-- NEW: delete food confirm -->
   <div id="deleteFoodModal" class="cancel-modal-overlay">
     <div class="cancel-modal-card">
       <h3>Are you sure?</h3>
@@ -1208,30 +1195,20 @@
     </div>
   </div>
 
-  <!-- NEW: thumbs-up confirmation -->
   <div id="editSuccessOverlay" class="cancel-modal-overlay">
     <div class="edit-success-card">
       <svg class="thumbs-stickman" viewBox="0 0 120 120" aria-hidden="true">
-        <!-- head -->
         <circle cx="52" cy="42" r="18" class="tk-line"/>
-        <!-- left eye: wide open first, then smoothly closes into a wink -->
         <ellipse class="tk-fill tk-eye-open" cx="45" cy="36.8" rx="3.2" ry="3.8"/>
         <path class="tk-line tk-wink" d="M40 38 q5 -5 10 0"/>
-        <!-- right eye stays open -->
         <circle cx="62" cy="38" r="2.6" class="tk-fill"/>
-        <!-- smile -->
         <path class="tk-line" d="M43 49 q9 9 18 0"/>
-        <!-- body -->
         <line x1="52" y1="60" x2="52" y2="94" class="tk-line"/>
-        <!-- legs -->
         <line x1="52" y1="94" x2="39" y2="113" class="tk-line"/>
         <line x1="52" y1="94" x2="65" y2="113" class="tk-line"/>
-        <!-- left arm down -->
         <line x1="52" y1="70" x2="34" y2="84" class="tk-line"/>
-        <!-- right arm raised -->
         <line x1="52" y1="70" x2="74" y2="64" class="tk-line"/>
         <line x1="74" y1="64" x2="82" y2="48" class="tk-line"/>
-        <!-- thumbs-up hand -->
         <rect x="72" y="40" width="21" height="17" rx="7" class="tk-fill"/>
         <rect x="77" y="24" width="9" height="20" rx="4.5" class="tk-fill"/>
         <path d="M76 47 h13" stroke="#0f172a" stroke-width="1.6" stroke-linecap="round" opacity="0.35"/>
@@ -1243,10 +1220,8 @@
 
   <div id="onboardingSuccessOverlay"><div class="success-card"><svg class="success-checkmark-svg" viewBox="0 0 104 104"><circle class="checkmark-circle" cx="52" cy="52" r="50" fill="none" stroke="#4ade80" stroke-width="5"/><path class="checkmark-check" fill="none" d="M30 54 l14 14 30 -30" stroke="#4ade80" stroke-width="6" stroke-linecap="round"/></svg><h2>Your data has been updated</h2></div></div>
 
-  <!-- ===== NEW SCAN OVERLAY (FLOATING POPUP WINDOW) ===== -->
   <div id="scanOverlay" class="scan-overlay" onclick="onScanOverlayClick(event)">
     <div class="scan-window">
-      <!-- Bubbles rising inside the floating window -->
       <div class="scan-window-bubbles">
         <span class="sw-bubble sw-b1"></span>
         <span class="sw-bubble sw-b2"></span>
@@ -1257,44 +1232,28 @@
 
       <div class="scan-phase scan-phase-running active" id="scanPhaseRunning">
         <div class="dino-scene" id="dinoScene">
-          <!-- Cactus scrolling from right -->
           <div class="dino-cactus">
             <svg viewBox="0 0 20 26" preserveAspectRatio="xMidYMax meet">
               <path d="M 8 26 L 8 4 Q 8 1 10 1 Q 12 1 12 4 L 12 26 Z M 8 12 L 4 12 Q 2 12 2 14 L 2 18 Q 2 20 4 20 L 8 20 M 12 14 L 16 14 Q 18 14 18 16 L 18 20 Q 18 22 16 22 L 12 22" fill="#22c55e" stroke="#16a34a" stroke-width="0.7" stroke-linejoin="round"/>
             </svg>
           </div>
 
-          <!-- Cute dinosaur runner -->
           <div class="dino-runner" id="dinoRunner">
-            <!-- NEW: viewBox trimmed to 76 tall so the feet sit on the bottom edge = the ground line -->
             <svg class="dino-svg" viewBox="0 0 80 76">
-              <!-- Tail -->
               <path d="M 18 46 C 8 44 2 36 3 24 C 10 30 15 36 21 40 Z" fill="#bae6fd"/>
-              <!-- Back spikes -->
               <path d="M 21 38 L 24 30 L 28 38 Z" fill="#7dd3fc"/>
               <path d="M 29 35 L 32 27 L 36 35 Z" fill="#7dd3fc"/>
-              <!-- Body -->
               <ellipse cx="34" cy="48" rx="20" ry="14" fill="#e0f2fe"/>
-              <!-- Belly -->
               <ellipse cx="36" cy="54" rx="12" ry="7" fill="#bae6fd" opacity="0.55"/>
-              <!-- Neck -->
               <path d="M 42 42 L 45 24 L 57 26 L 53 44 Z" fill="#e0f2fe"/>
-              <!-- Head -->
               <ellipse cx="57" cy="24" rx="15" ry="13" fill="#e0f2fe"/>
-              <!-- Snout -->
               <ellipse cx="66" cy="30" rx="8" ry="7" fill="#e0f2fe"/>
-              <!-- Nostril -->
               <circle cx="70" cy="27" r="1.3" fill="#7dd3fc"/>
-              <!-- Mouth -->
               <path d="M 63 34 q 4 3 8 0" stroke="#7dd3fc" stroke-width="1.4" fill="none" stroke-linecap="round"/>
-              <!-- Cheek blush -->
               <ellipse cx="49" cy="30" rx="4" ry="2.6" fill="#f472b6" opacity="0.4"/>
-              <!-- Big eye -->
               <circle cx="60" cy="20" r="4.6" fill="#0f172a"/>
               <circle cx="61.6" cy="18.4" r="1.6" fill="#ffffff"/>
-              <!-- Tiny arm -->
               <path d="M 46 50 q 8 -2 9 4 q -6 3 -9 -4 Z" fill="#bae6fd"/>
-              <!-- Back leg (animated) -->
               <g class="dino-leg dino-leg-back">
                 <line x1="26" y1="58" x2="23" y2="70" stroke="#e0f2fe" stroke-width="6" stroke-linecap="round"/>
                 <line x1="23" y1="70" x2="17" y2="72" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round"/>
@@ -1302,7 +1261,6 @@
                   values="20 26 58;-20 26 58;20 26 58"
                   dur="0.28s" repeatCount="indefinite"/>
               </g>
-              <!-- Front leg (animated) -->
               <g class="dino-leg dino-leg-front">
                 <line x1="44" y1="58" x2="47" y2="70" stroke="#e0f2fe" stroke-width="6" stroke-linecap="round"/>
                 <line x1="47" y1="70" x2="53" y2="72" stroke="#e0f2fe" stroke-width="5" stroke-linecap="round"/>
@@ -1359,7 +1317,6 @@
       </div>
     </div>
   </div>
-  <!-- ===== END SCAN OVERLAY ===== -->
 
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📷 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
 
@@ -1372,11 +1329,9 @@
     let currentScanData = null;
     let editingFoodId = null;
     let deletingFoodId = null;
-    // NEW: 'scan' = normal flow, 'detail' = opened from Today's Log (button only closes)
     let scanOverlayMode = 'scan';
     const todayKey = new Date().toISOString().split('T')[0];
 
-    // NEW: startup splash + new-user Start screen state
     let pendingStartScreen = false;
     let splashFinishTimer = null;
 
@@ -1385,7 +1340,6 @@
     function initApp() {
       const savedGoals = JSON.parse(localStorage.getItem('user_goals'));
       if (!savedGoals) {
-        // NEW: for brand-new users, show the Start screen (after the splash) instead of dropping straight into onboarding
         pendingStartScreen = true;
         document.getElementById('onboardingScreen').style.display = 'none';
         document.getElementById('mainApp').style.display = 'none';
@@ -1399,7 +1353,6 @@
         document.getElementById('mainApp').style.display = 'block';
         render();
       }
-      // NEW: run the startup splash (skipped automatically if already shown this session)
       startSplashSequence();
     }
 
@@ -1470,7 +1423,6 @@
       targetCal = Math.round(targetCal); if (targetCal < 1200) targetCal = 1200; targetPro = Math.round(targetPro);
       localStorage.setItem('user_goals', JSON.stringify({ cal: targetCal, pro: targetPro })); localStorage.setItem('user_profile', JSON.stringify({ age, sex, height, weight, goal, goalWeight, timeline, exercise }));
       GOAL_CAL = targetCal; GOAL_PRO = targetPro;
-      // NEW: play success chime when data is updated
       playSuccessSound();
       const successOverlay = document.getElementById('onboardingSuccessOverlay'); successOverlay.classList.add('show');
       setTimeout(() => { successOverlay.classList.remove('show'); document.getElementById('onboardingScreen').style.display = 'none'; document.getElementById('cancelOnboardingBtn').classList.remove('show'); document.getElementById('mainApp').style.display = 'block'; render(); }, 2200);
@@ -1487,13 +1439,8 @@
     function finishProgress(success) { clearInterval(progressTimer); const wrap = document.getElementById('progressWrap'); const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); if (success) { fill.style.width = '100%'; text.textContent = '100%'; setTimeout(() => { wrap.style.display = 'none'; }, 600); } else { text.textContent = 'ERROR'; setTimeout(() => { wrap.style.display = 'none'; }, 1400); } }
     async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
 
-    // ===== TEST MODE FLAG =====
-    // true  = simulated scan (no API key needed): fills 2500 / 200 / 250 / 80
-    // false = calls the real Gemini API below
     const TEST_MODE = true;
-    // ==========================
 
-    // ===== NEW: mobile-only photo source (camera OR gallery) =====
     function isMobileDevice() {
       return /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent)
         || (navigator.maxTouchPoints > 1 && 'ontouchstart' in window);
@@ -1508,16 +1455,14 @@
     function chooseCamera() { document.getElementById('photoSourceModal').classList.remove('show'); document.getElementById('cameraInput').click(); }
     function chooseGallery() { document.getElementById('photoSourceModal').classList.remove('show'); document.getElementById('galleryInput').click(); }
     function closePhotoSource() { document.getElementById('photoSourceModal').classList.remove('show'); }
-    // ===== END mobile photo source =====
 
-    // ===== SHARED SOUND (used by onboarding success AND meal logged) =====
     function playSuccessSound() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
         if (!AC) return;
         const ctx = new AC();
         const now = ctx.currentTime;
-        const notes = [523.25, 659.25, 783.99, 1046.50]; // C5 E5 G5 C6
+        const notes = [523.25, 659.25, 783.99, 1046.50];
         notes.forEach((freq, i) => {
           const start = now + i * 0.07;
           const dur = 0.5;
@@ -1540,7 +1485,6 @@
       } catch(e) { console.warn('Audio unavailable:', e); }
     }
 
-    // NEW: classic cartoon wink sound (rising "dwing")
     function playWinkSound() {
       try {
         const AC = window.AudioContext || window.webkitAudioContext;
@@ -1565,7 +1509,6 @@
       } catch(e) { console.warn('Audio unavailable:', e); }
     }
 
-    // ===== NEW: startup splash (logo + goldfish progress + bubble finale) =====
     function startSplashSequence() {
       let alreadyShown = false;
       try { alreadyShown = sessionStorage.getItem('splash_shown') === '1'; } catch (e) { alreadyShown = false; }
@@ -1584,7 +1527,6 @@
       try { sessionStorage.setItem('splash_shown', '1'); } catch (e) {}
 
       splash.style.display = 'flex';
-      // place the goldfish at the very start of the bar
       requestAnimationFrame(() => {
         setSplashProgress(0);
         runSplashProgress();
@@ -1621,32 +1563,51 @@
       requestAnimationFrame(frame);
     }
 
+    /* ============================================================
+       NEW BUBBLE FINALE:
+       - One static big bubble at the bottom center of the splash
+       - 500 small bubbles rise from it
+       - Slide-up only begins after the bubbles spawn (small delay)
+       - Cleanup now triggers on the `animationend` event (with a
+         generous fallback timer) so mobile devices that throttle
+         timers can no longer cut the slide mid-flight.
+       ============================================================ */
     function startBubbleFinale() {
       const burst = document.getElementById('splashBurst');
       const screen = document.getElementById('splashScreen');
       if (!burst || !screen) return;
 
-      // Spawn the "thousand bubble" rush from the bottom of the screen
-      const count = 200;
+      burst.innerHTML = '';
+
+      // 1) Static big bubble at the bottom
+      const bigBubble = document.createElement('div');
+      bigBubble.className = 'splash-big-bubble';
+      burst.appendChild(bigBubble);
+
+      // 2) 500 small bubbles rising from it
+      const count = 500;
       const parts = [];
       for (let i = 0; i < count; i++) {
-        const size = (7 + Math.random() * 32).toFixed(1);
-        const left = (Math.random() * 100).toFixed(2);
-        const dur = (1.35 + Math.random() * 1.75).toFixed(2);
-        const delay = (Math.random() * 0.85).toFixed(2);
-        const blur = (Math.random() * 1.1).toFixed(2);
-        parts.push(`<span class="burst-bubble" style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;filter:blur(${blur}px);"></span>`);
+        const size = (4 + Math.random() * 10).toFixed(1);
+        const left = (42 + Math.random() * 16).toFixed(2); // cluster near center
+        const dur = (2.0 + Math.random() * 2.5).toFixed(2);
+        const delay = (Math.random() * 2.0).toFixed(2);
+        const drift = ((Math.random() - 0.5) * 90).toFixed(0);
+        parts.push(`<span class="splash-mini-bubble" style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;"></span>`);
       }
-      burst.innerHTML = parts.join('');
+      burst.insertAdjacentHTML('beforeend', parts.join(''));
 
-      // Let the bubbles rush up first, then float the whole "front page" upward with them
+      // 3) Kick off the slide-up a moment later
       setTimeout(() => {
         screen.classList.add('rising');
       }, 220);
 
-      // Once the rise has finished, remove the splash and reveal whatever is behind it
-      clearTimeout(splashFinishTimer);
-      splashFinishTimer = setTimeout(() => {
+      // 4) Cleanup — animationend is the primary trigger, long
+      //    fallback timer protects against browsers that don't fire it
+      let cleaned = false;
+      const doCleanup = () => {
+        if (cleaned) return;
+        cleaned = true;
         screen.style.display = 'none';
         screen.classList.remove('rising');
         burst.innerHTML = '';
@@ -1654,11 +1615,19 @@
           pendingStartScreen = false;
           showStartScreen();
         }
-      }, 220 + 2300 + 140);
-    }
-    // ===== END splash =====
+      };
 
-    // ===== NEW: new-user Start screen =====
+      screen.addEventListener('animationend', function onRiseEnd(e) {
+        if (e.target === screen && e.animationName === 'splashRiseUp') {
+          screen.removeEventListener('animationend', onRiseEnd);
+          doCleanup();
+        }
+      });
+
+      clearTimeout(splashFinishTimer);
+      splashFinishTimer = setTimeout(doCleanup, 220 + 2300 + 1500);
+    }
+
     function showStartScreen() {
       const s = document.getElementById('startScreen');
       if (s) s.classList.add('show');
@@ -1669,9 +1638,7 @@
       document.getElementById('cancelOnboardingBtn').classList.remove('show');
       nextStep(1);
     }
-    // ===== END start screen =====
 
-    // ===== SCAN OVERLAY HELPERS =====
     function resetDinoScene() {
       const scene = document.getElementById('dinoScene');
       if (!scene) return;
@@ -1681,7 +1648,6 @@
       });
     }
 
-    // NEW: fired the instant the scan ends — dino bolts forward and vanishes
     function triggerDinoSprint() {
       const scene = document.getElementById('dinoScene');
       if (!scene || scene.classList.contains('sprint')) return;
@@ -1702,14 +1668,12 @@
       requestAnimationFrame(update);
     }
 
-    // NEW: in detail mode a tap anywhere dismisses the popup (not just the green button)
     function onScanOverlayClick(e) {
       if (scanOverlayMode === 'detail') hideScanOverlay();
     }
 
     function showScanOverlay() {
       const overlay = document.getElementById('scanOverlay');
-      // NEW: every fresh scan starts in 'scan' mode (never inherited from a detail view)
       scanOverlayMode = 'scan';
       const logBtnReset = document.querySelector('.scan-log-btn');
       if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
@@ -1741,8 +1705,6 @@
       document.getElementById('scanBarFill').style.width = '100%';
       document.getElementById('scanBarText').textContent = '100%';
 
-      // NEW: dino sprints off-screen and disappears exactly when the scan finishes,
-      // no matter how fast or slow the scan was.
       triggerDinoSprint();
 
       setTimeout(() => {
@@ -1778,7 +1740,6 @@
     function hideScanOverlay() {
       clearInterval(scanProgressTimer);
       document.getElementById('scanOverlay').classList.remove('show');
-      // NEW: leave detail mode behind so the next scan behaves normally
       scanOverlayMode = 'scan';
       const logBtnReset = document.querySelector('.scan-log-btn');
       if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
@@ -1786,7 +1747,6 @@
     }
 
     function confirmScanLog() {
-      // NEW: when opened from Today's Log the green button just closes the popup
       if (scanOverlayMode === 'detail') { hideScanOverlay(); return; }
       playSuccessSound();
       document.getElementById('scanPhaseResult').classList.remove('active');
@@ -1801,7 +1761,6 @@
         }, 300);
       }, 2200);
     }
-    // ===== END SCAN OVERLAY HELPERS =====
 
     async function analyzePhoto(event) {
       const file = event.target.files[0]; if (!file) return;
@@ -1814,7 +1773,6 @@
         let data;
 
         if (TEST_MODE) {
-          // Fake 2.6s "analysis" so the running animation plays out
           const thumb = await compressImage(file, 160, 0.5);
           lastScanThumb = 'data:image/jpeg;base64,' + thumb;
           await new Promise(r => setTimeout(r, 2600));
@@ -1837,7 +1795,6 @@
           data = { name: parsed.name || 'Scanned Meal', cal: parsed.cal || 0, pro: parsed.pro || 0, carb: parsed.carb || 0, fat: parsed.fat || 0 };
         }
 
-        // Populate the form inputs so addEntry() picks up the values
         document.getElementById('foodName').value = data.name;
         document.getElementById('foodCal').value = data.cal;
         document.getElementById('foodPro').value = data.pro;
@@ -1857,7 +1814,6 @@
     function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
     function removeEntry(id) { const logs = getLogs().filter(item => item.id !== id); saveLogs(logs); }
 
-    // ===== NEW: food options (hamburger) menu =====
     function closeAllFoodMenus() {
       document.querySelectorAll('.food-menu.show').forEach(m => m.classList.remove('show'));
       document.querySelectorAll('.food-actions.menu-open').forEach(a => a.classList.remove('menu-open'));
@@ -1875,7 +1831,6 @@
     }
     document.addEventListener('click', closeAllFoodMenus);
 
-    // ===== NEW: tapping a meal's photo or name opens the same result popup =====
     function openFoodDetail(id) {
       closeAllFoodMenus();
       const meal = getLogs().find(x => x.id === id);
@@ -1919,7 +1874,6 @@
         }, 180 + i * 140);
       });
     }
-    // ===== END meal detail popup =====
 
     function openEditFood(id) {
       closeAllFoodMenus();
@@ -1951,7 +1905,6 @@
     function showEditSuccess() {
       const ov = document.getElementById('editSuccessOverlay');
       ov.classList.add('show');
-      // NEW: eyes stay open first — the wink (and its sound) lands about 1s in
       clearTimeout(editWinkTimer);
       editWinkTimer = setTimeout(playWinkSound, 1050);
       setTimeout(() => { ov.classList.remove('show'); }, 2400);
@@ -1972,21 +1925,18 @@
       document.getElementById('deleteFoodModal').classList.remove('show');
       deletingFoodId = null;
     }
-    // ===== END food options menu =====
 
-    // ===== NEW: car-meter style numbers + tick dashes around the gauges =====
     function gaugePoint(radius, deg) {
       const rad = deg * Math.PI / 180;
       return { x: 100 + radius * Math.sin(rad), y: 100 - radius * Math.cos(rad) };
     }
 
-    // picks the gap between the printed numbers so the dial never gets crowded
     function pickScaleStep(type, goal) {
       if (type === 'cal') {
         const options = [100, 200, 250, 500, 1000, 2000];
         for (let i = 0; i < options.length; i++) {
           const step = options[i];
-          const labels = Math.floor((goal - 1) / step) + 2; // every printed number plus the goal itself
+          const labels = Math.floor((goal - 1) / step) + 2;
           if (labels <= 9) return step;
         }
         return options[options.length - 1];
@@ -2007,7 +1957,6 @@
       const minorStep = type === 'cal' ? 100 : 20;
       const angleOf = (v) => -90 + (clamp(v, 0, goal) / goal) * 180;
 
-      // short dashes between the printed numbers, like a real car dial
       if (goal / minorStep <= 60) {
         for (let v = 0; v <= goal; v += minorStep) {
           if (Math.abs(v / majorStep - Math.round(v / majorStep)) < 0.001) continue;
@@ -2023,7 +1972,6 @@
         }
       }
 
-      // printed numbers: 0, step, 2*step … and the very last one is always exactly the user's goal
       const labels = [];
       for (let v = 0; v < goal; v += majorStep) labels.push(v);
       labels.push(goal);
@@ -2039,9 +1987,6 @@
         tick.setAttribute('stroke-linecap', 'round');
         group.appendChild(tick);
 
-        // NEW: wide (4 digit) numbers are drawn smaller and pushed further out, and the
-        // ones near the two ends of the dial get extra room because they sit beside the
-        // coloured arc instead of above it — so they never touch the meter again.
         const str = String(Math.round(v));
         const wide = str.length >= 4;
         const sinA = Math.abs(Math.sin(a * Math.PI / 180));
@@ -2058,7 +2003,6 @@
         group.appendChild(text);
       });
     }
-    // ===== END gauge scale =====
 
     function renderGauge(type, current, goal) { const pct = goal > 0 ? clamp(current / goal * 100, 0, 100) : 0; const angle = -90 + pct * 1.8; const needleGroup = document.getElementById(type + 'Needle'); needleGroup.style.transform = `rotate(${angle}deg)`; const needleLine = needleGroup.querySelector('line'); document.getElementById(type + 'Text').textContent = `${current} / ${goal}${type === 'pro' ? 'g' : ''}`; const box = document.getElementById(type + 'Box'); const rawPct = goal > 0 ? (current / goal * 100) : 0; if (type === 'pro') { if (rawPct >= 100) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else { box.classList.remove('target-reached', 'over-limit'); needleLine.setAttribute('stroke', '#cbd5e1'); } } else { const inRange = rawPct >= 90 && rawPct <= 100; if (inRange) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else if (rawPct > 100) { box.classList.add('over-limit'); box.classList.remove('target-reached'); needleLine.setAttribute('stroke', '#f87171'); } else { box.classList.remove('over-limit', 'target-reached'); needleLine.setAttribute('stroke', '#cbd5e1'); } } buildGaugeScale(type, goal); }
     function render() {
@@ -2071,7 +2015,6 @@
       renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO);
     }
 
-    // ===== NEW: dumbbell app icon (used for "Add to Home Screen") =====
     function buildAppIconPng(size) {
       const c = document.createElement('canvas');
       c.width = size; c.height = size;
@@ -2140,11 +2083,9 @@
       } catch (e) { console.warn('Icon build failed:', e); }
     }
     applyAppIcons();
-    // ===== END app icon =====
 
     initApp();
 
-    // ===== NEW: soft ripple feedback from the tap point on the scan button =====
     (function initScanTapRipple() {
       const btn = document.querySelector('.scan-btn');
       if (!btn) return;
@@ -2161,7 +2102,6 @@
         setTimeout(() => { if (ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 850);
       });
     })();
-    // ===== END scan button fx =====
   </script>
 </body>
 </html>
