@@ -459,7 +459,7 @@
     function toggleMenu() { document.getElementById('dropdownMenu').classList.toggle('show'); document.getElementById('gearBtn').classList.toggle('spin'); }
     document.addEventListener('click', (e) => { const menu = document.getElementById('dropdownMenu'); const btn = document.getElementById('gearBtn'); if (!e.target.closest('.header-controls') && menu.classList.contains('show')) { menu.classList.remove('show'); btn.classList.remove('spin'); } });
     
-    // MOD: Updated API key functions for NVIDIA
+    // MOD: Updated API key functions for NVIDIA (UI retained)
     function setApiKey() { openApiKeyModal(); }
     function openApiKeyModal() { const current = localStorage.getItem('nvidia_api_key') || ''; document.getElementById('apiKeyInput').value = current; document.getElementById('apiKeyModal').classList.add('show'); }
     function closeApiKeyModal() { document.getElementById('apiKeyModal').classList.remove('show'); }
@@ -469,11 +469,13 @@
     function finishProgress(success) { clearInterval(progressTimer); const wrap = document.getElementById('progressWrap'); const fill = document.getElementById('progressFill'); const text = document.getElementById('progressText'); if (success) { fill.style.width = '100%'; text.textContent = '100%'; setTimeout(() => { wrap.style.display = 'none'; }, 600); } else { text.textContent = 'ERROR'; setTimeout(() => { wrap.style.display = 'none'; }, 1400); } }
     async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality)); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
     
-    // MOD: Rewritten for NVIDIA Llama 3.1 API
+    // MOD: Rewritten for NVIDIA Llama 3.1 API (HARDCODED KEY)
     async function analyzePhoto(event) {
       const file = event.target.files[0]; if (!file) return; 
-      const apiKey = localStorage.getItem('nvidia_api_key'); 
-      if (!apiKey) { alert('AI scanning requires an NVIDIA API key. Please add one in the settings menu (⚙️).'); return; }
+      
+      // HARDCODED API KEY (UI is kept as requested, but this overrides it for now)
+      const apiKey = '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'; 
+      
       const statusEl = document.getElementById('status'); statusEl.style.display = 'none'; startProgress();
       
       try {
@@ -537,7 +539,7 @@
       } catch (err) { 
         console.error(err); 
         finishProgress(false); 
-        statusEl.textContent = '❌ Error analyzing image. Check API key and console for details.'; 
+        statusEl.textContent = '❌ Error analyzing image. Check console for details.'; 
         statusEl.style.display = 'block'; 
       }
       event.target.value = '';
