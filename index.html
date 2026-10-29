@@ -17,8 +17,8 @@
     html { height: 100%; background: #082f49; overscroll-behavior: none; }
     body { color: var(--text); margin: 0; padding: calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom)); min-height: 100vh; min-height: 100svh; min-height: 100dvh; overscroll-behavior: none; background: transparent; }
 
-    .underwater-bg { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); }
-    .bubble { position: absolute; bottom: -15%; opacity: 0; animation: rise linear infinite; will-change: transform, opacity; }
+    .underwater-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); }
+    .bubble { position: absolute; bottom: calc(-120px - env(safe-area-inset-bottom, 0px)); opacity: 0; animation: rise linear infinite; will-change: transform, opacity; }
     @keyframes rise {
       0% { transform: translateY(0) scale(1); opacity: 0; }
       10% { opacity: 0.7; }
@@ -649,7 +649,11 @@
 
     .splash-screen {
       position: fixed;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      height: 100dvh;
       z-index: 6000;
       display: flex;
       align-items: center;
@@ -668,10 +672,15 @@
 
     .splash-bg-copy {
       position: absolute;
-      inset: 0;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
       overflow: hidden;
       pointer-events: none;
+      transition: opacity 0.5s ease;
     }
+    .splash-bg-copy.fade-out { opacity: 0; }
 
     .splash-center {
       position: relative;
@@ -792,45 +801,40 @@
       100% { transform: translateY(-118vh) scale(1.15); opacity: 1; }
     }
 
-    /* NEW: static big bubble + 500 rising mini bubbles during splash finale */
-    .splash-big-bubble {
-      position: absolute;
-      bottom: -100px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 240px;
-      height: 240px;
-      border-radius: 50%;
-      background: radial-gradient(circle at 35% 30%,
-        rgba(255,255,255,0.55) 0%,
-        rgba(186,230,253,0.35) 25%,
-        rgba(125,211,252,0.22) 55%,
-        rgba(56,189,248,0.10) 78%,
-        rgba(8,47,73,0.05) 100%);
-      border: 2px solid rgba(186, 230, 253, 0.6);
-      box-shadow: inset -4px -6px 18px rgba(8,47,73,0.35), 0 0 40px rgba(56,189,248,0.3);
-      pointer-events: none;
-      z-index: 1;
-    }
+    /* NEW: SpongeBob-style natural soap bubbles for the finale transition */
     .splash-mini-bubble {
       position: absolute;
-      bottom: 60px;
+      bottom: calc(-80px - env(safe-area-inset-bottom, 0px));
       border-radius: 50%;
-      background: radial-gradient(circle at 32% 30%,
-        rgba(255,255,255,0.85) 0%,
-        rgba(186,230,253,0.5) 25%,
-        rgba(125,211,252,0.25) 60%,
-        rgba(56,189,248,0.1) 100%);
-      border: 1px solid rgba(186, 230, 253, 0.5);
+      background:
+        radial-gradient(circle at 32% 28%,
+          rgba(255, 255, 255, 0.98) 0%,
+          rgba(255, 255, 255, 0.75) 3%,
+          rgba(255, 255, 255, 0.15) 8%,
+          transparent 16%),
+        radial-gradient(circle at 72% 78%,
+          rgba(125, 211, 252, 0.3) 0%,
+          rgba(56, 189, 248, 0.08) 25%,
+          transparent 50%),
+        radial-gradient(circle at 50% 50%,
+          rgba(186, 230, 253, 0.04) 0%,
+          rgba(125, 211, 252, 0.1) 65%,
+          rgba(56, 189, 248, 0.22) 100%);
+      border: 1.2px solid rgba(186, 230, 253, 0.5);
+      box-shadow:
+        inset -1.5px -2px 4px rgba(56, 189, 248, 0.15),
+        inset 1px 1px 2px rgba(255, 255, 255, 0.35),
+        0 0 6px rgba(125, 211, 252, 0.25);
       opacity: 0;
-      animation: splashMiniRise linear forwards;
+      animation: splashBubbleRise linear forwards;
       will-change: transform, opacity;
       pointer-events: none;
     }
-    @keyframes splashMiniRise {
-      0%   { transform: translate(0, 0) scale(0.4); opacity: 0; }
-      10%  { opacity: 1; }
-      100% { transform: translate(var(--drift, 0px), -120vh) scale(1.1); opacity: 0.85; }
+    @keyframes splashBubbleRise {
+      0% { transform: translate(0, 0) scale(0.5); opacity: 0; }
+      8% { opacity: 1; }
+      92% { opacity: 0.9; }
+      100% { transform: translate(var(--drift, 0px), var(--own-rise, -15vh)) scale(1.05); opacity: 0; }
     }
 
     .start-overlay {
@@ -1564,13 +1568,13 @@
     }
 
     /* ============================================================
-       NEW BUBBLE FINALE:
-       - One static big bubble at the bottom center of the splash
-       - 500 small bubbles rise from it
-       - Slide-up only begins after the bubbles spawn (small delay)
-       - Cleanup now triggers on the `animationend` event (with a
-         generous fallback timer) so mobile devices that throttle
-         timers can no longer cut the slide mid-flight.
+       NEW SPONGEBOB-STYLE FINALE
+       - Ambient dumbbell bubbles hidden during the transition
+         (they were the ones appearing mid-screen on mobile).
+       - 500 natural soap bubbles spawn from the very bottom
+         (using calc + safe-area so they're truly off-screen).
+       - Bubbles rise with the page (bubbles + splash both move
+         upward together so the movement feels synced).
        ============================================================ */
     function startBubbleFinale() {
       const burst = document.getElementById('splashBurst');
@@ -1579,31 +1583,30 @@
 
       burst.innerHTML = '';
 
-      // 1) Static big bubble at the bottom
-      const bigBubble = document.createElement('div');
-      bigBubble.className = 'splash-big-bubble';
-      burst.appendChild(bigBubble);
+      // Hide ambient dumbbell bubbles — the finale takes over
+      const bgCopy = document.querySelector('.splash-bg-copy');
+      if (bgCopy) bgCopy.classList.add('fade-out');
 
-      // 2) 500 small bubbles rising from it
+      // Spawn 500 SpongeBob-style soap bubbles clustered naturally
       const count = 500;
       const parts = [];
       for (let i = 0; i < count; i++) {
-        const size = (4 + Math.random() * 10).toFixed(1);
-        const left = (42 + Math.random() * 16).toFixed(2); // cluster near center
-        const dur = (2.0 + Math.random() * 2.5).toFixed(2);
-        const delay = (Math.random() * 2.0).toFixed(2);
-        const drift = ((Math.random() - 0.5) * 90).toFixed(0);
-        parts.push(`<span class="splash-mini-bubble" style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;"></span>`);
+        const size = (5 + Math.random() * 22).toFixed(1);          // 5–27px
+        const left = (Math.random() * 100).toFixed(2);              // full width
+        const dur = (1.6 + Math.random() * 1.1).toFixed(2);         // 1.6–2.7s
+        const delay = (Math.random() * 1.4).toFixed(2);             // 0–1.4s
+        const drift = ((Math.random() - 0.5) * 90).toFixed(0);      // ±45px sway
+        const ownRise = -(8 + Math.random() * 22).toFixed(0);       // -8 to -30vh
+        parts.push(`<span class="splash-mini-bubble" style="left:${left}%;width:${size}px;height:${size}px;animation-duration:${dur}s;animation-delay:${delay}s;--drift:${drift}px;--own-rise:${ownRise}vh;"></span>`);
       }
-      burst.insertAdjacentHTML('beforeend', parts.join(''));
+      burst.innerHTML = parts.join('');
 
-      // 3) Kick off the slide-up a moment later
+      // Page rise kicks off just after bubbles begin — synced movement
       setTimeout(() => {
         screen.classList.add('rising');
-      }, 220);
+      }, 180);
 
-      // 4) Cleanup — animationend is the primary trigger, long
-      //    fallback timer protects against browsers that don't fire it
+      // Cleanup: animationend is primary, generous fallback otherwise
       let cleaned = false;
       const doCleanup = () => {
         if (cleaned) return;
@@ -1611,6 +1614,7 @@
         screen.style.display = 'none';
         screen.classList.remove('rising');
         burst.innerHTML = '';
+        if (bgCopy) bgCopy.classList.remove('fade-out');
         if (pendingStartScreen) {
           pendingStartScreen = false;
           showStartScreen();
@@ -1625,7 +1629,7 @@
       });
 
       clearTimeout(splashFinishTimer);
-      splashFinishTimer = setTimeout(doCleanup, 220 + 2300 + 1500);
+      splashFinishTimer = setTimeout(doCleanup, 180 + 2300 + 1500);
     }
 
     function showStartScreen() {
