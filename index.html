@@ -127,7 +127,7 @@
     .scan-btn { margin-bottom: 10px; }
     .log-btn { margin-top: 12px; }
 
-    /* ===== NEW: elegant press + liquid-glass shine sweeping the scan button every 2s ===== */
+    /* ===== NEW: elegant press + slow, subtle liquid-glass sheen on the scan button ===== */
     .scan-btn {
       position: relative;
       overflow: hidden;
@@ -136,33 +136,33 @@
                   border-color 0.3s ease,
                   background 0.25s ease;
     }
-    /* the travelling glass highlight */
+    /* the travelling glass highlight — slow, wide and very soft */
     .scan-btn::after {
       content: "";
       position: absolute;
       top: -60%;
       left: 0;
-      width: 45%;
+      width: 55%;
       height: 220%;
       pointer-events: none;
       background: linear-gradient(100deg,
         rgba(255, 255, 255, 0) 0%,
-        rgba(186, 230, 253, 0.14) 30%,
-        rgba(255, 255, 255, 0.62) 50%,
-        rgba(186, 230, 253, 0.14) 70%,
+        rgba(186, 230, 253, 0.05) 33%,
+        rgba(255, 255, 255, 0.22) 50%,
+        rgba(186, 230, 253, 0.05) 67%,
         rgba(255, 255, 255, 0) 100%);
       transform: translateX(-170%) skewX(-18deg);
-      filter: blur(1.5px);
+      filter: blur(3px);
       opacity: 0;
-      animation: liquidGlassShine 2s cubic-bezier(0.45, 0, 0.25, 1) infinite;
+      animation: liquidGlassShine 4.5s cubic-bezier(0.42, 0, 0.28, 1) infinite;
       will-change: transform, opacity;
     }
     @keyframes liquidGlassShine {
       0%   { transform: translateX(-170%) skewX(-18deg); opacity: 0; }
-      10%  { opacity: 0.85; }
-      58%  { transform: translateX(340%) skewX(-18deg); opacity: 0.85; }
-      74%  { transform: translateX(340%) skewX(-18deg); opacity: 0; }
-      100% { transform: translateX(340%) skewX(-18deg); opacity: 0; }
+      14%  { opacity: 0.5; }
+      72%  { transform: translateX(330%) skewX(-18deg); opacity: 0.5; }
+      88%  { transform: translateX(330%) skewX(-18deg); opacity: 0; }
+      100% { transform: translateX(330%) skewX(-18deg); opacity: 0; }
     }
     .scan-btn:active {
       transform: scale(0.965);
@@ -1032,6 +1032,8 @@
     let currentScanData = null;
     let editingFoodId = null;
     let deletingFoodId = null;
+    // NEW: 'scan' = normal flow, 'detail' = opened from Today's Log (button only closes)
+    let scanOverlayMode = 'scan';
     const todayKey = new Date().toISOString().split('T')[0];
 
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
@@ -1248,6 +1250,13 @@
 
     function showScanOverlay() {
       const overlay = document.getElementById('scanOverlay');
+      // NEW: every fresh scan starts in 'scan' mode (never inherited from a detail view)
+      scanOverlayMode = 'scan';
+      const logBtnReset = document.querySelector('.scan-log-btn');
+      if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
+      const detailImgReset = document.getElementById('scanResultImg');
+      if (detailImgReset) detailImgReset.style.display = 'block';
+
       overlay.classList.add('show');
       resetDinoScene();
       document.getElementById('scanPhaseRunning').classList.add('active');
@@ -1310,10 +1319,16 @@
     function hideScanOverlay() {
       clearInterval(scanProgressTimer);
       document.getElementById('scanOverlay').classList.remove('show');
+      // NEW: leave detail mode behind so the next scan behaves normally
+      scanOverlayMode = 'scan';
+      const logBtnReset = document.querySelector('.scan-log-btn');
+      if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
       setTimeout(resetDinoScene, 400);
     }
 
     function confirmScanLog() {
+      // NEW: when opened from Today's Log the green button just closes the popup
+      if (scanOverlayMode === 'detail') { hideScanOverlay(); return; }
       playSuccessSound();
       document.getElementById('scanPhaseResult').classList.remove('active');
       document.getElementById('scanPhaseSuccess').classList.add('active');
@@ -1400,6 +1415,52 @@
       }
     }
     document.addEventListener('click', closeAllFoodMenus);
+
+    // ===== NEW: tapping a meal's photo or name opens the same result popup =====
+    function openFoodDetail(id) {
+      closeAllFoodMenus();
+      const meal = getLogs().find(x => x.id === id);
+      if (!meal) return;
+
+      scanOverlayMode = 'detail';
+
+      document.getElementById('scanOverlay').classList.add('show');
+      document.getElementById('scanPhaseRunning').classList.remove('active');
+      document.getElementById('scanPhaseSuccess').classList.remove('active');
+      document.getElementById('scanPhaseResult').classList.add('active');
+
+      const imgEl = document.getElementById('scanResultImg');
+      if (meal.img) { imgEl.src = meal.img; imgEl.style.display = 'block'; }
+      else { imgEl.style.display = 'none'; }
+
+      document.getElementById('scanResultName').textContent = meal.name || 'Meal';
+
+      const logBtn = document.querySelector('.scan-log-btn');
+      if (logBtn) logBtn.textContent = '✓ Done';
+
+      document.querySelectorAll('.scan-macro-item').forEach(row => {
+        row.querySelector('.scan-macro-fill').style.width = '0%';
+        row.querySelector('.scan-macro-value').textContent = '0';
+      });
+
+      const macros = [
+        { key: 'cal', value: meal.cal || 0, pct: 88 },
+        { key: 'pro', value: meal.pro || 0, pct: 75 },
+        { key: 'carb', value: meal.carb || 0, pct: 68 },
+        { key: 'fat', value: meal.fat || 0, pct: 55 }
+      ];
+
+      macros.forEach((m, i) => {
+        const row = document.querySelector(`.scan-macro-item[data-macro="${m.key}"]`);
+        const fillBar = row.querySelector('.scan-macro-fill');
+        const valueEl = row.querySelector('.scan-macro-value');
+        setTimeout(() => {
+          fillBar.style.width = m.pct + '%';
+          animateNumber(valueEl, m.value, 1100, '');
+        }, 180 + i * 140);
+      });
+    }
+    // ===== END meal detail popup =====
 
     function openEditFood(id) {
       closeAllFoodMenus();
@@ -1519,13 +1580,14 @@
         tick.setAttribute('stroke-linecap', 'round');
         group.appendChild(tick);
 
-        const p = gaugePoint(93, a);
+        // NEW: pushed further out from the arc so wide numbers never poke into the coloured ring
+        const p = gaugePoint(96, a);
         const text = document.createElementNS(NS, 'text');
         text.setAttribute('x', p.x.toFixed(2));
         text.setAttribute('y', p.y.toFixed(2));
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
-        text.setAttribute('font-size', '10');
+        text.setAttribute('font-size', '9');
         text.setAttribute('font-weight', '700');
         text.textContent = Math.round(v);
         group.appendChild(text);
@@ -1538,8 +1600,8 @@
       const logs = getLogs(); let totalCal = 0, totalPro = 0; const listEl = document.getElementById('logList'); listEl.innerHTML = ''; if (logs.length === 0) { listEl.innerHTML = `<div class="empty-state">🍽️ No meals logged yet today</div>`; }
       logs.forEach(item => {
         totalCal += item.cal; totalPro += item.pro;
-        const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb">` : `<div class="food-thumb placeholder">🍽️</div>`;
-        listEl.innerHTML += `<div class="food-card">${imgHtml}<div class="food-info"><div class="food-name">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div>`;
+        const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb" style="cursor:pointer" onclick="openFoodDetail(${item.id})">` : `<div class="food-thumb placeholder" style="cursor:pointer" onclick="openFoodDetail(${item.id})">🍽️</div>`;
+        listEl.innerHTML += `<div class="food-card">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div>`;
       });
       renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO);
     }
