@@ -61,10 +61,18 @@
     /* ===== NEW: car-meter style numbers + tick dashes drawn by JS ===== */
     .gauge-scale text {
       font-family: -apple-system, BlinkMacSystemFont, sans-serif;
-      fill: #94a3b8;
+      fill: #cbd5e1;
       font-variant-numeric: tabular-nums;
       pointer-events: none;
       user-select: none;
+    }
+
+    /* NEW: soft white neon on the printed numbers once a target is hit or exceeded */
+    #calBox.over-limit .gauge-scale text,
+    #calBox.target-reached .gauge-scale text,
+    #proBox.target-reached .gauge-scale text {
+      fill: #ffffff;
+      filter: drop-shadow(0 0 1.5px rgba(255, 255, 255, 0.75)) drop-shadow(0 0 5px rgba(255, 255, 255, 0.35));
     }
     /* ===== END meter scale styles ===== */
 
@@ -904,7 +912,7 @@
   <div id="onboardingSuccessOverlay"><div class="success-card"><svg class="success-checkmark-svg" viewBox="0 0 104 104"><circle class="checkmark-circle" cx="52" cy="52" r="50" fill="none" stroke="#4ade80" stroke-width="5"/><path class="checkmark-check" fill="none" d="M30 54 l14 14 30 -30" stroke="#4ade80" stroke-width="6" stroke-linecap="round"/></svg><h2>Your data has been updated</h2></div></div>
 
   <!-- ===== NEW SCAN OVERLAY (FLOATING POPUP WINDOW) ===== -->
-  <div id="scanOverlay" class="scan-overlay">
+  <div id="scanOverlay" class="scan-overlay" onclick="onScanOverlayClick(event)">
     <div class="scan-window">
       <!-- Bubbles rising inside the floating window -->
       <div class="scan-window-bubbles">
@@ -1021,7 +1029,7 @@
   </div>
   <!-- ===== END SCAN OVERLAY ===== -->
 
-  <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📷 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><input type="text" id="foodName" placeholder="Food (e.g., Roasted Chicken, Basmati Rice)"><div class="macro-input-grid"><input type="number" id="foodCal" placeholder="Calories" inputmode="numeric"><input type="number" id="foodPro" placeholder="Protein (g)" inputmode="numeric"><input type="number" id="foodCarb" placeholder="Carbs (g)" inputmode="numeric"><input type="number" id="foodFat" placeholder="Fat (g)" inputmode="numeric"></div><button class="liquid-btn log-btn" onclick="addEntry()">+ Log Meal</button></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
+  <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">✏️ Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📷 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
 
   <script>
     let GOAL_CAL = 0;
@@ -1246,6 +1254,11 @@
         if (t < 1) requestAnimationFrame(update);
       };
       requestAnimationFrame(update);
+    }
+
+    // NEW: in detail mode a tap anywhere dismisses the popup (not just the green button)
+    function onScanOverlayClick(e) {
+      if (scanOverlayMode === 'detail') hideScanOverlay();
     }
 
     function showScanOverlay() {
@@ -1580,16 +1593,22 @@
         tick.setAttribute('stroke-linecap', 'round');
         group.appendChild(tick);
 
-        // NEW: pushed further out from the arc so wide numbers never poke into the coloured ring
-        const p = gaugePoint(96, a);
+        // NEW: wide (4 digit) numbers are drawn smaller and pushed further out, and the
+        // ones near the two ends of the dial get extra room because they sit beside the
+        // coloured arc instead of above it — so they never touch the meter again.
+        const str = String(Math.round(v));
+        const wide = str.length >= 4;
+        const sinA = Math.abs(Math.sin(a * Math.PI / 180));
+        const labelR = (wide ? 96 : 95) + sinA * (wide ? 5 : 2);
+        const p = gaugePoint(labelR, a);
         const text = document.createElementNS(NS, 'text');
         text.setAttribute('x', p.x.toFixed(2));
         text.setAttribute('y', p.y.toFixed(2));
         text.setAttribute('text-anchor', 'middle');
         text.setAttribute('dominant-baseline', 'central');
-        text.setAttribute('font-size', '9');
+        text.setAttribute('font-size', wide ? '8.4' : '9');
         text.setAttribute('font-weight', '700');
-        text.textContent = Math.round(v);
+        text.textContent = str;
         group.appendChild(text);
       });
     }
