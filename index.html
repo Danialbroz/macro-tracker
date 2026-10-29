@@ -117,6 +117,70 @@
     .scan-btn { margin-bottom: 10px; }
     .log-btn { margin-top: 12px; }
 
+    /* ===== NEW: elegant press + looping water wave inside the scan button ===== */
+    .scan-btn {
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1),
+                  box-shadow 0.3s ease,
+                  border-color 0.3s ease,
+                  background 0.25s ease;
+    }
+    .scan-btn::before,
+    .scan-btn::after {
+      content: "";
+      position: absolute;
+      left: 0; right: 0; bottom: 0;
+      pointer-events: none;
+      background-repeat: repeat-x;
+    }
+    /* wave layer 1 — brighter, faster crests */
+    .scan-btn::before {
+      height: 15px;
+      background-image: radial-gradient(circle 14px at 14px 16px, rgba(56, 189, 248, 0.55) 98%, rgba(56, 189, 248, 0) 100%);
+      background-size: 28px 15px;
+      animation: scanWaveA 2.6s linear infinite;
+      opacity: 0.85;
+    }
+    /* wave layer 2 — softer, slower, offset for depth */
+    .scan-btn::after {
+      height: 19px;
+      background-image: radial-gradient(circle 18px at 18px 21px, rgba(186, 230, 253, 0.32) 98%, rgba(186, 230, 253, 0) 100%);
+      background-size: 36px 19px;
+      animation: scanWaveB 4.4s linear infinite;
+      opacity: 0.8;
+    }
+    @keyframes scanWaveA {
+      from { background-position: 0 0; }
+      to   { background-position: -28px 0; }
+    }
+    @keyframes scanWaveB {
+      from { background-position: 0 0; }
+      to   { background-position: -36px 0; }
+    }
+    .scan-btn:active {
+      transform: scale(0.965);
+      border-color: rgba(125, 211, 252, 0.55);
+      box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 26px rgba(56, 189, 248, 0.45);
+    }
+    .scan-btn:active::before,
+    .scan-btn:active::after { animation-duration: 0.9s; }
+
+    .scan-tap-ripple {
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+      background: radial-gradient(circle, rgba(186, 230, 253, 0.55) 0%, rgba(56, 189, 248, 0.32) 40%, rgba(56, 189, 248, 0) 70%);
+      transform: scale(0);
+      opacity: 0.9;
+      animation: scanTapRipple 0.75s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    }
+    @keyframes scanTapRipple {
+      0%   { transform: scale(0); opacity: 0.9; }
+      100% { transform: scale(1); opacity: 0; }
+    }
+    /* ===== END scan button fx ===== */
+
     .progress-wrap { display: none; margin-top: 10px; height: 30px; }
     .progress-track { position: relative; height: 100%; border-radius: 16px; overflow: hidden; background: rgba(15,23,42,0.45); border: 1px solid rgba(255,255,255,0.22); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
     .progress-fill { position: relative; height: 100%; width: 0%; background: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #38bdf8, #0369a1); background-size: 300% 100%; animation: waterFlow 2.4s linear infinite; transition: width 0.15s linear; }
@@ -308,6 +372,11 @@
     /* NEW: edit-food card drifts up and down, same underwater motion as the meal-updated popup */
     #editFoodCard { animation: popIn 0.3s ease, bob 4s ease-in-out 0.3s infinite; }
 
+    /* NEW: keep the CALORIES / PROTEIN / FAT labels snug to their own input instead of hanging above it */
+    #editFoodCard label { margin-top: 16px; }
+    #editFoodCard label:first-of-type { margin-top: 0; }
+    #editFoodCard input { margin-top: 5px; }
+
     #onboardingSuccessOverlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: 3000; display: none; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); opacity: 0; transition: opacity 0.4s ease; }
     #onboardingSuccessOverlay.show { display: flex; opacity: 1; }
     #onboardingSuccessOverlay .success-card { display: flex; flex-direction: column; align-items: center; justify-content: center; transform: scale(0.8); opacity: 0; }
@@ -422,8 +491,8 @@
     }
     .dino-runner {
       position: relative;
-      width: 76px; height: 88px;
-      margin-bottom: 6px;
+      width: 76px; height: 72px;   /* NEW: box now hugs the dino so the feet reach the ground */
+      margin-bottom: 2px;          /* NEW: feet rest ON the scrolling platform line, no floating */
       animation: dinoJump 2.2s ease-in-out infinite;
       will-change: transform;
     }
@@ -853,7 +922,8 @@
 
           <!-- Cute dinosaur runner -->
           <div class="dino-runner" id="dinoRunner">
-            <svg class="dino-svg" viewBox="0 0 80 80">
+            <!-- NEW: viewBox trimmed to 76 tall so the feet sit on the bottom edge = the ground line -->
+            <svg class="dino-svg" viewBox="0 0 80 76">
               <!-- Tail -->
               <path d="M 18 46 C 8 44 2 36 3 24 C 10 30 15 36 21 40 Z" fill="#bae6fd"/>
               <!-- Back spikes -->
@@ -1391,6 +1461,25 @@
       renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO);
     }
     initApp();
+
+    // ===== NEW: soft ripple feedback from the tap point on the scan button =====
+    (function initScanTapRipple() {
+      const btn = document.querySelector('.scan-btn');
+      if (!btn) return;
+      btn.addEventListener('pointerdown', (e) => {
+        const rect = btn.getBoundingClientRect();
+        const size = Math.max(rect.width, rect.height) * 2.4;
+        const ripple = document.createElement('span');
+        ripple.className = 'scan-tap-ripple';
+        ripple.style.width = size + 'px';
+        ripple.style.height = size + 'px';
+        ripple.style.left = (e.clientX - rect.left - size / 2) + 'px';
+        ripple.style.top = (e.clientY - rect.top - size / 2) + 'px';
+        btn.appendChild(ripple);
+        setTimeout(() => { if (ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 850);
+      });
+    })();
+    // ===== END scan button fx =====
   </script>
 </body>
 </html>
