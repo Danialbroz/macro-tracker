@@ -755,638 +755,612 @@
       border-color: rgba(125, 211, 252, 0.55);
       box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.4), 0 0 26px rgba(56, 189, 248, 0.45);
     }
-
-    /* ========== INTRO: TROPICAL BEACH → OCEAN DIVE ========== */
-    #intro-root {
-      position: fixed;
-      inset: 0;
-      z-index: 9999;
-      overflow: hidden;
-      background: linear-gradient(180deg, #6ec6ff 0%, #a8d8ea 100%);
-      will-change: opacity;
-    }
-
-    .intro-world {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 300vh;
-      will-change: transform;
-      pointer-events: none;
-    }
-
-    .intro-layer {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      pointer-events: none;
-      will-change: transform;
-    }
-
-    .intro-layer--sky {
-      height: 100vh;
-      background: linear-gradient(180deg,
-        #6ec6ff 0%,
-        #a8d8ea 35%,
-        #ffd6a5 80%,
-        #ffb88c 100%);
-      z-index: 1;
-    }
-
-    .intro-sun {
-      position: absolute;
-      top: 14vh;
-      left: 50%;
-      transform: translateX(-50%);
-      width: clamp(80px, 12vw, 130px);
-      height: clamp(80px, 12vw, 130px);
-      border-radius: 50%;
-      background: radial-gradient(circle,
-        #fff8e7 0%,
-        #ffe4a0 40%,
-        #ffc93c 62%,
-        #ffb700 82%,
-        rgba(255,183,0,0) 100%);
-      box-shadow: 0 0 80px 30px rgba(255,200,60,0.5);
-      animation: intro-sun-pulse 6s ease-in-out infinite;
-      z-index: 2;
-    }
-    @keyframes intro-sun-pulse {
-      0%, 100% { transform: translateX(-50%) scale(1);    box-shadow: 0 0 80px  30px rgba(255,200,60,0.5); }
-      50%      { transform: translateX(-50%) scale(1.05); box-shadow: 0 0 100px 40px rgba(255,200,60,0.6); }
-    }
-
-    .intro-cloud {
-      position: absolute;
-      background: #ffffff;
-      border-radius: 100px;
-      opacity: 0.85;
-      filter: blur(1px);
-      box-shadow: 0 4px 20px rgba(255,255,255,0.5);
-    }
-    .intro-cloud::before,
-    .intro-cloud::after {
-      content: "";
-      position: absolute;
-      background: #ffffff;
-      border-radius: 50%;
-    }
-    .intro-cloud--1 {
-      top: 20vh; left: -10%;
-      width: 160px; height: 40px;
-      animation: intro-cloud-drift 60s linear infinite;
-    }
-    .intro-cloud--1::before { width: 70px;  height: 70px;  left: 20px;  top: -30px; }
-    .intro-cloud--1::after  { width: 90px;  height: 90px;  right: 20px; top: -40px; }
-    .intro-cloud--2 {
-      top: 30vh; left: -15%;
-      width: 220px; height: 50px;
-      opacity: 0.7;
-      animation: intro-cloud-drift 80s linear infinite 10s;
-    }
-    .intro-cloud--2::before { width: 100px; height: 100px; left: 30px;  top: -45px; }
-    .intro-cloud--2::after  { width: 130px; height: 130px; right: 30px; top: -55px; }
-    .intro-cloud--3 {
-      top: 12vh; left: -8%;
-      width: 120px; height: 30px;
-      opacity: 0.6;
-      animation: intro-cloud-drift 45s linear infinite 5s;
-    }
-    .intro-cloud--3::before { width: 55px; height: 55px; left: 15px;  top: -25px; }
-    .intro-cloud--3::after  { width: 70px; height: 70px; right: 15px; top: -30px; }
-    @keyframes intro-cloud-drift {
-      from { transform: translateX(0); }
-      to   { transform: translateX(calc(100vw + 320px)); }
-    }
-
-    .intro-layer--horizon {
-      top: 75vh;
-      height: 20vh;
-      background: linear-gradient(180deg, #4aa3d4 0%, #2e7bb0 100%);
-      z-index: 2;
-    }
-
-    .intro-layer--water {
-      top: 90vh;
-      height: 210vh;
-      background: linear-gradient(180deg,
-        #4ec5d4 0%,
-        #3aa8c9 10%,
-        #2a8bb0 25%,
-        #1d6e99 45%,
-        #0e4a72 70%,
-        #082f49 100%);
-      z-index: 3;
-    }
-
-    .intro-layer--rays {
-      top: 90vh;
-      height: 130vh;
-      z-index: 4;
-    }
-    .intro-rays-svg { width: 100%; height: 100%; display: block; }
-    .intro-rays-svg g { animation: intro-rays-sway 8s ease-in-out infinite; transform-origin: center top; }
-    @keyframes intro-rays-sway {
-      0%, 100% { opacity: 0.28; transform: skewX(-2deg); }
-      50%      { opacity: 0.45; transform: skewX( 2deg); }
-    }
-
-    .intro-layer--beach {
-      top: 85vh;
-      height: 20vh;
-      z-index: 5;
-    }
-    .intro-beach-svg { width: 100%; height: 100%; display: block; }
-
-    .intro-layer--palms {
-      top: 45vh;
-      height: 55vh;
-      z-index: 6;
-    }
-    .intro-palms-svg { width: 100%; height: 100%; display: block; }
-    .intro-palm-fronds { animation: intro-palm-sway 5s ease-in-out infinite; }
-    @keyframes intro-palm-sway {
-      0%, 100% { transform: rotate(-2deg); }
-      50%      { transform: rotate(2deg); }
-    }
-
-    .intro-layer--waves {
-      top: 83vh;
-      height: 10vh;
-      z-index: 6;
-    }
-    .intro-waves-svg { width: 100%; height: 100%; display: block; }
-    .intro-wave--1 { animation: intro-wave-shift1 4s ease-in-out infinite; }
-    .intro-wave--2 { animation: intro-wave-shift2 5s ease-in-out infinite; }
-    .intro-wave--3 { animation: intro-wave-shift3 6s ease-in-out infinite; }
-    @keyframes intro-wave-shift1 { 0%,100% { transform: translateX(0); }  50% { transform: translateX(-30px); } }
-    @keyframes intro-wave-shift2 { 0%,100% { transform: translateX(0); }  50% { transform: translateX( 30px); } }
-    @keyframes intro-wave-shift3 { 0%,100% { transform: translateX(0); }  50% { transform: translateX(-20px); } }
-
-    .intro-layer--boat {
-      top: 75vh;
-      height: 15vh;
-      z-index: 6;
-    }
-    .intro-boat-svg {
-      position: absolute;
-      left: 65%;
-      bottom: 0;
-      width: clamp(80px, 10vw, 120px);
-      height: auto;
-      transform-origin: center bottom;
-      animation: intro-boat-bob 3s ease-in-out infinite;
-    }
-    @keyframes intro-boat-bob {
-      0%, 100% { transform: rotate(-3deg) translateY(0); }
-      50%      { transform: rotate( 3deg) translateY(-6px); }
-    }
-
-    .intro-fish {
-      position: absolute;
-      width: 60px;
-      height: 30px;
-      background: currentColor;
-      clip-path: polygon(0 50%, 20% 20%, 40% 20%, 70% 0%, 100% 50%, 70% 100%, 40% 80%, 20% 80%);
-    }
-    .intro-layer--fish-far { top: 105vh; height: 80vh; z-index: 4; }
-    .intro-fish--far-1 {
-      top: 20%; left: 10%; color: #0f4a72; opacity: 0.4;
-      filter: blur(0.5px);
-      animation: intro-fish-rtl 20s linear infinite;
-      transform: scale(0.8);
-    }
-    .intro-fish--far-2 {
-      top: 45%; left: 60%; color: #0f4a72; opacity: 0.4;
-      filter: blur(0.5px);
-      animation: intro-fish-ltr 25s linear infinite;
-      transform: scaleX(-1) scale(0.9);
-    }
-    .intro-fish--far-3 {
-      top: 70%; left: 30%; color: #0f4a72; opacity: 0.4;
-      filter: blur(0.5px);
-      animation: intro-fish-rtl 18s linear infinite 5s;
-      transform: scale(0.7);
-    }
-    @keyframes intro-fish-rtl { from { transform: translateX(0) scale(0.8); }            to { transform: translateX(-120vw) scale(0.8); } }
-    @keyframes intro-fish-ltr { from { transform: translateX(0) scaleX(-1) scale(0.9); }  to { transform: translateX(120vw)  scaleX(-1) scale(0.9); } }
-
-    .intro-layer--fish-near { top: 130vh; height: 80vh; z-index: 6; }
-    .intro-fish--near-1 {
-      top: 30%; left: 20%; color: #fbbf24; opacity: 0.7;
-      transform: scale(1.2);
-      filter: drop-shadow(0 0 8px rgba(251,191,36,0.3));
-      animation: intro-fish-rtl-near 12s linear infinite;
-    }
-    .intro-fish--near-2 {
-      top: 60%; left: 70%; color: #f87171; opacity: 0.8;
-      transform: scaleX(-1) scale(1.1);
-      filter: drop-shadow(0 0 8px rgba(248,113,113,0.3));
-      animation: intro-fish-ltr-near 15s linear infinite 3s;
-    }
-    @keyframes intro-fish-rtl-near { from { transform: translateX(0) scale(1.2); }            to { transform: translateX(-120vw) scale(1.2); } }
-    @keyframes intro-fish-ltr-near { from { transform: translateX(0) scaleX(-1) scale(1.1); }  to { transform: translateX(120vw)  scaleX(-1) scale(1.1); } }
-
-    .intro-layer--bubbles { top: 90vh; height: 200vh; z-index: 5; }
-    .intro-bubble {
-      position: absolute;
-      border-radius: 50%;
-      background: radial-gradient(circle at 30% 30%,
-        rgba(255,255,255,0.9)   0%,
-        rgba(186,230,253,0.5)  20%,
-        rgba(125,211,252,0.25) 60%,
-        rgba(56,189,248,0.05) 100%);
-      border: 1px solid rgba(186,230,253,0.5);
-      box-shadow: inset -1px -1px 2px rgba(56,189,248,0.2);
-      opacity: 0;
-      animation: intro-bubble-rise linear infinite;
-      will-change: transform, opacity;
-    }
-    @keyframes intro-bubble-rise {
-      0%   { transform: translate(0, 0) scale(1);                     opacity: 0; }
-      10%  { opacity: 0.9; }
-      90%  { opacity: 0.9; }
-      100% { transform: translate(var(--intro-drift, 0px), -100vh) scale(1.1); opacity: 0; }
-    }
-
-    .intro-layer--seaweed { top: 240vh; height: 60vh; z-index: 7; }
-    .intro-seaweed-svg { width: 100%; height: 100%; display: block; }
-    .intro-seaweed-shape { animation: intro-seaweed-sway 4s ease-in-out infinite; }
-    .intro-seaweed-shape--2 { animation-delay: 0.5s; }
-    .intro-seaweed-shape--3 { animation-delay: 1.0s; }
-    .intro-seaweed-shape--4 { animation-delay: 1.5s; }
-    @keyframes intro-seaweed-sway {
-      0%, 100% { transform: rotate(-3deg) skewX(-2deg); }
-      50%      { transform: rotate( 3deg) skewX( 2deg); }
-    }
-
-    .intro-layer--seabed {
-      top: 260vh;
-      height: 40vh;
-      background: linear-gradient(180deg,
-        rgba(15,23,42,0) 0%,
-        rgba(15,23,42,0.6) 40%,
-        #0f172a 100%);
-      z-index: 8;
-    }
-
-    .intro-ui {
-      position: absolute;
-      top: 8vh;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      z-index: 20;
-      pointer-events: none;
-      transition: opacity 0.6s ease;
-    }
-    .intro-logo {
-      width: clamp(70px, 10vw, 100px);
-      height: clamp(70px, 10vw, 100px);
-      filter: drop-shadow(0 8px 20px rgba(56,189,248,0.5));
-      animation: intro-logo-float 4s ease-in-out infinite;
-    }
-    .intro-logo svg { width: 100%; height: 100%; display: block; }
-    @keyframes intro-logo-float {
-      0%, 100% { transform: translateY(0); }
-      50%      { transform: translateY(-8px); }
-    }
-    .intro-title {
-      font-size: clamp(1.2rem, 4vw, 1.9rem);
-      font-weight: 800;
-      letter-spacing: 0.4px;
-      color: #ffffff;
-      text-align: center;
-      white-space: nowrap;
-      text-shadow:
-        0 2px 12px rgba(56,189,248,0.6),
-        0 0 30px rgba(56,189,248,0.3);
-    }
-
-    .intro-progress-wrap {
-      position: absolute;
-      bottom: 8vh;
-      left: 50%;
-      transform: translateX(-50%);
-      width: min(72vw, 320px);
-      z-index: 20;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-      pointer-events: none;
-      transition: opacity 0.4s ease;
-    }
-    .intro-progress-track {
-      position: relative;
-      width: 100%;
-      height: 10px;
-      border-radius: 6px;
-      background: rgba(255,255,255,0.25);
-      border: 1px solid rgba(255,255,255,0.5);
-      overflow: hidden;
-      box-shadow:
-        inset 0 1px 2px rgba(0,0,0,0.2),
-        0 2px 12px rgba(56,189,248,0.3);
-    }
-    .intro-progress-fill {
-      height: 100%;
-      width: 0%;
-      border-radius: 6px;
-      background: linear-gradient(90deg, #0369a1, #38bdf8, #7dd3fc, #bae6fd);
-      background-size: 200% 100%;
-      animation: intro-progress-shine 1.5s linear infinite;
-      transition: width 0.15s linear;
-      box-shadow: 0 0 12px rgba(56,189,248,0.6);
-    }
-    @keyframes intro-progress-shine {
-      0%   { background-position: 100% 50%; }
-      100% { background-position: -100% 50%; }
-    }
-    .intro-percentage {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: #ffffff;
-      letter-spacing: 1.5px;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.4);
-      font-variant-numeric: tabular-nums;
-    }
-
-    .intro-skip {
-      position: absolute;
-      bottom: 8vh;
-      right: 5vw;
-      z-index: 20;
-      background: rgba(255,255,255,0.15);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
-      border: 1px solid rgba(255,255,255,0.3);
-      color: #ffffff;
-      font-size: 0.8rem;
-      font-weight: 600;
-      font-family: inherit;
-      padding: 8px 16px;
-      border-radius: 20px;
-      cursor: pointer;
-      transition: background 0.2s ease, transform 0.15s ease, opacity 0.4s ease;
-      touch-action: manipulation;
-    }
-    .intro-skip:hover  { background: rgba(255,255,255,0.25); }
-    .intro-skip:active { transform: scale(0.95); }
-
-    .intro-water-crossing {
-      position: absolute;
-      inset: 0;
-      z-index: 15;
-      pointer-events: none;
-      opacity: 0;
-      overflow: hidden;
-      transition: opacity 0.4s ease;
-    }
-    .intro-water-crossing-wave {
-      position: absolute;
-      left: 0; right: 0;
-      top: 50%;
-      height: 4px;
-      transform: translateY(-50%);
-      background: linear-gradient(90deg,
-        transparent 0%,
-        rgba(255,255,255,0.9) 15%,
-        rgba(186,230,253,1)   50%,
-        rgba(255,255,255,0.9) 85%,
-        transparent 100%);
-      filter: blur(2px);
-      box-shadow: 0 0 20px 6px rgba(186,230,253,0.7);
-    }
-    .intro-water-crossing-splash {
-      position: absolute;
-      top: 50%; left: 50%;
-      width: 300px; height: 300px;
-      border-radius: 50%;
-      transform: translate(-50%, -50%) scale(0.3);
-      background: radial-gradient(circle,
-        rgba(255,255,255,0.6) 0%,
-        rgba(186,230,253,0.3) 20%,
-        rgba(56,189,248,0.15) 40%,
-        transparent 70%);
-      filter: blur(8px);
-      opacity: 0;
-    }
-    .intro-water-crossing.active .intro-water-crossing-splash {
-      animation: intro-splash-pulse 1.2s ease-out;
-    }
-    @keyframes intro-splash-pulse {
-      0%   { transform: translate(-50%, -50%) scale(0.3); opacity: 0; }
-      30%  { opacity: 1; }
-      100% { transform: translate(-50%, -50%) scale(2.2); opacity: 0; }
-    }
-
-    .intro-color-tint {
-      position: absolute;
-      inset: 0;
-      z-index: 12;
-      pointer-events: none;
-      background: #0f172a;
-      opacity: 0;
-      transition: opacity 0.15s linear;
-    }
-
-    @media (max-width: 640px) {
-      .intro-ui { top: 6vh; }
-      .intro-progress-wrap { bottom: 6vh; width: 80vw; }
-      .intro-skip { bottom: 6vh; right: 4vw; font-size: 0.75rem; padding: 6px 12px; }
-      .intro-cloud--2 { display: none; }
-      .intro-boat-svg { left: 55%; }
-    }
-
-    @media (prefers-reduced-motion: reduce) {
-      .intro-logo,
-      .intro-sun,
-      .intro-cloud,
-      .intro-boat-svg,
-      .intro-wave--1,
-      .intro-wave--2,
-      .intro-wave--3,
-      .intro-fish,
-      .intro-seaweed-shape,
-      .intro-rays-svg g,
-      .intro-progress-fill,
-      .intro-palm-fronds { animation: none !important; }
-      .intro-bubble { animation: none !important; opacity: 0.4 !important; }
-    }
-    /* ========== END INTRO ========== */
   </style>
 </head>
 <body>
 
-  <!-- ========== INTRO: TROPICAL BEACH → OCEAN DIVE ========== -->
-  <div id="intro-root" aria-hidden="true">
-    <div class="intro-world" id="intro-world">
+<!-- ============================================================
+     MACRO TRACKER AI: CINEMATIC INTRO (style, markup, script)
+     ============================================================ -->
+<style id="intro-style">
+/* ---------- 0. ROOT, VARIABLES, SCROLL LOCK ---------- */
+html.intro-lock { overflow: hidden; }
+#intro-root {
+  --intro-sky-top: #2f9bf0;
+  --intro-sky-bottom: #bfe8ff;
+  --intro-water-top: #3fc1d6;
+  --intro-water-mid: #1b86b0;
+  --intro-water-deep: #0d4a74;
+  --intro-deep: #0a3453;
+  --intro-grade: #041e42;
+  --intro-fish-a: #ffc53d;
+  --intro-fish-b: #ff8a1f;
+  --intro-sun-x: 80%;
+  --intro-sun-y: 17vh;
+  --intro-ray-size: clamp(340px, 80vmin, 820px);
+  --intro-halo-size: clamp(180px, 34vmin, 360px);
+  --intro-core-size: clamp(64px, 11vmin, 120px);
+  --intro-boat-w: clamp(76px, 10vw, 120px);
+  --intro-fish-w: clamp(46px, 11vw, 64px);
+  position: fixed; inset: 0; z-index: 9999; overflow: hidden;
+  background: var(--intro-sky-top);
+  touch-action: none;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+#intro-root, #intro-root * { box-sizing: border-box; }
+#intro-root.intro-paused, #intro-root.intro-paused * { animation-play-state: paused !important; }
 
-      <div class="intro-layer intro-layer--sky">
-        <div class="intro-sun"></div>
-        <div class="intro-cloud intro-cloud--1"></div>
-        <div class="intro-cloud intro-cloud--2"></div>
-        <div class="intro-cloud intro-cloud--3"></div>
+/* ---------- 1. WORLD: one tall scene, one continuous gradient ---------- */
+#intro-world {
+  position: absolute; top: 0; left: 0; width: 100%; height: 300vh;
+  background: linear-gradient(180deg,
+    var(--intro-sky-top) 0%,
+    var(--intro-sky-bottom) 22%,
+    var(--intro-water-top) 25%,
+    var(--intro-water-mid) 45%,
+    var(--intro-water-deep) 72%,
+    var(--intro-deep) 100%);
+  will-change: transform;
+  backface-visibility: hidden;
+}
+.intro-layer { position: absolute; left: 0; width: 100%; pointer-events: none; backface-visibility: hidden; }
+.intro-layer--sky     { top: 0;     height: 73vh; }
+.intro-layer--waves   { top: 66vh;  height: 19vh; }
+.intro-layer--rays    { top: 72vh;  height: 131vh; }
+.intro-layer--fishfar { top: 105vh; height: 81vh; }
+.intro-layer--bubbles { top: 72vh;  height: 201vh; }
+.intro-layer--fishnear{ top: 130vh; height: 81vh; }
+.intro-layer--seaweed { top: 238vh; height: 62vh; }
+
+/* ---------- 2. SKY: sun, rays, flares, clouds ---------- */
+.intro-sun { position: absolute; left: var(--intro-sun-x); top: var(--intro-sun-y); width: 0; height: 0; }
+.intro-sun-rays {
+  position: absolute; width: var(--intro-ray-size); height: var(--intro-ray-size);
+  left: calc(var(--intro-ray-size) / -2); top: calc(var(--intro-ray-size) / -2);
+  border-radius: 50%;
+  background: repeating-conic-gradient(from 0deg, rgba(255,246,205,.55) 0deg 5deg, rgba(255,246,205,0) 5deg 15deg);
+  -webkit-mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,.55) 30%, transparent 68%);
+  mask-image: radial-gradient(circle, #000 0%, rgba(0,0,0,.55) 30%, transparent 68%);
+  animation: intro-spin 50s linear infinite;
+}
+.intro-sun-rays--b {
+  background: repeating-conic-gradient(from 7deg, rgba(255,236,170,.32) 0deg 3deg, rgba(255,236,170,0) 3deg 11deg);
+  animation: intro-spin-rev 75s linear infinite;
+}
+.intro-sun-halo {
+  position: absolute; width: var(--intro-halo-size); height: var(--intro-halo-size);
+  left: calc(var(--intro-halo-size) / -2); top: calc(var(--intro-halo-size) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,236,150,.9) 0%, rgba(255,214,90,.38) 36%, rgba(255,214,90,0) 70%);
+  animation: intro-halo 5s ease-in-out infinite;
+}
+.intro-sun-core {
+  position: absolute; width: var(--intro-core-size); height: var(--intro-core-size);
+  left: calc(var(--intro-core-size) / -2); top: calc(var(--intro-core-size) / -2);
+  border-radius: 50%;
+  background: radial-gradient(circle, #fffef2 0%, #fff3b0 45%, #ffd34d 75%, #ffbf1f 100%);
+  box-shadow: 0 0 40px 12px rgba(255,226,120,.8);
+}
+.intro-flare {
+  position: absolute; border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,.55) 0%, rgba(255,240,190,.25) 55%, rgba(255,240,190,0) 100%);
+  opacity: 0;
+  animation: intro-flare 7s ease-in-out infinite;
+}
+.intro-flare--1 { width: 26px; height: 26px; margin: -13px 0 0 -13px; left: -13vmin; top: 8vmin;  animation-delay: 0s; }
+.intro-flare--2 { width: 46px; height: 46px; margin: -23px 0 0 -23px; left: -24vmin; top: 15vmin; animation-delay: 2.2s; }
+.intro-flare--3 { width: 18px; height: 18px; margin: -9px 0 0 -9px;   left: -34vmin; top: 22vmin; animation-delay: 4.4s; }
+
+.intro-cloud { position: absolute; background: #fff; border-radius: 100px; opacity: .85; filter: blur(1px); box-shadow: 0 4px 20px rgba(255,255,255,.5); }
+.intro-cloud::before, .intro-cloud::after { content: ""; position: absolute; background: #fff; border-radius: 50%; }
+.intro-cloud--1 { top: 20vh; left: -10%; width: 160px; height: 40px; animation: intro-cloud-drift 60s linear infinite; }
+.intro-cloud--1::before { width: 70px; height: 70px; left: 20px; top: -30px; }
+.intro-cloud--1::after  { width: 90px; height: 90px; right: 20px; top: -40px; }
+.intro-cloud--2 { top: 33vh; left: -15%; width: 220px; height: 50px; opacity: .7; animation: intro-cloud-drift 80s linear infinite 10s; }
+.intro-cloud--2::before { width: 100px; height: 100px; left: 30px; top: -45px; }
+.intro-cloud--2::after  { width: 130px; height: 130px; right: 30px; top: -55px; }
+.intro-cloud--3 { top: 10vh; left: -8%; width: 120px; height: 30px; opacity: .6; animation: intro-cloud-drift 45s linear infinite 5s; }
+.intro-cloud--3::before { width: 55px; height: 55px; left: 15px; top: -25px; }
+.intro-cloud--3::after  { width: 70px; height: 70px; right: 15px; top: -30px; }
+
+/* ---------- 3. OCEAN SURFACE: waves and boat ---------- */
+.intro-wave-svg { position: absolute; left: 0; width: 200%; height: 12vh; display: block; }
+.intro-wave-svg--a { top: 0;   animation: intro-wave-slide 14s linear infinite; }
+.intro-wave-svg--b { top: 3vh; animation: intro-wave-slide 10s linear infinite reverse; }
+.intro-wave-svg--c { top: 6vh; animation: intro-wave-slide 7s linear infinite; }
+.intro-boat {
+  position: absolute; left: 26%; width: var(--intro-boat-w); height: calc(var(--intro-boat-w) * .75);
+  top: calc(8vh - var(--intro-boat-w) * .68);
+  transform-origin: 50% 90%; animation: intro-boat-bob 3.2s ease-in-out infinite;
+}
+.intro-boat svg { width: 100%; height: 100%; display: block; }
+
+/* ---------- 4. UNDERWATER: rays, bubbles, fish, seaweed ---------- */
+.intro-rays-svg { width: 100%; height: 100%; display: block; }
+.intro-rays-svg g { transform-origin: 50% 0; animation: intro-rays-sway 8s ease-in-out infinite; }
+.intro-bubble {
+  position: absolute; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.9) 0%, rgba(186,230,253,.5) 22%, rgba(125,211,252,.25) 60%, rgba(56,189,248,.05) 100%);
+  animation: intro-rise linear infinite;
+}
+.intro-fish {
+  position: absolute; width: 60px; height: 30px; background: currentColor;
+  clip-path: polygon(0 50%, 20% 20%, 40% 20%, 70% 0%, 100% 50%, 70% 100%, 40% 80%, 20% 80%);
+}
+.intro-fish--far-1 { top: 20%; left: 10%; color: rgba(15,74,114,.45); animation: intro-fish-rtl 20s linear infinite; }
+.intro-fish--far-2 { top: 45%; left: 60%; color: rgba(15,74,114,.45); animation: intro-fish-ltr 25s linear infinite; }
+.intro-fish--far-3 { top: 70%; left: 30%; color: rgba(15,74,114,.45); animation: intro-fish-rtl 18s linear infinite 5s; }
+.intro-fish--near-1 { top: 30%; left: 20%; color: rgba(251,191,36,.75); animation: intro-fish-rtl-near 12s linear infinite; }
+.intro-fish--near-2 { top: 60%; left: 70%; color: rgba(248,113,113,.8); animation: intro-fish-ltr-near 15s linear infinite 3s; }
+.intro-seaweed-svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; display: block; }
+.intro-seaweed-shape { transform-box: fill-box; transform-origin: 50% 100%; animation: intro-seaweed-sway 4s ease-in-out infinite; }
+.intro-seaweed-shape--2 { animation-delay: .5s; }
+.intro-seaweed-shape--3 { animation-delay: 1s; }
+.intro-seaweed-shape--4 { animation-delay: 1.5s; }
+
+/* ---------- 5. GRADING + MATCH OVERLAYS + SPLASH ---------- */
+#intro-grade { position: absolute; inset: 0; z-index: 2; background: var(--intro-grade); opacity: 0; pointer-events: none; }
+#intro-match { position: absolute; inset: 0; z-index: 3; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); opacity: 0; pointer-events: none; }
+#intro-splash { position: absolute; inset: 0; z-index: 4; pointer-events: none; overflow: hidden; }
+.intro-splash-dot {
+  position: absolute; border-radius: 50%; opacity: 0;
+  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.8), rgba(160,225,255,.38) 55%, rgba(120,210,255,.08));
+}
+
+/* ---------- 6. FIXED TITLE + LOGO ---------- */
+#intro-ui {
+  position: fixed; z-index: 20; left: 50%; transform: translateX(-50%);
+  top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
+  display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 20px);
+  padding: 10px 22px; border-radius: 999px; pointer-events: none;
+  background: rgba(8,47,73,.45);
+  -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+  border: 1px solid rgba(255,255,255,.35);
+  box-shadow: 0 8px 24px rgba(4,30,66,.35);
+}
+#intro-logo { flex: 0 0 auto; width: clamp(40px, 8vw, 54px); height: clamp(40px, 8vw, 54px); filter: drop-shadow(0 3px 8px rgba(4,30,66,.6)); }
+#intro-logo svg { width: 100%; height: 100%; display: block; }
+#intro-title {
+  color: #fff; font-weight: 800; letter-spacing: .3px; white-space: nowrap;
+  font-size: clamp(1.6rem, 5vw, 2.6rem); line-height: 1.1;
+  text-shadow: 0 2px 4px rgba(4,30,66,.9), 0 0 12px rgba(4,30,66,.7);
+}
+@media (max-width: 420px) { #intro-ui { gap: 8px; padding: 8px 16px; } }
+
+/* ---------- 7. GOLDFISH LOADER ---------- */
+#intro-loader {
+  position: fixed; z-index: 20; left: 0; right: 0; margin: 0 auto;
+  bottom: calc(7vh + env(safe-area-inset-bottom, 0px));
+  width: min(520px, 80vw); pointer-events: none;
+}
+#intro-pct { text-align: center; margin-bottom: 10px; color: #fff; font-size: .85rem; font-weight: 800; letter-spacing: 1.5px; font-variant-numeric: tabular-nums; text-shadow: 0 1px 4px rgba(4,30,66,.8); }
+#intro-track {
+  position: relative; width: 100%; height: clamp(30px, 4.6vw, 38px); border-radius: 999px;
+  background: rgba(255,255,255,.16); border: 1px solid rgba(255,255,255,.5);
+  -webkit-backdrop-filter: blur(6px); backdrop-filter: blur(6px);
+  box-shadow: inset 0 2px 6px rgba(4,30,66,.25), 0 6px 18px rgba(4,30,66,.25);
+}
+.intro-water-clip { position: absolute; inset: 0; border-radius: inherit; overflow: hidden; }
+#intro-water { position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform: translate3d(-100%,0,0); }
+.intro-water-body { position: absolute; left: 0; right: 0; top: 34%; bottom: 0; background: linear-gradient(180deg, #4cc9ff, #0a6fb5); }
+.intro-water-wave { position: absolute; left: 0; top: calc(34% - 7px); width: 200%; height: 8px; display: block; animation: intro-wave-slide 1.6s linear infinite; }
+.intro-trail { position: absolute; inset: 0; pointer-events: none; }
+.intro-trail-dot { position: absolute; top: 50%; border-radius: 50%; background: rgba(255,255,255,.75); }
+#intro-fish { position: absolute; left: 0; top: 50%; width: var(--intro-fish-w); height: calc(var(--intro-fish-w) * .6); margin-top: calc(var(--intro-fish-w) * -.3); will-change: transform; }
+#intro-fish-jump { width: 100%; height: 100%; }
+#intro-fish-jump svg { width: 100%; height: 100%; display: block; overflow: visible; animation: intro-fish-bob 1.1s ease-in-out infinite; filter: drop-shadow(0 2px 3px rgba(4,30,66,.4)); }
+.intro-fish-tail { transform-box: fill-box; transform-origin: 100% 50%; animation: intro-tail .35s ease-in-out infinite alternate; }
+
+/* ---------- 8. KEYFRAMES (transform and opacity only) ---------- */
+@keyframes intro-spin { to { transform: rotate(360deg); } }
+@keyframes intro-spin-rev { to { transform: rotate(-360deg); } }
+@keyframes intro-halo { 0%,100% { transform: scale(1); opacity: .8; } 50% { transform: scale(1.14); opacity: 1; } }
+@keyframes intro-flare { 0%,100% { transform: translate3d(0,0,0); opacity: 0; } 30% { opacity: .5; } 60% { transform: translate3d(16px,10px,0); opacity: .18; } }
+@keyframes intro-cloud-drift { from { transform: translate3d(0,0,0); } to { transform: translate3d(calc(100vw + 320px),0,0); } }
+@keyframes intro-wave-slide { from { transform: translate3d(0,0,0); } to { transform: translate3d(-50%,0,0); } }
+@keyframes intro-boat-bob { 0%,100% { transform: rotate(-3deg) translate3d(0,0,0); } 50% { transform: rotate(3deg) translate3d(0,-6px,0); } }
+@keyframes intro-rays-sway { 0%,100% { opacity: .3; transform: skewX(-2deg); } 50% { opacity: .5; transform: skewX(2deg); } }
+@keyframes intro-rise { 0% { transform: translate3d(0,0,0) scale(1); opacity: 0; } 10% { opacity: .9; } 90% { opacity: .9; } 100% { transform: translate3d(var(--intro-drift,0px),-100vh,0) scale(1.1); opacity: 0; } }
+@keyframes intro-fish-rtl { from { transform: translate3d(0,0,0) scale(.8); } to { transform: translate3d(-120vw,0,0) scale(.8); } }
+@keyframes intro-fish-ltr { from { transform: translate3d(0,0,0) scaleX(-1) scale(.9); } to { transform: translate3d(120vw,0,0) scaleX(-1) scale(.9); } }
+@keyframes intro-fish-rtl-near { from { transform: translate3d(0,0,0) scale(1.2); } to { transform: translate3d(-120vw,0,0) scale(1.2); } }
+@keyframes intro-fish-ltr-near { from { transform: translate3d(0,0,0) scaleX(-1) scale(1.1); } to { transform: translate3d(120vw,0,0) scaleX(-1) scale(1.1); } }
+@keyframes intro-seaweed-sway { 0%,100% { transform: rotate(-3deg) skewX(-2deg); } 50% { transform: rotate(3deg) skewX(2deg); } }
+@keyframes intro-fish-bob { 0%,100% { transform: translate3d(0,-1.5px,0); } 50% { transform: translate3d(0,2px,0); } }
+@keyframes intro-tail { from { transform: rotate(-16deg); } to { transform: rotate(16deg); } }
+
+/* ---------- 9. RESPONSIVE + REDUCED MOTION ---------- */
+@media (max-width: 640px) { .intro-cloud--2 { display: none; } .intro-boat { left: 18%; } }
+@media (prefers-reduced-motion: reduce) { #intro-root, #intro-root * { animation: none !important; } }
+</style>
+
+<!-- ================= INTRO MARKUP ================= -->
+<div id="intro-root" aria-hidden="false">
+
+  <!-- THE WORLD: one 300vh scene -->
+  <div id="intro-world" aria-hidden="true">
+
+    <!-- SKY: sun, rays, flares, clouds (no land) -->
+    <div class="intro-layer intro-layer--sky" id="intro-layer-sky">
+      <div class="intro-sun">
+        <div class="intro-sun-rays"></div>
+        <div class="intro-sun-rays intro-sun-rays--b"></div>
+        <div class="intro-sun-halo"></div>
+        <div class="intro-sun-core"></div>
+        <div class="intro-flare intro-flare--1"></div>
+        <div class="intro-flare intro-flare--2"></div>
+        <div class="intro-flare intro-flare--3"></div>
       </div>
+      <div class="intro-cloud intro-cloud--1"></div>
+      <div class="intro-cloud intro-cloud--2"></div>
+      <div class="intro-cloud intro-cloud--3"></div>
+    </div>
 
-      <div class="intro-layer intro-layer--horizon"></div>
-      <div class="intro-layer intro-layer--water"></div>
-
-      <div class="intro-layer intro-layer--rays">
-        <svg class="intro-rays-svg" viewBox="0 0 1440 800" preserveAspectRatio="none" aria-hidden="true">
-          <defs>
-            <linearGradient id="intro-ray-grad" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="#7dd3fc" stop-opacity="0.7"/>
-              <stop offset="1" stop-color="#7dd3fc" stop-opacity="0"/>
-            </linearGradient>
-          </defs>
-          <g>
-            <path d="M180,0 L250,800 L300,800 L220,0 Z" fill="url(#intro-ray-grad)" opacity="0.40"/>
-            <path d="M600,0 L660,800 L710,800 L650,0 Z" fill="url(#intro-ray-grad)" opacity="0.50"/>
-            <path d="M950,0 L1020,800 L1080,800 L1000,0 Z" fill="url(#intro-ray-grad)" opacity="0.35"/>
-            <path d="M1250,0 L1320,800 L1370,800 L1300,0 Z" fill="url(#intro-ray-grad)" opacity="0.45"/>
-          </g>
-        </svg>
-      </div>
-
-      <div class="intro-layer intro-layer--beach">
-        <svg class="intro-beach-svg" viewBox="0 0 1440 200" preserveAspectRatio="none" aria-hidden="true">
-          <path d="M0,80 Q360,40 720,70 T1440,60 L1440,200 L0,200 Z" fill="#f4d8a8"/>
-          <path d="M0,110 Q360,80 720,105 T1440,95 L1440,200 L0,200 Z" fill="#e8c48a"/>
-          <path d="M0,140 Q360,120 720,135 T1440,125 L1440,200 L0,200 Z" fill="#d9b276"/>
-          <ellipse cx="180" cy="160" rx="10" ry="5" fill="#c19a60"/>
-          <ellipse cx="450" cy="180" rx="6"  ry="3" fill="#c19a60"/>
-          <ellipse cx="900" cy="165" rx="12" ry="5" fill="#c19a60"/>
-          <ellipse cx="1250" cy="175" rx="8" ry="4" fill="#c19a60"/>
-          <path d="M680,170 q10,-10 20,0 q-10,8 -20,0 Z"  fill="#fef3e2" stroke="#e8c48a" stroke-width="0.5"/>
-          <path d="M1150,155 q8,-8 16,0 q-8,6 -16,0 Z"   fill="#fef3e2" stroke="#e8c48a" stroke-width="0.5"/>
-        </svg>
-      </div>
-
-      <div class="intro-layer intro-layer--palms">
-        <svg class="intro-palms-svg" viewBox="0 0 1440 550" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-          <g class="intro-palm" style="transform-origin: 220px 550px;">
-            <path d="M220,550 Q200,380 240,230" stroke="#5a3e2b" stroke-width="14" fill="none" stroke-linecap="round"/>
-            <path d="M220,550 Q200,380 240,230" stroke="#7a5a3e" stroke-width="8"  fill="none" stroke-linecap="round" opacity="0.5"/>
-            <g class="intro-palm-fronds" style="transform-origin: 240px 230px;">
-              <path d="M240,230 q-90,-25 -140,20 q80,15 140,-20 Z" fill="#2d7a3a"/>
-              <path d="M240,230 q90,-25 140,20 q-80,15 -140,-20 Z" fill="#2d7a3a"/>
-              <path d="M240,230 q-60,-70 -20,-105 q15,70 -20,105 Z" fill="#3a9147"/>
-              <path d="M240,230 q60,-70 20,-105 q-15,70 20,105 Z" fill="#3a9147"/>
-              <path d="M240,230 q-100,15 -120,-15 q70,-15 120,15 Z" fill="#2d7a3a"/>
-              <path d="M240,230 q100,15 120,-15 q-70,-15 -120,15 Z" fill="#2d7a3a"/>
-              <circle cx="235" cy="235" r="7" fill="#4a2e1e"/>
-              <circle cx="245" cy="235" r="7" fill="#4a2e1e"/>
-            </g>
-          </g>
-          <g class="intro-palm" style="transform-origin: 1200px 550px;">
-            <path d="M1200,550 Q1225,400 1180,270" stroke="#5a3e2b" stroke-width="11" fill="none" stroke-linecap="round"/>
-            <g class="intro-palm-fronds" style="transform-origin: 1180px 270px;">
-              <path d="M1180,270 q-75,-20 -110,15 q65,12 110,-15 Z" fill="#2d7a3a"/>
-              <path d="M1180,270 q75,-20 110,15 q-65,12 -110,-15 Z" fill="#2d7a3a"/>
-              <path d="M1180,270 q-50,-55 -15,-85 q12,55 -15,85 Z" fill="#3a9147"/>
-              <path d="M1180,270 q50,-55 15,-85 q-12,55 15,85 Z" fill="#3a9147"/>
-              <circle cx="1175" cy="275" r="5" fill="#4a2e1e"/>
-              <circle cx="1185" cy="275" r="5" fill="#4a2e1e"/>
-            </g>
-          </g>
-        </svg>
-      </div>
-
-      <div class="intro-layer intro-layer--waves">
-        <svg class="intro-waves-svg" viewBox="0 0 1440 100" preserveAspectRatio="none" aria-hidden="true">
-          <path class="intro-wave intro-wave--1" d="M0,30 Q180,5  360,30 T720,30 T1080,30 T1440,30 L1440,100 L0,100 Z" fill="#7dd3fc" opacity="0.6"/>
-          <path class="intro-wave intro-wave--2" d="M0,50 Q180,25 360,50 T720,50 T1080,50 T1440,50 L1440,100 L0,100 Z" fill="#38bdf8" opacity="0.7"/>
-          <path class="intro-wave intro-wave--3" d="M0,70 Q180,45 360,70 T720,70 T1080,70 T1440,70 L1440,100 L0,100 Z" fill="#0ea5e9" opacity="0.8"/>
-        </svg>
-      </div>
-
-      <div class="intro-layer intro-layer--boat">
-        <svg class="intro-boat-svg" viewBox="0 0 200 150" aria-hidden="true">
+    <!-- OCEAN SURFACE: layered waves + boat -->
+    <div class="intro-layer intro-layer--waves" id="intro-layer-waves">
+      <svg class="intro-wave-svg intro-wave-svg--a" viewBox="0 0 2880 120" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="intro-wg-a" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6fd6e8" stop-opacity=".85"/><stop offset="1" stop-color="#6fd6e8" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,40 Q180,10 360,40 T720,40 T1080,40 T1440,40 T1800,40 T2160,40 T2520,40 T2880,40 L2880,120 L0,120 Z" fill="url(#intro-wg-a)"/>
+        <path d="M0,40 Q180,10 360,40 T720,40 T1080,40 T1440,40 T1800,40 T2160,40 T2520,40 T2880,40" fill="none" stroke="#bdf0ff" stroke-opacity=".4" stroke-width="3"/>
+      </svg>
+      <div class="intro-boat">
+        <svg viewBox="0 0 200 150" aria-hidden="true">
           <path d="M20,110 L180,110 L160,135 L40,135 Z" fill="#8b4513"/>
-          <path d="M20,110 L180,110 L160,135 L40,135 Z" fill="#6b3410" opacity="0.3"/>
+          <path d="M20,110 L180,110 L160,135 L40,135 Z" fill="#6b3410" opacity=".3"/>
           <rect x="90" y="30" width="6" height="80" fill="#8b4513"/>
           <path d="M96,40 L160,100 L96,100 Z" fill="#fafafa"/>
-          <path d="M90,40 L30,100 L90,100 Z"  fill="#ffffff"/>
+          <path d="M90,40 L30,100 L90,100 Z" fill="#ffffff"/>
           <circle cx="93" cy="100" r="3" fill="#c2410c"/>
         </svg>
       </div>
-
-      <div class="intro-layer intro-layer--fish-far">
-        <div class="intro-fish intro-fish--far-1"></div>
-        <div class="intro-fish intro-fish--far-2"></div>
-        <div class="intro-fish intro-fish--far-3"></div>
-      </div>
-
-      <div class="intro-layer intro-layer--bubbles" id="intro-bubbles"></div>
-
-      <div class="intro-layer intro-layer--fish-near">
-        <div class="intro-fish intro-fish--near-1"></div>
-        <div class="intro-fish intro-fish--near-2"></div>
-      </div>
-
-      <div class="intro-layer intro-layer--seaweed">
-        <svg class="intro-seaweed-svg" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
-          <g class="intro-seaweed-shape" style="transform-origin: 200px 400px;">
-            <path d="M200,400 Q180,320 210,240 Q180,180 200,120 Q220,180 190,240 Q220,320 200,400 Z" fill="#15803d"/>
-          </g>
-          <g class="intro-seaweed-shape intro-seaweed-shape--2" style="transform-origin: 500px 400px;">
-            <path d="M500,400 Q480,340 510,270 Q480,220 500,170 Q520,220 490,270 Q520,340 500,400 Z" fill="#166534"/>
-          </g>
-          <g class="intro-seaweed-shape intro-seaweed-shape--3" style="transform-origin: 900px 400px;">
-            <path d="M900,400 Q880,300 910,220 Q880,150 900,90 Q920,150 890,220 Q920,300 900,400 Z" fill="#15803d"/>
-          </g>
-          <g class="intro-seaweed-shape intro-seaweed-shape--4" style="transform-origin: 1200px 400px;">
-            <path d="M1200,400 Q1180,350 1210,290 Q1180,240 1200,200 Q1220,240 1190,290 Q1220,350 1200,400 Z" fill="#166534"/>
-          </g>
-        </svg>
-      </div>
-
-      <div class="intro-layer intro-layer--seabed"></div>
+      <svg class="intro-wave-svg intro-wave-svg--b" viewBox="0 0 2880 120" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="intro-wg-b" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#47c2da" stop-opacity=".9"/><stop offset="1" stop-color="#47c2da" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,40 Q180,70 360,40 T720,40 T1080,40 T1440,40 T1800,40 T2160,40 T2520,40 T2880,40 L2880,120 L0,120 Z" fill="url(#intro-wg-b)"/>
+        <path d="M0,40 Q180,70 360,40 T720,40 T1080,40 T1440,40 T1800,40 T2160,40 T2520,40 T2880,40" fill="none" stroke="#bdf0ff" stroke-opacity=".3" stroke-width="3"/>
+      </svg>
+      <svg class="intro-wave-svg intro-wave-svg--c" viewBox="0 0 2880 120" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="intro-wg-c" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2aa8cb" stop-opacity=".95"/><stop offset="1" stop-color="#2aa8cb" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0,40 Q180,10 360,40 T720,40 T1080,40 T1440,40 T1800,40 T2160,40 T2520,40 T2880,40 L2880,120 L0,120 Z" fill="url(#intro-wg-c)"/>
+        <path d="M0,40 Q180,10 360,40 T720,40 T1080,40 T1440,40 T1800,40 T2160,40 T2520,40 T2880,40" fill="none" stroke="#bdf0ff" stroke-opacity=".25" stroke-width="3"/>
+      </svg>
     </div>
 
-    <div class="intro-water-crossing" id="intro-water-crossing">
-      <div class="intro-water-crossing-wave"></div>
-      <div class="intro-water-crossing-splash"></div>
+    <!-- UNDERWATER: light rays -->
+    <div class="intro-layer intro-layer--rays" id="intro-layer-rays">
+      <svg class="intro-rays-svg" viewBox="0 0 1440 800" preserveAspectRatio="none" aria-hidden="true">
+        <defs><linearGradient id="intro-ray-grad" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7dd3fc" stop-opacity=".7"/><stop offset="1" stop-color="#7dd3fc" stop-opacity="0"/></linearGradient></defs>
+        <g>
+          <path d="M180,0 L250,800 L300,800 L220,0 Z" fill="url(#intro-ray-grad)" opacity=".4"/>
+          <path d="M600,0 L660,800 L710,800 L650,0 Z" fill="url(#intro-ray-grad)" opacity=".5"/>
+          <path d="M950,0 L1020,800 L1080,800 L1000,0 Z" fill="url(#intro-ray-grad)" opacity=".35"/>
+          <path d="M1250,0 L1320,800 L1370,800 L1300,0 Z" fill="url(#intro-ray-grad)" opacity=".45"/>
+        </g>
+      </svg>
     </div>
 
-    <div class="intro-color-tint" id="intro-color-tint"></div>
-
-    <div class="intro-ui" id="intro-ui">
-      <div class="intro-logo" id="intro-logo">
-        <svg viewBox="0 0 200 200" aria-hidden="true">
-          <circle cx="100" cy="100" r="88" fill="rgba(125,211,252,0.35)" stroke="rgba(186,230,253,0.7)" stroke-width="2"/>
-          <ellipse cx="70" cy="58" rx="30" ry="14" fill="rgba(255,255,255,0.4)" transform="rotate(-28 70 58)"/>
-          <g fill="#7dd3fc">
-            <rect x="48"  y="87" width="11" height="26" rx="5"/>
-            <rect x="62"  y="77" width="19" height="46" rx="8"/>
-            <rect x="84"  y="93" width="32" height="14" rx="6"/>
-            <rect x="119" y="77" width="19" height="46" rx="8"/>
-            <rect x="141" y="87" width="11" height="26" rx="5"/>
-          </g>
-        </svg>
-      </div>
-      <div class="intro-title" id="intro-title">Macro Tracker AI</div>
+    <!-- UNDERWATER: far fish -->
+    <div class="intro-layer intro-layer--fishfar" id="intro-layer-fishfar">
+      <div class="intro-fish intro-fish--far-1"></div>
+      <div class="intro-fish intro-fish--far-2"></div>
+      <div class="intro-fish intro-fish--far-3"></div>
     </div>
 
-    <div class="intro-progress-wrap" id="intro-progress-wrap">
-      <div class="intro-progress-track" id="intro-progress-track"
-           role="progressbar" aria-valuemin="0" aria-valuemax="100"
-           aria-valuenow="0" aria-label="Loading intro">
-        <div class="intro-progress-fill" id="intro-progress-fill"></div>
-      </div>
-      <div class="intro-percentage" id="intro-percentage">0%</div>
+    <!-- UNDERWATER: bubbles (spawned by script) -->
+    <div class="intro-layer intro-layer--bubbles" id="intro-layer-bubbles"></div>
+
+    <!-- UNDERWATER: near fish -->
+    <div class="intro-layer intro-layer--fishnear" id="intro-layer-fishnear">
+      <div class="intro-fish intro-fish--near-1"></div>
+      <div class="intro-fish intro-fish--near-2"></div>
     </div>
 
-    <button class="intro-skip" id="intro-skip" type="button">Skip intro</button>
+    <!-- DEEP: seaweed -->
+    <div class="intro-layer intro-layer--seaweed" id="intro-layer-seaweed">
+      <svg class="intro-seaweed-svg" viewBox="0 0 1440 400" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+        <g class="intro-seaweed-shape"><path d="M200,400 Q180,320 210,240 Q180,180 200,120 Q220,180 190,240 Q220,320 200,400 Z" fill="#15803d"/></g>
+        <g class="intro-seaweed-shape intro-seaweed-shape--2"><path d="M500,400 Q480,340 510,270 Q480,220 500,170 Q520,220 490,270 Q520,340 500,400 Z" fill="#166534"/></g>
+        <g class="intro-seaweed-shape intro-seaweed-shape--3"><path d="M900,400 Q880,300 910,220 Q880,150 900,90 Q920,150 890,220 Q920,300 900,400 Z" fill="#15803d"/></g>
+        <g class="intro-seaweed-shape intro-seaweed-shape--4"><path d="M1200,400 Q1180,350 1210,290 Q1180,240 1200,200 Q1220,240 1190,290 Q1220,350 1200,400 Z" fill="#166534"/></g>
+      </svg>
+    </div>
   </div>
-  <!-- ========== END INTRO ========== -->
+
+  <!-- COLOR GRADING + PAGE-MATCH OVERLAYS + SPLASH -->
+  <div id="intro-grade" aria-hidden="true"></div>
+  <div id="intro-match" aria-hidden="true"></div>
+  <div id="intro-splash" aria-hidden="true"></div>
+
+  <!-- FIXED LOGO + TITLE (never animated during the dive) -->
+  <div id="intro-ui">
+    <div id="intro-logo">
+      <svg viewBox="0 0 200 200" aria-hidden="true">
+        <defs>
+          <radialGradient id="intro-logo-bubble" cx="35%" cy="30%" r="80%"><stop offset="0" stop-color="#ffffff" stop-opacity=".95"/><stop offset=".55" stop-color="#d9f1ff" stop-opacity=".75"/><stop offset="1" stop-color="#7dd3fc" stop-opacity=".7"/></radialGradient>
+          <linearGradient id="intro-logo-bell" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38a8ff"/><stop offset="1" stop-color="#0b5fd1"/></linearGradient>
+        </defs>
+        <circle cx="100" cy="100" r="90" fill="url(#intro-logo-bubble)" stroke="#ffffff" stroke-width="5" stroke-opacity=".95"/>
+        <ellipse cx="68" cy="56" rx="30" ry="13" fill="#fff" fill-opacity=".7" transform="rotate(-28 68 56)"/>
+        <g fill="url(#intro-logo-bell)" stroke="#06397e" stroke-width="2" stroke-opacity=".6">
+          <rect x="46" y="87" width="12" height="26" rx="5"/>
+          <rect x="61" y="76" width="20" height="48" rx="8"/>
+          <rect x="84" y="93" width="32" height="14" rx="6"/>
+          <rect x="119" y="76" width="20" height="48" rx="8"/>
+          <rect x="142" y="87" width="12" height="26" rx="5"/>
+        </g>
+      </svg>
+    </div>
+    <div id="intro-title">Macro Tracker AI</div>
+  </div>
+
+  <!-- GOLDFISH LOADER -->
+  <div id="intro-loader">
+    <div id="intro-pct" aria-hidden="true">0%</div>
+    <div id="intro-track" role="progressbar" aria-label="Loading" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+      <div class="intro-water-clip">
+        <div id="intro-water">
+          <div class="intro-water-body"></div>
+          <svg class="intro-water-wave" viewBox="0 0 400 10" preserveAspectRatio="none" aria-hidden="true">
+            <path d="M0,5 Q25,0 50,5 T100,5 T150,5 T200,5 T250,5 T300,5 T350,5 T400,5 L400,10 L0,10 Z" fill="#4cc9ff"/>
+          </svg>
+        </div>
+      </div>
+      <div class="intro-trail" id="intro-trail" aria-hidden="true"></div>
+      <div id="intro-fish" aria-hidden="true">
+        <div id="intro-fish-jump">
+          <svg viewBox="0 0 80 48">
+            <defs><linearGradient id="intro-fish-body" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="var(--intro-fish-a)"/><stop offset="1" stop-color="var(--intro-fish-b)"/></linearGradient></defs>
+            <path d="M46,11 C50,0 62,1 64,11 Z" fill="var(--intro-fish-b)"/>
+            <path d="M44,36 C46,44 54,46 58,37 Z" fill="var(--intro-fish-b)" opacity=".9"/>
+            <g class="intro-fish-tail"><path d="M30,24 C20,10 9,5 2,8 C8,16 8,32 2,40 C9,43 20,38 30,24 Z" fill="var(--intro-fish-b)" opacity=".95"/></g>
+            <ellipse cx="50" cy="24" rx="25" ry="15" fill="url(#intro-fish-body)"/>
+            <path d="M38,13 Q34,24 38,35" fill="none" stroke="#e8710a" stroke-opacity=".5" stroke-width="1.6" stroke-linecap="round"/>
+            <circle cx="64" cy="20" r="3.8" fill="#fff"/>
+            <circle cx="65" cy="20.4" r="2" fill="#12263a"/>
+            <circle cx="65.7" cy="19.6" r=".7" fill="#fff"/>
+            <path d="M70,28 q3,2 5,-1" fill="none" stroke="#b45309" stroke-width="1.4" stroke-linecap="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- GSAP -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script>
+(function () {
+  'use strict';
+
+  /* ---------- CONFIG ---------- */
+  var CONFIG = {
+    title: 'Macro Tracker AI',
+    diveDuration: 6,          // seconds
+    minLoadTime: 2500,        // ms, loader never finishes faster than this
+    maxExtraWait: 3500,       // ms, hard fallback after minLoadTime
+    bubbleCount: 26,          // capped at 30
+    gradeStrength: 0.3,       // darkening during the dive (0..1)
+    sunX: '80%',
+    sunY: '17vh',
+    colors: {
+      skyTop: '#2f9bf0', skyBottom: '#bfe8ff',
+      waterTop: '#3fc1d6', waterMid: '#1b86b0', waterDeep: '#0d4a74', deep: '#0a3453',
+      grade: '#041e42', fishA: '#ffc53d', fishB: '#ff8a1f'
+    }
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var root = $('intro-root');
+  if (!root) { window.__introDone = true; return; }
+  var html = document.documentElement;
+  var tickFn = null, masterTl = null, jumpTl = null, cleaned = false;
+
+  /* ---------- CLEANUP: remove every intro element, then tell the app ---------- */
+  function cleanup() {
+    if (cleaned) return;
+    cleaned = true;
+    try { if (tickFn && window.gsap) gsap.ticker.remove(tickFn); } catch (e) {}
+    try {
+      if (window.gsap) gsap.killTweensOf(Array.prototype.slice.call(root.querySelectorAll('*')).concat([root]));
+      if (masterTl) masterTl.kill();
+      if (jumpTl) jumpTl.kill();
+    } catch (e) {}
+    document.removeEventListener('visibilitychange', onVisibility);
+    window.removeEventListener('resize', measure);
+    if (root.parentNode) root.parentNode.removeChild(root);
+    var st = $('intro-style'); if (st && st.parentNode) st.parentNode.removeChild(st);
+    // safety sweep: nothing with an intro- id/class may remain
+    Array.prototype.slice.call(document.querySelectorAll('[id^="intro-"],[class^="intro-"]')).forEach(function (n) {
+      if (n.tagName !== 'SCRIPT' && n.parentNode) n.parentNode.removeChild(n);
+    });
+    html.classList.remove('intro-lock');
+    // tell the main app the intro is finished (it shows the start screen for new users)
+    window.__introDone = true;
+    try { window.dispatchEvent(new Event('intro-done')); } catch (e) {}
+  }
+
+  /* ---------- PLAY ONCE PER SESSION ---------- */
+  var played = false;
+  try { played = sessionStorage.getItem('intro-played') === '1'; } catch (e) {}
+  if (played || typeof gsap === 'undefined') { cleanup(); return; }
+  try { sessionStorage.setItem('intro-played', '1'); } catch (e) {}
+
+  html.classList.add('intro-lock');
+
+  /* ---------- APPLY CONFIG ---------- */
+  var c = CONFIG.colors;
+  var vars = {
+    '--intro-sky-top': c.skyTop, '--intro-sky-bottom': c.skyBottom,
+    '--intro-water-top': c.waterTop, '--intro-water-mid': c.waterMid,
+    '--intro-water-deep': c.waterDeep, '--intro-deep': c.deep, '--intro-grade': c.grade,
+    '--intro-fish-a': c.fishA, '--intro-fish-b': c.fishB,
+    '--intro-sun-x': CONFIG.sunX, '--intro-sun-y': CONFIG.sunY
+  };
+  Object.keys(vars).forEach(function (k) { root.style.setProperty(k, vars[k]); });
+  $('intro-title').textContent = CONFIG.title;
+
+  /* ---------- REDUCED MOTION: simple fade ---------- */
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    gsap.to(root, { opacity: 0, duration: 0.5, delay: 0.3, onComplete: cleanup });
+    return;
+  }
+
+  /* ---------- BUBBLES (max 30) ---------- */
+  (function spawnBubbles() {
+    var host = $('intro-layer-bubbles'), n = Math.min(CONFIG.bubbleCount, 30), out = [];
+    for (var i = 0; i < n; i++) {
+      var s = (4 + Math.random() * 14).toFixed(1);
+      out.push('<span class="intro-bubble" style="left:' + (Math.random() * 100).toFixed(2) + '%;bottom:' + (Math.random() * 90).toFixed(2) +
+        '%;width:' + s + 'px;height:' + s + 'px;animation-duration:' + (5 + Math.random() * 6).toFixed(2) + 's;animation-delay:' +
+        (Math.random() * 6).toFixed(2) + 's;--intro-drift:' + ((Math.random() - 0.5) * 80).toFixed(0) + 'px;"></span>');
+    }
+    host.innerHTML = out.join('');
+  })();
+
+  /* ---------- PAUSE WHEN TAB HIDDEN ---------- */
+  function onVisibility() {
+    var hidden = document.hidden;
+    root.classList.toggle('intro-paused', hidden);
+    if (masterTl) masterTl.paused(hidden);
+    if (jumpTl) jumpTl.paused(hidden);
+  }
+  document.addEventListener('visibilitychange', onVisibility);
+
+  /* ---------- LOADER ---------- */
+  var track = $('intro-track'), water = $('intro-water'), fish = $('intro-fish'),
+      jump = $('intro-fish-jump'), pctEl = $('intro-pct'), trail = $('intro-trail'),
+      loader = $('intro-loader');
+  var W = 0, FW = 0;
+  function measure() { W = track.clientWidth; FW = fish.offsetWidth; }
+  measure();
+  window.addEventListener('resize', measure);
+
+  var total = 2, done = 0, elapsed = 0, shown = 0, trailT = 0, lastPct = -1, loadedFired = false;
+  function markDone() { done++; }
+  (document.fonts && document.fonts.ready ? document.fonts.ready : Promise.resolve()).then(markDone, markDone);
+  if (document.readyState === 'complete') markDone(); else window.addEventListener('load', markDone, { once: true });
+  Array.prototype.slice.call(document.images).forEach(function (img) {
+    if (img.complete) return;
+    total++;
+    img.addEventListener('load', markDone, { once: true });
+    img.addEventListener('error', markDone, { once: true });
+  });
+
+  var easeLoad = gsap.parseEase('power1.inOut');
+
+  function spawnTrail(x) {
+    if (trail.children.length > 14) return;
+    var d = document.createElement('span'), s = 3 + Math.random() * 4;
+    d.className = 'intro-trail-dot';
+    d.style.width = d.style.height = s + 'px';
+    d.style.left = x + 'px';
+    trail.appendChild(d);
+    gsap.fromTo(d, { y: 0, x: 0, opacity: 0.85, scale: 0.6 },
+      { y: -(14 + Math.random() * 14), x: -Math.random() * 8, opacity: 0, scale: 1.1, duration: 0.9, ease: 'power1.out',
+        onComplete: function () { if (d.parentNode) d.parentNode.removeChild(d); } });
+  }
+
+  function renderProgress(p, dt) {
+    var x = p * (W - FW);
+    var vis = x + FW * (0.28 + 0.72 * p * p * p);     // water ends at the tail; reaches the end at 100%
+    fish.style.transform = 'translate3d(' + x.toFixed(2) + 'px,0,0)';
+    water.style.transform = 'translate3d(' + (vis - W).toFixed(2) + 'px,0,0)';
+    var pct = Math.round(p * 100);
+    if (pct !== lastPct) {
+      lastPct = pct;
+      pctEl.textContent = pct + '%';
+      track.setAttribute('aria-valuenow', String(pct));
+    }
+    trailT += dt;
+    if (trailT > 120 && p > 0.01 && p < 1) { trailT = 0; spawnTrail(x + FW * 0.1); }
+  }
+
+  tickFn = function (time, dt) {
+    if (document.hidden || loadedFired) return;
+    dt = Math.min(dt || 16, 100);
+    elapsed += dt;
+    var realP = (elapsed > CONFIG.minLoadTime + CONFIG.maxExtraWait) ? 1 : done / total;
+    var timeP = easeLoad(Math.min(elapsed / CONFIG.minLoadTime, 1));
+    var target = Math.min(realP, timeP);
+    shown = target >= 1 ? 1 : shown + (target - shown) * Math.min(1, dt / 120);
+    renderProgress(shown, dt);
+    if (shown >= 1) { loadedFired = true; gsap.ticker.remove(tickFn); onLoaded(); }
+  };
+  gsap.ticker.add(tickFn);
+
+  /* ---------- AT 100%: happy jump, bar fades, dive starts ---------- */
+  function onLoaded() {
+    jumpTl = gsap.timeline({
+      onComplete: function () {
+        gsap.to(loader, { opacity: 0, duration: 0.45, ease: 'power1.out' });
+        startDive();
+      }
+    });
+    jumpTl.to(jump, { y: -34, rotation: -16, duration: 0.3, ease: 'power2.out' })
+          .to(jump, { y: 0, rotation: 8, duration: 0.3, ease: 'power2.in' })
+          .to(jump, { rotation: 0, duration: 0.15, ease: 'power1.out' });
+  }
+
+  /* ---------- SPLASH: soft bubble burst (circles only, removed after) ---------- */
+  function splash() {
+    var host = $('intro-splash'), w = host.clientWidth, h = host.clientHeight, i;
+    for (i = 0; i < 20; i++) {
+      var d = document.createElement('span'), s = 8 + Math.random() * 28;
+      d.className = 'intro-splash-dot';
+      d.style.width = d.style.height = s + 'px';
+      d.style.left = (w * (0.12 + Math.random() * 0.76)) + 'px';
+      d.style.top = (h * 0.5 + (Math.random() - 0.5) * 70) + 'px';
+      host.appendChild(d);
+      (function (el) {
+        gsap.fromTo(el, { opacity: 0, scale: 0.4, x: 0, y: 0 },
+          { opacity: 0.85, scale: 1.2, x: (Math.random() - 0.5) * 80, y: -(40 + Math.random() * 160),
+            duration: 0.5 + Math.random() * 0.5, delay: Math.random() * 0.25, ease: 'power2.out',
+            onComplete: function () {
+              gsap.to(el, { opacity: 0, duration: 0.5, ease: 'power1.in', onComplete: function () { if (el.parentNode) el.parentNode.removeChild(el); } });
+            } });
+      })(d);
+    }
+  }
+
+  /* ---------- THE DIVE: one master timeline ---------- */
+  function startDive() {
+    var world = $('intro-world'), grade = $('intro-grade'), match = $('intro-match'), ui = $('intro-ui');
+    var vh = root.clientHeight;
+    var D = Math.round(world.offsetHeight - vh);          // lands exactly on the bottom of the world
+    var u = world.offsetHeight / 300;                      // px per world-vh
+    var surfaceTrigger = -Math.round(72 * u - vh / 2);     // water surface crosses screen center
+    var dur = CONFIG.diveDuration, burst = false;
+
+    // parallax factors: 1 = moves with the world, <1 slower (far), >1 faster (near)
+    var parallax = [
+      { el: $('intro-layer-sky'), f: 0.45 },
+      { el: $('intro-layer-rays'), f: 0.9 },
+      { el: $('intro-layer-fishfar'), f: 0.75 },
+      { el: $('intro-layer-bubbles'), f: 1.25 },
+      { el: $('intro-layer-fishnear'), f: 1.3 }
+    ];
+
+    masterTl = gsap.timeline({
+      defaults: { ease: 'power2.inOut' },
+      onComplete: function () {
+        gsap.to(root, { opacity: 0, duration: 0.6, ease: 'power1.out', onComplete: cleanup });
+      }
+    });
+    masterTl.to(world, {
+      y: -D, duration: dur, ease: 'power2.inOut',
+      onUpdate: function () {
+        if (!burst && gsap.getProperty(world, 'y') <= surfaceTrigger) { burst = true; splash(); }
+      }
+    }, 0);
+    parallax.forEach(function (l) {
+      masterTl.to(l.el, { y: Math.round((1 - l.f) * D), duration: dur, ease: 'power2.inOut' }, 0);
+    });
+    masterTl.to(grade, { opacity: CONFIG.gradeStrength, duration: dur, ease: 'power1.in' }, 0);
+    masterTl.to(match, { opacity: 1, duration: dur * 0.2, ease: 'power1.inOut' }, dur * 0.78);
+    masterTl.to(ui, { opacity: 0, duration: 0.5, ease: 'power1.in' }, dur - 0.5);
+  }
+})();
+</script>
+<!-- ================= END INTRO ================= -->
 
   <div id="globalBg" class="underwater-bg">
     <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -1741,23 +1715,6 @@
 
     let pendingStartScreen = false;
 
-    // Intro state
-    let introRaf = null;
-    let introElapsed = 0;
-    let introLastNow = 0;
-    let introPaused = false;
-    let introDiveStarted = false;
-    let introLoadingDone = false;
-    let introFontsReady = false;
-    let introPrevOverflow = '';
-    const INTRO_CONFIG = {
-      minLoadTime: 2500,
-      hardTimeout: 4000,
-      diveDuration: 5000,
-      cameraDistance: 200,
-      waterCrossAt: 0.32
-    };
-
     function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
 
     function initApp() {
@@ -1776,268 +1733,27 @@
         document.getElementById('mainApp').style.display = 'block';
         render();
       }
-      startIntroSequence();
+      waitForIntro();
     }
 
     /* ============================================================
-       INTRO SEQUENCE — TROPICAL BEACH → OCEAN DIVE
-       - Shows beach scene + progress bar at the shore
-       - On complete: dives the camera down through a 300vh world
-       - Reveals the app; if new user, opens start screen
-       - Plays once per session (sessionStorage: "intro-played")
-       - Uses RAF for the dive (no external dependency)
+       INTRO HAND-OFF
+       The intro (at the top of <body>) sets window.__introDone and
+       fires an "intro-done" event when it has removed itself.
+       New users then see the start screen.
        ============================================================ */
-
-    function startIntroSequence() {
-      const root = document.getElementById('intro-root');
-      if (!root) { onIntroComplete(); return; }
-
-      // Session check
-      let played = false;
-      try { played = sessionStorage.getItem('intro-played') === '1'; } catch (e) {}
-
-      if (played) {
-        root.style.display = 'none';
-        onIntroComplete();
-        return;
-      }
-
-      // Mark as playing immediately
-      try { sessionStorage.setItem('intro-played', '1'); } catch (e) {}
-
-      // Lock scroll
-      introPrevOverflow = document.body.style.overflow;
-      document.body.style.overflow = 'hidden';
-
-      // Reduced motion: skip to a quick fade
-      const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (prefersReduced) {
-        const fill = document.getElementById('intro-progress-fill');
-        const track = document.getElementById('intro-progress-track');
-        const pct = document.getElementById('intro-percentage');
-        if (fill) fill.style.width = '100%';
-        if (track) track.setAttribute('aria-valuenow', '100');
-        if (pct) pct.textContent = '100%';
-        setTimeout(() => {
-          root.style.transition = 'opacity 0.6s ease';
-          root.style.opacity = '0';
-          setTimeout(onIntroComplete, 650);
-        }, 500);
-        return;
-      }
-
-      // Spawn bubbles
-      spawnIntroBubbles();
-
-      // Skip button
-      const skipBtn = document.getElementById('intro-skip');
-      if (skipBtn) skipBtn.addEventListener('click', skipIntro);
-
-      // Wait for fonts
-      if (document.fonts && document.fonts.ready) {
-        document.fonts.ready.then(() => { introFontsReady = true; }).catch(() => { introFontsReady = true; });
-      } else {
-        introFontsReady = true;
-      }
-
-      // Tab pause/resume
-      document.addEventListener('visibilitychange', onIntroVisibility);
-
-      // Begin loading progress
-      introLoadStart = performance.now();
-      introElapsed = 0;
-      introLastNow = 0;
-      introRaf = requestAnimationFrame(introLoadingTick);
-
-      // Hard fallback — never stay stuck
-      setTimeout(() => {
-        if (!introLoadingDone && !introDiveStarted) {
-          introLoadingDone = true;
-          startIntroDive();
-        }
-      }, INTRO_CONFIG.minLoadTime + 2500);
-    }
-
-    let introLoadStart = 0;
-
-    function introLoadingTick(now) {
-      if (introDiveStarted) return;
-      if (introPaused) { introLastNow = now; introRaf = requestAnimationFrame(introLoadingTick); return; }
-
-      const elapsed = now - introLoadStart;
-      const timeProgress = Math.min(elapsed / INTRO_CONFIG.minLoadTime, 1);
-      const assetsDone = introFontsReady || elapsed > INTRO_CONFIG.hardTimeout;
-      const target = assetsDone ? timeProgress : Math.min(timeProgress, 0.9);
-
-      updateIntroProgress(target);
-
-      if (target >= 1) {
-        introLoadingDone = true;
-        startIntroDive();
-        return;
-      }
-      introRaf = requestAnimationFrame(introLoadingTick);
-    }
-
-    function updateIntroProgress(p) {
-      const pct = Math.round(Math.min(p, 1) * 100);
-      const fill = document.getElementById('intro-progress-fill');
-      const track = document.getElementById('intro-progress-track');
-      const label = document.getElementById('intro-percentage');
-      if (fill) fill.style.width = pct + '%';
-      if (label) label.textContent = pct + '%';
-      if (track) track.setAttribute('aria-valuenow', String(pct));
-    }
-
-    function spawnIntroBubbles() {
-      const host = document.getElementById('intro-bubbles');
-      if (!host) return;
-      const parts = [];
-      for (let i = 0; i < 28; i++) {
-        const size = (4 + Math.random() * 14).toFixed(1);
-        const left = (Math.random() * 100).toFixed(2);
-        const bottom = (Math.random() * 90).toFixed(2);
-        const dur = (5 + Math.random() * 6).toFixed(2);
-        const delay = (Math.random() * 6).toFixed(2);
-        const drift = ((Math.random() - 0.5) * 80).toFixed(0);
-        parts.push('<span class="intro-bubble" style="' +
-          'left:' + left + '%;bottom:' + bottom + '%;' +
-          'width:' + size + 'px;height:' + size + 'px;' +
-          'animation-duration:' + dur + 's;animation-delay:' + delay + 's;' +
-          '--intro-drift:' + drift + 'px;"></span>');
-      }
-      host.innerHTML = parts.join('');
-    }
-
-    function easeInOutQuad(t) {
-      return t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
-    }
-
-    function startIntroDive() {
-      if (introDiveStarted) return;
-      introDiveStarted = true;
-
-      const world = document.getElementById('intro-world');
-      const progressWrap = document.getElementById('intro-progress-wrap');
-      const skipBtn = document.getElementById('intro-skip');
-      const titleEl = document.getElementById('intro-title');
-      const logoEl = document.getElementById('intro-logo');
-      const waterCross = document.getElementById('intro-water-crossing');
-      const colorTint = document.getElementById('intro-color-tint');
-      if (!world) { onIntroComplete(); return; }
-
-      // Hide loading UI
-      if (progressWrap) progressWrap.style.opacity = '0';
-      if (skipBtn) skipBtn.style.opacity = '0';
-
-      // Fade title/logo at end of dive
-      if (titleEl) titleEl.style.transition = 'opacity 0.5s ease';
-      if (logoEl) logoEl.style.transition = 'opacity 0.5s ease';
-
-      // Parallax layers (only layers that should move at different speeds)
-      const layers = [
-        { el: document.querySelector('.intro-layer--sky'), factor: 0.4 },
-        { el: document.querySelector('.intro-layer--horizon'), factor: 0.6 },
-        { el: document.querySelector('.intro-layer--fish-far'), factor: 0.7 },
-        { el: document.querySelector('.intro-layer--fish-near'), factor: 1.15 }
-      ].filter(l => l.el);
-
-      const camDist = INTRO_CONFIG.cameraDistance;
-      let waterCrossFired = false;
-
-      introElapsed = 0;
-      introLastNow = 0;
-
-      function tick(now) {
-        if (introPaused) { introLastNow = now; introRaf = requestAnimationFrame(tick); return; }
-        if (!introLastNow) introLastNow = now;
-        const dt = now - introLastNow;
-        introLastNow = now;
-        introElapsed += dt;
-
-        const t = Math.min(introElapsed / INTRO_CONFIG.diveDuration, 1);
-        const e = easeInOutQuad(t);
-        const worldY = -e * camDist;
-
-        world.style.transform = 'translateY(' + worldY + 'vh)';
-
-        for (let i = 0; i < layers.length; i++) {
-          const extraY = (1 - layers[i].factor) * camDist * e;
-          layers[i].el.style.transform = 'translateY(' + extraY + 'vh)';
-        }
-
-        if (colorTint) colorTint.style.opacity = (e * 0.32).toFixed(3);
-
-        if (!waterCrossFired && t >= INTRO_CONFIG.waterCrossAt) {
-          waterCrossFired = true;
-          if (waterCross) {
-            waterCross.classList.add('active');
-            waterCross.style.opacity = '1';
-            setTimeout(() => { waterCross.style.opacity = '0'; }, 900);
-          }
-        }
-
-        if (t > 0.85 && titleEl && logoEl) {
-          const fadeT = (t - 0.85) / 0.15;
-          const op = (1 - fadeT).toFixed(3);
-          titleEl.style.opacity = op;
-          logoEl.style.opacity = op;
-        }
-
-        if (t < 1) {
-          introRaf = requestAnimationFrame(tick);
-        } else {
-          finishIntroDive();
-        }
-      }
-      introRaf = requestAnimationFrame(tick);
-    }
-
-    function finishIntroDive() {
-      const root = document.getElementById('intro-root');
-      if (!root) { onIntroComplete(); return; }
-      // The intro ends on the seabed which matches the app's dark navy bg
-      root.style.transition = 'opacity 0.6s ease';
-      root.style.opacity = '0';
-      setTimeout(onIntroComplete, 650);
-    }
-
     function onIntroComplete() {
-      const root = document.getElementById('intro-root');
-      if (root && root.parentNode) root.parentNode.removeChild(root);
-      document.body.style.overflow = introPrevOverflow || '';
-      document.removeEventListener('visibilitychange', onIntroVisibility);
-      if (introRaf) { cancelAnimationFrame(introRaf); introRaf = null; }
       if (pendingStartScreen) {
         pendingStartScreen = false;
         showStartScreen();
       }
     }
 
-    function skipIntro() {
-      if (introRaf) { cancelAnimationFrame(introRaf); introRaf = null; }
-      introDiveStarted = true;
-      introLoadingDone = true;
-      finishIntroDive();
-    }
-
-    function onIntroVisibility() {
-      if (!introDiveStarted && !introLoadingDone) return;
-      introPaused = document.hidden;
-      if (!introPaused) {
-        introLastNow = 0;
-        if (introRaf) cancelAnimationFrame(introRaf);
-        introRaf = requestAnimationFrame(introDiveStarted ? startIntroDiveTickResume : introLoadingTick);
-      }
-    }
-
-    // When resuming after tab switch mid-dive, restart RAF loop without resetting elapsed
-    function startIntroDiveTickResume(now) {
-      introLastNow = 0;
-      // The dive tick function is captured in closure from startIntroDive;
-      // to resume cleanly we re-invoke the dive which will pick up elapsed time from 0,
-      // so instead just fade out quickly.
-      finishIntroDive();
+    function waitForIntro() {
+      if (window.__introDone) { onIntroComplete(); return; }
+      window.addEventListener('intro-done', onIntroComplete, { once: true });
+      // safety net: never leave a new user stuck without a start screen
+      setTimeout(onIntroComplete, 25000);
     }
 
     function showStartScreen() {
