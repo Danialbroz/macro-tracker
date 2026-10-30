@@ -1432,26 +1432,26 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
      </div>
    </div>
    <input type="hidden" id="obExercise" value="">
-    <div style="display: flex; gap: 12px; margin-top: 24px;"><button class="action-btn secondary-btn" style="margin-top:0;" onclick="prevStep(3)">⬅ Back</button><button class="action-btn" style="margin-top:0;" onclick="calculateGoals()">Calculate       </button></div>
+    <div style="display: flex; gap: 12px; margin-top: 24px;"><button class="action-btn secondary-btn" style="margin-top:0;" onclick="prevStep(3)">⬅ Back</button><button class="action-btn" style="margin-top:0;" onclick="calculateGoals()">Calculate 🎯</button></div>
   </div>
  </div>
 </div>
   <div id="cancelConfirmModal" class="cancel-modal-overlay"> <div class="cancel-modal-card"><svg class="stickman-wiggle" viewBox="0 0 100 100" width="110" height="110"><circle cx="50" cy="24" r="13" fill="none" stroke="#f8fafc" stroke-width="3.5"/><path d="M38 19 q4 -4 8 -1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><path d="M55 17 q4 -2 7 1" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><circle cx="44" cy="24" r="1.6" fill="#f8fafc"/><circle cx="57" cy="24" r="1.6" fill="#f8fafc"/><path d="M43 31 q3 3 6 0 q3 -3 6 0" stroke="#f8fafc" stroke-width="2.2" fill="none" stroke-linecap="round"/><line x1="50" y1="37" x2="50" y2="67" stroke="#f8fafc" stroke-width="3.5" stroke-linecap="round"/><path d="M50 46 Q 70 42 60 20" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 46 Q 32 50 26 66" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 36 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><path d="M50 67 L 64 92" stroke="#f8fafc" stroke-width="3.5" fill="none" stroke-linecap="round"/><text x="72" y="15" font-size="14" fill="#f8fafc" font-weight="bold">?</text></svg><h3>Are you sure you want to cancel?</h3><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doCancelOnboarding()">Yes, I am!</button><button class="cancel-no-btn" onclick="closeCancelModal()">No, I'm not</button></div></div></div>
- <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>          Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
+ <div id="apiKeyModal" class="cancel-modal-overlay"><div class="glass-modal-card"><h3>🔑 Gemini API Key</h3><p class="api-key-sub">Stored locally & privately on this device only.</p><input type="text" id="apiKeyInput" placeholder="Paste your API key here" autocomplete="off" autocapitalize="off" spellcheck="false"><div class="cancel-modal-btns" style="margin-top:16px;"><button class="save-key-btn" onclick="saveApiKeyFn()">Save</button><button class="cancel-key-btn" onclick="closeApiKeyModal()">Cancel</button></div></div></div>
 <div id="photoSourceModal" class="cancel-modal-overlay">
  <div class="glass-modal-card">
-  <h3>     Add a meal photo</h3>
+  <h3>📸 Add a meal photo</h3>
   <p class="api-key-sub">Take a new photo or choose one from your gallery.</p>
   <div class="cancel-modal-btns" style="margin-top:16px;">
-   <button class="save-key-btn" onclick="chooseCamera()">         Take Photo</button>
-   <button class="cancel-key-btn" onclick="chooseGallery()">        Choose from Gallery</button>
+   <button class="save-key-btn" onclick="chooseCamera()">📸 Take Photo</button>
+   <button class="cancel-key-btn" onclick="chooseGallery()">🖼️ Choose from Gallery</button>
    <button class="cancel-key-btn" onclick="closePhotoSource()">Cancel</button>
   </div>
  </div>
 </div>
 <div id="editFoodModal" class="cancel-modal-overlay">
  <div class="glass-modal-card" id="editFoodCard">
-  <h3>     Edit this food</h3>
+  <h3>✏️ Edit this food</h3>
   <p class="api-key-sub">Update the values for this meal.</p>
   <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">CALORIES</label>
   <input type="number" id="editFoodCal" inputmode="numeric" placeholder="Calories">
@@ -1560,19 +1560,19 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
    <div class="scan-result-name" id="scanResultName">Scanned Meal</div>
    <div class="scan-macro-list">
     <div class="scan-macro-item" data-macro="cal">
-    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">   Calories</span></div>
+    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🔥 Calories</span></div>
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-cal"></div></div>
     </div>
     <div class="scan-macro-item" data-macro="pro">
-    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">   Protein</span></div>
+    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">💪 Protein</span></div>
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro"></div></div>
     </div>
     <div class="scan-macro-item" data-macro="carb">
-    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">   Carbs</span></div>
+    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🌾 Carbs</span></div>
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-carb"></div></div>
     </div>
     <div class="scan-macro-item" data-macro="fat">
-    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">   Fat</span></div>
+    <div class="scan-macro-top"><span class="scan-macro-value">0</span><span class="scan-macro-label">🧈 Fat</span></div>
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
     </div>
    </div>
@@ -1589,7 +1589,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
   </div>
  </div>
 </div>
-  <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">               API Key</button><button onclick="openOnboarding(); toggleMenu();">            Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">          Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img
+  <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">📝 Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📸 Scan Meal with AI</button><div class="progress-wrap" id="progressWrap"><div class="progress-track"><div class="progress-fill" id="progressFill"></div><div class="progress-text" id="progressText">0%</div></div></div><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img
 id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
 <script>
  let GOAL_CAL = 0;
@@ -1918,7 +1918,7 @@ async function analyzePhoto(event) {
         const apiKey = localStorage.getItem('gemini_key');
         if (!apiKey) {
             hideScanOverlay();
-            alert('AI scanning requires a Gemini API key. Please add one in the settings menu (   ).');
+            alert('AI scanning requires a Gemini API key. Please add one in the settings menu (⚙️).');
             return;
         }
         const base64Image = await compressImage(file, 800, 0.7);
@@ -1940,7 +1940,7 @@ async function analyzePhoto(event) {
    } catch (err) {
     console.error(err);
     hideScanOverlay();
-    statusEl.textContent = '         Error analyzing image. Check API key.';
+    statusEl.textContent = '❌ Error analyzing image. Check API key.';
     statusEl.style.display = 'block';
      }
  }
@@ -2120,11 +2120,11 @@ labels.forEach(v => {
   }
   function renderGauge(type, current, goal) { const pct = goal > 0 ? clamp(current / goal * 100, 0, 100) : 0; const angle = -90 + pct * 1.8; const needleGroup = document.getElementById(type + 'Needle'); needleGroup.style.transform = `rotate(${angle}deg)`; const needleLine = needleGroup.querySelector('line'); document.getElementById(type + 'Text').textContent = `${current} / ${goal}${type === 'pro' ? 'g' : ''}`; const box = document.getElementById(type + 'Box'); const rawPct = goal > 0 ? (current / goal * 100) : 0; if (type === 'pro') { if (rawPct >= 100) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else { box.classList.remove('target-reached', 'over-limit'); needleLine.setAttribute('stroke', '#cbd5e1'); } } else { const inRange = rawPct >= 90 && rawPct <= 100; if (inRange) { box.classList.add('target-reached'); box.classList.remove('over-limit'); needleLine.setAttribute('stroke', '#5eead4'); } else if (rawPct > 100) { box.classList.add('over-limit'); box.classList.remove('target-reached'); needleLine.setAttribute('stroke', '#f87171'); } else { box.classList.remove('over-limit', 'target-reached'); needleLine.setAttribute('stroke', '#cbd5e1'); } } buildGaugeScale(type, goal); }
   function render() {
-    const logs = getLogs(); let totalCal = 0, totalPro = 0; const listEl = document.getElementById('logList'); listEl.innerHTML = ''; if (logs.length === 0) { listEl.innerHTML = `<div class="empty-state">    No meals logged yet today</div>`; }
+    const logs = getLogs(); let totalCal = 0, totalPro = 0; const listEl = document.getElementById('logList'); listEl.innerHTML = ''; if (logs.length === 0) { listEl.innerHTML = `<div class="empty-state">🥣 No meals logged yet today</div>`; }
       logs.forEach(item => {
        totalCal += item.cal; totalPro += item.pro;
-   const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb" style="cursor:pointer" onclick="openFoodDetail(${item.id})">` : `<div class="food-thumb placeholder" style="cursor:pointer" onclick="openFoodDetail(${item.id})"> </div>`;
-    listEl.innerHTML += `<div class="food-card">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">            ${item.cal}</span><span class="macro-chip chip-pro">    ${item.pro}g</span><span class="macro-chip chip-carb">           ${item.carb || 0}g</span><span class="macro-chip chip-fat">        ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">     Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">     Delete</button></div></div></div>`;
+   const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb" style="cursor:pointer" onclick="openFoodDetail(${item.id})">` : `<div class="food-thumb placeholder" style="cursor:pointer" onclick="openFoodDetail(${item.id})">🥣</div>`;
+    listEl.innerHTML += `<div class="food-card">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div>`;
       });
       renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO);
   }
