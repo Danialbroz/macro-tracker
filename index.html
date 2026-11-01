@@ -1588,7 +1588,10 @@ id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><
  let editingFoodId = null;
  let deletingFoodId = null;
  let scanOverlayMode = 'scan';
- const todayKey = new Date().toISOString().split('T')[0];
+ // Local calendar day (en-CA gives YYYY-MM-DD). Read fresh each call so the log rolls over at local midnight.
+ const todayKey = () => new Date().toLocaleDateString('en-CA');
+ let shownDay = todayKey();
+ document.addEventListener('visibilitychange', () => { if (!document.hidden && todayKey() !== shownDay) { shownDay = todayKey(); render(); } });
  let pendingStartScreen = false;
  function clamp(v, min, max) { return Math.max(min, Math.min(max, v)); }
  function initApp() {
@@ -1929,8 +1932,8 @@ async function analyzePhoto(event) {
     statusEl.style.display = 'block';
      }
  }
- function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey] || []; }
- function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
+ function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
+ function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
   function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
  function closeAllFoodMenus() {
      document.querySelectorAll('.food-menu.show').forEach(m => m.classList.remove('show'));
