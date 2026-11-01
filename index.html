@@ -200,7 +200,7 @@
   .cal-row > .card { margin: 0; }
   .cal-dots { display: none; }
   @media (max-width: 700px) {
-    .cal-row { display: flex; gap: 12px; perspective: 900px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px 8px; padding: 0 16px; scroll-padding: 0 16px; overscroll-behavior-x: contain; }
+    .cal-row { display: flex; gap: 12px; perspective: 900px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px 8px; padding: 0 16px; scroll-padding: 0 16px; overscroll-behavior-x: contain; touch-action: pan-x; }
     .cal-row::-webkit-scrollbar { display: none; }
     .cal-row > .card { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; }
     .cal-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
