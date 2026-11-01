@@ -196,11 +196,11 @@
   /* ---------- CALENDAR: liquid glass + neon day states + streak ---------- */
   .cal-card { padding: 14px 14px 12px; }
   /* desktop: calendar left, weekly summary right. phone: swipeable carousel, calendar first */
-  .cal-row { display: grid; grid-template-columns: minmax(0, 440px) minmax(0, 1fr); gap: 16px; margin-bottom: 16px; }
+  .cal-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
   .cal-row > .card { margin: 0; }
   .cal-dots { display: none; }
   @media (max-width: 700px) {
-    .cal-row { display: flex; gap: 12px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px 8px; padding: 0 16px; scroll-padding: 0 16px; overscroll-behavior-x: contain; }
+    .cal-row { display: flex; gap: 12px; perspective: 900px; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; margin: 0 -16px 8px; padding: 0 16px; scroll-padding: 0 16px; overscroll-behavior-x: contain; }
     .cal-row::-webkit-scrollbar { display: none; }
     .cal-row > .card { flex: 0 0 100%; scroll-snap-align: start; scroll-snap-stop: always; }
     .cal-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 16px; }
@@ -900,10 +900,28 @@ html.intro-lock { overflow: hidden; }
 #intro-logo { flex: 0 0 auto; width: clamp(40px, 8vw, 54px); height: clamp(40px, 8vw, 54px); filter: drop-shadow(0 3px 8px rgba(4,30,66,.6)); }
 #intro-logo svg { width: 100%; height: 100%; display: block; }
 #intro-title {
-    color: #fff; font-weight: 800; letter-spacing: .3px; white-space: nowrap;
+    display: flex; align-items: center; gap: .3em;
+    font-weight: 900; letter-spacing: .5px; white-space: nowrap;
     font-size: clamp(1.6rem, 5vw, 2.6rem); line-height: 1.1;
-    text-shadow: 0 2px 4px rgba(4,30,66,.9), 0 0 12px rgba(4,30,66,.7);
+    filter: drop-shadow(0 2px 4px rgba(4,30,66,.9)) drop-shadow(0 0 10px rgba(56,189,248,.45));
 }
+/* shimmering water-light sweep across the name */
+#intro-title .t-name {
+    background: linear-gradient(100deg, #fff 0%, #fff 38%, #7dd3fc 48%, #fff 58%, #e0f7ff 100%);
+    background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: introShimmer 3.2s ease-in-out infinite;
+}
+/* neon "AI" chip */
+#intro-title .t-ai {
+    font-size: .62em; padding: .12em .45em; border-radius: .45em; color: #eafffb;
+    background: linear-gradient(135deg, rgba(56,189,248,.35), rgba(57,255,20,.25));
+    border: 1px solid rgba(125,255,200,.8);
+    box-shadow: 0 0 10px rgba(57,255,20,.55), inset 0 0 8px rgba(125,211,252,.5);
+    text-shadow: 0 0 6px rgba(57,255,20,.9);
+    animation: introAiPulse 2s ease-in-out infinite;
+}
+@keyframes introShimmer { 0% { background-position: 100% 0; } 60%, 100% { background-position: 0 0; } }
+@keyframes introAiPulse { 50% { box-shadow: 0 0 18px rgba(57,255,20,.85), inset 0 0 10px rgba(125,211,252,.7); } }
 @media (max-width: 420px) { #intro-ui { gap: 8px; padding: 8px 16px; } }
 /* ---------- 7. GOLDFISH LOADER ---------- */
 #intro-loader {
@@ -1167,7 +1185,7 @@ var vars = {
     '--intro-sun-x': CONFIG.sunX, '--intro-sun-y': CONFIG.sunY
 };
 Object.keys(vars).forEach(function (k) { root.style.setProperty(k, vars[k]); });
-$('intro-title').textContent = CONFIG.title;
+$('intro-title').innerHTML = CONFIG.title.replace(/^(.*?)( AI)?$/, function (_, n, ai) { return '<span class="t-name">' + n + '</span>' + (ai ? '<span class="t-ai">AI</span>' : ''); });
 /* ---------- REDUCED MOTION: simple fade ---------- */
 if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
     gsap.to(root, { opacity: 0, duration: 0.5, delay: 0.3, onComplete: cleanup });
@@ -2038,9 +2056,18 @@ function renderWeek(data) {
   el.innerHTML = `<strong>📊 Last 7 Days</strong><div class="wk-stats"><div class="wk-stat"><b>${avg(sumCal)}</b><span>avg kcal</span></div><div class="wk-stat"><b>${avg(sumPro)}g</b><span>avg protein</span></div><div class="wk-stat"><b>${hit}/7</b><span>goal days</span></div></div><div class="wk-chart"><div class="wk-goal" style="bottom:calc(20px + (100% - 20px) / ${SCALE})"></div>${cols}</div>`;
 }
 // phone carousel: light up the dot for the visible card
+// + 3D flip-through: each card swings/shrinks/fades by how far it is from center
 document.getElementById('calRow')?.addEventListener('scroll', e => {
-  const i = Math.round(e.target.scrollLeft / e.target.clientWidth);
-  document.querySelectorAll('#calDots i').forEach((d, j) => d.classList.toggle('on', i === j));
+  const row = e.target, w = row.clientWidth - 32 + 12; // card = row minus 16px side padding, + 12px gap
+  const pos = row.scrollLeft / w;
+  document.querySelectorAll('#calDots i').forEach((d, j) => d.classList.toggle('on', Math.round(pos) === j));
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  [...row.children].forEach((c, j) => {
+    const p = Math.max(-1, Math.min(1, j - pos));
+    c.style.transform = Math.abs(p) > 0.001 ? `rotateY(${p * -50}deg) scale(${1 - Math.abs(p) * 0.15})` : '';
+    c.style.transformOrigin = p > 0 ? 'left center' : 'right center';
+    c.style.opacity = 1 - Math.abs(p) * 0.5;
+  });
 }, { passive: true });
 function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
  function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
