@@ -15,7 +15,7 @@
   * { box-sizing: border-box; font-family: -apple-system, BlinkMacSystemFont, sans-serif; -webkit-tap-highlight-color: transparent; }
   html { height: 100%; background: #082f49; overscroll-behavior: none; overflow-x: hidden; }
   body { color: var(--text); margin: 0; padding: calc(20px + env(safe-area-inset-top)) 16px calc(40px + env(safe-area-inset-bottom)); min-height: 100vh; min-height: 100svh; min-height: 100dvh; overscroll-behavior: none; }
-  .underwater-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); }
+  .underwater-bg { position: fixed; inset: 0; bottom: calc(-1 * env(safe-area-inset-bottom, 0px)); z-index: -1; pointer-events: none; overflow: hidden; background: linear-gradient(180deg, #0f172a 0%, #082f49 100%); }
   .bubble { position: absolute; bottom: calc(-120px - env(safe-area-inset-bottom, 0px)); opacity: 0; animation: rise linear infinite; will-change: transform, opacity; }
   @keyframes rise {
    0% { transform: translateY(0) scale(1); opacity: 0; }
