@@ -190,6 +190,31 @@
   .macro-chip { font-size: 0.72rem; padding: 3px 7px; border-radius: 8px; background: rgba(255,255,255,0.08); font-weight: 600; white-space: nowrap; }
   .chip-cal { color: #38bdf8; } .chip-pro { color: #4ade80; } .chip-carb { color: #facc15; } .chip-fat { color: #f472b6; }
   .empty-state { text-align: center; padding: 20px 0; color: #94a3b8; font-size: 0.9rem; }
+  /* ---------- CALENDAR: liquid glass + neon day states + streak ---------- */
+  .cal-card { position: relative; overflow: hidden; padding: 16px 14px 14px; border-radius: 22px; background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.03) 55%, rgba(125,211,252,0.08)); backdrop-filter: blur(18px) saturate(180%); -webkit-backdrop-filter: blur(18px) saturate(180%); border: 1px solid rgba(255,255,255,0.25); box-shadow: 0 10px 30px rgba(4,30,66,0.4), inset 0 1px 0 rgba(255,255,255,0.4), inset 0 -1px 0 rgba(255,255,255,0.06); }
+  .cal-card::before { content: ''; position: absolute; top: -60%; left: -30%; width: 90%; height: 120%; background: radial-gradient(ellipse at center, rgba(255,255,255,0.14), transparent 65%); transform: rotate(-18deg); pointer-events: none; }
+  .cal-head { position: relative; display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+  .cal-streak { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; font-weight: 800; font-size: 0.95rem; color: #94a3b8; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
+  .cal-streak .flame { filter: grayscale(1) opacity(.6); }
+  .cal-streak.on { color: #ffb347; background: rgba(255,140,0,0.16); border-color: rgba(255,170,60,0.55); box-shadow: 0 0 14px rgba(255,140,0,0.35); }
+  .cal-streak.on .flame { filter: none; animation: flameBeat 1.4s ease-in-out infinite; }
+  @keyframes flameBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22) rotate(-6deg); } }
+  .cal-sub { position: relative; font-size: 0.75rem; color: #94a3b8; margin: 4px 0 10px; }
+  .cal-grid { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal-dow { text-align: center; font-size: 0.65rem; font-weight: 700; color: #7dd3fc; opacity: .8; }
+  .cal-day { aspect-ratio: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; color: #cbd5e1; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); }
+  .cal-day b { line-height: 1; }
+  .cal-day.future, .cal-day.none { opacity: .45; }
+  .cal-day.today { border-color: #38bdf8; box-shadow: 0 0 0 1px #38bdf8, 0 0 12px rgba(56,189,248,0.55), inset 0 1px 0 rgba(255,255,255,0.25); color: #fff; }
+  .cal-day.win { color: #03280a; background: #39ff14; border-color: #b6ffa6; box-shadow: 0 0 8px #39ff14, 0 0 20px rgba(57,255,20,0.6), inset 0 1px 0 rgba(255,255,255,0.6); }
+  .cal-day.miss { color: #fff; background: #ff1744; border-color: #ff9bb0; box-shadow: 0 0 8px #ff1744, 0 0 20px rgba(255,23,68,0.6), inset 0 1px 0 rgba(255,255,255,0.45); }
+  .cal-ck { display: flex; gap: 2px; font-size: 0.55rem; line-height: 1; font-weight: 900; min-height: 0.55rem; }
+  .cal-ck i { font-style: normal; }
+  .cal-ck .c { color: #38bdf8; } .cal-ck .p { color: #4ade80; }
+  .cal-day.win .cal-ck i { color: #03280a; }
+  .cal-legend { position: relative; display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 12px; font-size: 0.68rem; color: #94a3b8; }
+  .cal-legend span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
+  .cal-legend .g::before { background: #39ff14; box-shadow: 0 0 6px #39ff14; } .cal-legend .r::before { background: #ff1744; box-shadow: 0 0 6px #ff1744; } .cal-legend .t::before { background: transparent; border: 1px solid #38bdf8; }
   .food-actions { position: relative; flex-shrink: 0; }
   .hamburger-btn {
    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
@@ -1578,7 +1603,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
  </div>
 </div>
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="setApiKey(); toggleMenu();">🔑 API Key</button><button onclick="openOnboarding(); toggleMenu();">📝 Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📸 Scan Meal with AI</button><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img
-id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
+id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="card cal-card" id="calCard"></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
 <script>
  let GOAL_CAL = 0;
  let GOAL_PRO = 0;
@@ -1932,7 +1957,37 @@ async function analyzePhoto(event) {
     statusEl.style.display = 'block';
      }
  }
- function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
+ // Same rules as the gauges: calories count when within 90-100% of goal, protein when it reaches 100%.
+function dayStats(key, data) {
+  const logs = data[key] || []; let cal = 0, pro = 0;
+  logs.forEach(i => { cal += i.cal; pro += i.pro; });
+  const calOK = GOAL_CAL > 0 && cal >= GOAL_CAL * 0.9 && cal <= GOAL_CAL, proOK = GOAL_PRO > 0 && pro >= GOAL_PRO;
+  return { has: logs.length > 0, calOK, proOK, both: calOK && proOK };
+}
+function renderCalendar() {
+  const el = document.getElementById('calCard'); if (!el) return;
+  const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
+  const now = new Date(), y = now.getFullYear(), m = now.getMonth(), today = todayKey();
+  const days = new Date(y, m + 1, 0).getDate(), offset = new Date(y, m, 1).getDay();
+  // streak: consecutive days with both goals met, ending today (or yesterday while today is still open)
+  let streak = 0;
+  const todayDone = dayStats(today, data).both;
+  for (let i = todayDone ? 0 : 1; i < 1000; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    if (!dayStats(d.toLocaleDateString('en-CA'), data).both) break;
+    streak++;
+  }
+  const sub = streak === 0 ? 'Hit both goals today to start a streak' : todayDone ? 'Streak safe for today. Come back tomorrow!' : `Hit both goals today to keep your ${streak}-day streak`;
+  let cells = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="cal-dow">${d}</div>`).join('') + '<div></div>'.repeat(offset);
+  for (let d = 1; d <= days; d++) {
+    const key = new Date(y, m, d).toLocaleDateString('en-CA'), s = dayStats(key, data);
+    const cls = key > today ? 'future' : key === today ? (s.both ? 'win today' : 'today') : s.both ? 'win' : s.has ? 'miss' : 'none';
+    const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
+    cells += `<div class="cal-day ${cls}"><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
+  }
+  el.innerHTML = `<div class="cal-head"><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><div class="cal-streak ${streak ? 'on' : ''}"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
+}
+function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
  function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
   function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
  function closeAllFoodMenus() {
@@ -2181,7 +2236,7 @@ labels.forEach(v => {
    const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb" style="cursor:pointer" onclick="openFoodDetail(${item.id})">` : `<div class="food-thumb placeholder" style="cursor:pointer" onclick="openFoodDetail(${item.id})">🥣</div>`;
     listEl.innerHTML += `<div class="food-card" data-id="${item.id}">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div>`;
       });
-      renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO);
+      renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO); renderCalendar();
   }
 function buildAppIconPng(size) {
 const c = document.createElement('canvas');
