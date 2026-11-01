@@ -4,7 +4,7 @@
 
 **Snap a photo of your meal. Get calories and macros in seconds.**
 
-A single-file, installable web app for tracking calories and protein, with an underwater theme, glassmorphism UI and AI food recognition.
+A single-file, installable web app for tracking calories and protein, with an underwater theme and AI food recognition.
 
 ![HTML5](https://img.shields.io/badge/HTML5-E34F26?logo=html5&logoColor=white)
 ![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
