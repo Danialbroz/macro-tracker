@@ -2043,6 +2043,30 @@ function cancelDeleteFood() {
     document.getElementById('deleteFoodModal').classList.remove('show');
     deletingFoodId = null;
 }
+// pop (0.32s) -> sucked-in bloop (0.6s) -> cute gulp (1.08s), timed to the animation in confirmDeleteFood
+function playTrashSound() {
+    try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        if (!AC) return;
+        const ctx = new AC(), t = ctx.currentTime;
+        const blip = (type, f0, f1, at, d, vol) => {
+            const osc = ctx.createOscillator(), g = ctx.createGain();
+            osc.type = type;
+            osc.frequency.setValueAtTime(f0, t + at);
+            osc.frequency.exponentialRampToValueAtTime(f1, t + at + d);
+            g.gain.setValueAtTime(0.0001, t + at);
+            g.gain.linearRampToValueAtTime(vol, t + at + 0.015);
+            g.gain.exponentialRampToValueAtTime(0.0001, t + at + d);
+            osc.connect(g); g.connect(ctx.destination);
+            osc.start(t + at); osc.stop(t + at + d + 0.02);
+        };
+        blip('sine', 500, 1000, 0.32, 0.14, 0.2);
+        blip('sine', 1100, 220, 0.6, 0.45, 0.16);
+        blip('triangle', 660, 990, 1.08, 0.09, 0.14);
+        blip('triangle', 990, 1480, 1.16, 0.14, 0.14);
+        setTimeout(() => ctx.close(), 1600);
+    } catch (e) {}
+}
 async function confirmDeleteFood() {
     const id = deletingFoodId;
     document.getElementById('deleteFoodModal').classList.remove('show');
@@ -2051,20 +2075,29 @@ async function confirmDeleteFood() {
     if (card && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         const r = card.getBoundingClientRect(), cx = r.left + r.width / 2, tx = innerWidth - 50;
         const trash = document.createElement('div');
-        trash.className = 'trash-fly'; trash.textContent = '🗑️';
-        trash.style.left = (tx - 22) + 'px'; trash.style.top = (r.top + r.height / 2 - 22) + 'px';
+        trash.className = 'trash-fly';
+        trash.innerHTML = `<svg viewBox="0 0 56 64" width="56" height="64"><defs><linearGradient id="trashG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e0f2fe" stop-opacity=".9"/><stop offset="1" stop-color="#38bdf8" stop-opacity=".55"/></linearGradient></defs><path d="M8 20 L12 58 Q12.4 62 17 62 H39 Q43.6 62 44 58 L48 20 Z" fill="url(#trashG)" stroke="rgba(255,255,255,.75)" stroke-width="1.5"/><path d="M20 28V54M28 28V54M36 28V54" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/><g class="trash-lid"><rect x="4" y="12" width="48" height="8" rx="4" fill="#bae6fd" stroke="rgba(255,255,255,.8)" stroke-width="1.5"/><rect x="21" y="5" width="14" height="8" rx="4" fill="#7dd3fc" stroke="rgba(255,255,255,.8)" stroke-width="1.5"/></g></svg>`;
+        trash.style.left = (tx - 28) + 'px'; trash.style.top = (r.top + r.height / 2 - 32) + 'px';
         document.body.appendChild(trash);
+        const lid = trash.querySelector('.trash-lid'); lid.style.transformOrigin = '6px 16px';
         const o = { fill: 'forwards' };
-        await trash.animate([{ transform: 'translateX(120px)' }, { transform: 'translateX(0)' }], { ...o, duration: 280, easing: 'cubic-bezier(.2,1.2,.4,1)' }).finished;
+        playTrashSound();
+        await trash.animate([{ transform: 'translateX(110px)', opacity: 0 }, { transform: 'translateX(0)', opacity: 1 }], { ...o, duration: 320, easing: 'cubic-bezier(.2,1.1,.4,1)' }).finished;
+        // pop: the card jumps up for a beat
+        await card.animate([{ transform: 'none' }, { transform: 'translateY(-16px) scale(1.07)', offset: 0.6 }, { transform: 'translateY(-12px) scale(1.05)' }], { ...o, duration: 280, easing: 'cubic-bezier(.3,1.4,.5,1)' }).finished;
+        // suck: lid opens, card squeezes into the bin mouth
+        lid.animate([{ transform: 'rotate(0)' }, { transform: 'rotate(-52deg)' }], { ...o, duration: 160, easing: 'ease-out' });
         const dx = tx - cx;
         await card.animate([
-            { transform: 'none', opacity: 1 },
-            { transform: `translate(${dx * 0.5}px,-70px) rotate(180deg) scale(.5)`, opacity: 1, offset: 0.55 },
-            { transform: `translate(${dx}px,0) rotate(360deg) scale(.08)`, opacity: 0.6 }
-        ], { ...o, duration: 520, easing: 'ease-in' }).finished;
+            { transform: 'translateY(-12px) scale(1.05)', opacity: 1 },
+            { transform: `translate(${dx * 0.6}px,-60px) scale(.45) rotate(8deg)`, opacity: 1, offset: 0.6 },
+            { transform: `translate(${dx}px,-16px) scale(.06,.1) rotate(14deg)`, opacity: 0 }
+        ], { ...o, duration: 480, easing: 'cubic-bezier(.55,0,.85,.4)' }).finished;
         card.style.visibility = 'hidden';
-        await trash.animate([{ transform: 'scale(1)' }, { transform: 'scale(1.3) rotate(-12deg)' }, { transform: 'scale(1)' }], { ...o, duration: 220 }).finished;
-        await trash.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(140px)', opacity: 0 }], { ...o, duration: 320, easing: 'ease-in' }).finished;
+        // gulp: lid snaps shut, bin bounces, then slides away
+        lid.animate([{ transform: 'rotate(-52deg)' }, { transform: 'rotate(0)' }], { ...o, duration: 140, easing: 'ease-in' });
+        await trash.animate([{ transform: 'scale(1,1)' }, { transform: 'scale(1.15,.88)' }, { transform: 'scale(.95,1.08)' }, { transform: 'scale(1,1)' }], { ...o, duration: 300 }).finished;
+        await trash.animate([{ transform: 'translateX(0)', opacity: 1 }, { transform: 'translateX(110px)', opacity: 0 }], { ...o, duration: 340, easing: 'ease-in' }).finished;
         trash.remove();
     }
     saveLogs(getLogs().filter(item => item.id !== id));
