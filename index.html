@@ -843,10 +843,9 @@ html.intro-lock { overflow: hidden; }
     position: absolute; border-radius: 50%; opacity: 0;
  background: radial-gradient(circle at 35% 30%, rgba(255,255,255,.8), rgba(160,225,255,.38) 55%, rgba(120,210,255,.08));
 }
-/* ---------- 6. FIXED TITLE + LOGO ---------- */
+/* ---------- 6. TITLE + LOGO (centered in the sky, scrolls away with the world) ---------- */
 #intro-ui {
-    position: fixed; z-index: 20; left: 50%; transform: translateX(-50%);
-    top: max(12px, calc(env(safe-area-inset-top, 0px) + 8px));
+    position: absolute; z-index: 20; left: 50%; top: 50vh; transform: translate(-50%, -50%);
     display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 20px);
     padding: 10px 22px; border-radius: 999px; pointer-events: none;
     background: rgba(8,47,73,.45);
@@ -987,12 +986,7 @@ html.intro-lock { overflow: hidden; }
    <g class="intro-seaweed-shape intro-seaweed-shape--4"><path d="M1200,400 Q1180,350 1210,290 Q1180,240 1200,200 Q1220,240 1190,290 Q1220,350 1200,400 Z" fill="#166534"/></g>
   </svg>
  </div>
-</div>
-<!-- COLOR GRADING + PAGE-MATCH OVERLAYS + SPLASH -->
-<div id="intro-grade" aria-hidden="true"></div>
-<div id="intro-match" aria-hidden="true"></div>
-<div id="intro-splash" aria-hidden="true"></div>
-<!-- FIXED LOGO + TITLE (never animated during the dive) -->
+<!-- LOGO + TITLE: lives inside the world, centered in the sky, so it stays up there as the camera dives -->
 <div id="intro-ui">
  <div id="intro-logo">
   <svg viewBox="0 0 200 200" aria-hidden="true">
@@ -1013,6 +1007,11 @@ html.intro-lock { overflow: hidden; }
  </div>
  <div id="intro-title">Macro Tracker AI</div>
 </div>
+</div>
+<!-- COLOR GRADING + PAGE-MATCH OVERLAYS + SPLASH -->
+<div id="intro-grade" aria-hidden="true"></div>
+<div id="intro-match" aria-hidden="true"></div>
+<div id="intro-splash" aria-hidden="true"></div>
 <!-- GOLDFISH LOADER -->
 <div id="intro-loader">
  <div id="intro-pct" aria-hidden="true">0%</div>
