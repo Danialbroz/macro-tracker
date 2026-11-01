@@ -21,8 +21,8 @@ A single-file, installable web app for tracking calories and protein, with an un
 - 📸 **AI food scanning**: take or upload a photo and Google Gemini estimates the food name, calories, protein, carbs and fat.
 - 🎯 **Personalised goals**: an onboarding flow takes your profile and goal (lose weight, maintain or gain muscle) and works out daily calorie and protein targets.
 - 📊 **Live gauges**: calorie and protein dials fill as you log, and show when you reach or go over your target.
-- 🥣 **Today's Log**: frosted-glass food cards with a thumbnail and macro chips. Tap a card for details, or use the menu to edit or delete.
-- 🗑️ **Delight in the details**: deleting a meal sucks it into a little bin, genie-style, with a cute sound.
+- 🥣 **Today's Log**: food entries with a thumbnail and macro chips. Tap a card for details, or use the menu to edit or delete.
+- 🗑️ **Delight in the details**: deleting a meal sucks it into a cute red neon bin, genie-style, with a cute sound.
 - 🌊 **Immersive intro**: an animated dive from the sky into the ocean, built with GSAP.
 - 🫧 **Living background**: dumbbell-in-bubble shapes drift up the screen behind the app.
 - 📱 **Installable and mobile-first**: designed for phones, with safe-area support and an "Add to Home Screen" icon.

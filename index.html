@@ -187,15 +187,14 @@
   #scannedPreviewWrap { display: none; text-align: center; margin: 8px 0; }
   #scannedPreviewImg { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); }
   #status { font-size: 0.85rem; color: var(--red); text-align: center; margin-top: 6px; display: none; }
-  .food-card { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 10px; border-radius: 18px; background: linear-gradient(135deg, rgba(255,255,255,0.16), rgba(255,255,255,0.04)); backdrop-filter: blur(14px) saturate(160%); -webkit-backdrop-filter: blur(14px) saturate(160%); border: 1px solid rgba(255,255,255,0.22); box-shadow: 0 8px 24px rgba(4,30,66,0.35), inset 0 1px 0 rgba(255,255,255,0.35); }
-  .food-card:has(.food-actions.menu-open) { position: relative; z-index: 5; }
-  .trash-fly { position: fixed; z-index: 3000; font-size: 44px; line-height: 1; pointer-events: none; filter: drop-shadow(0 4px 8px rgba(0,0,0,.45)); }
- .food-thumb { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: rgba(255,255,255,0.12); border: 1px solid rgba(255,255,255,0.25); }
+  .food-card { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .trash-fly { position: fixed; z-index: 3000; line-height: 1; pointer-events: none; filter: drop-shadow(0 0 3px #ff2d55) drop-shadow(0 0 12px rgba(255,45,85,.75)); }
+ .food-thumb { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: rgba(255,255,255,0.08); }
   .food-thumb.placeholder { display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
   .food-info { flex: 1; min-width: 0; }
   .food-name { font-weight: 700; font-size: 0.95rem; margin-bottom: 4px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .food-macros { display: flex; flex-wrap: wrap; gap: 6px; }
-  .macro-chip { font-size: 0.72rem; padding: 3px 7px; border-radius: 8px; background: rgba(255,255,255,0.1); border: 1px solid rgba(255,255,255,0.15); font-weight: 600; white-space: nowrap; }
+  .macro-chip { font-size: 0.72rem; padding: 3px 7px; border-radius: 8px; background: rgba(255,255,255,0.08); font-weight: 600; white-space: nowrap; }
   .chip-cal { color: #38bdf8; } .chip-pro { color: #4ade80; } .chip-carb { color: #facc15; } .chip-fat { color: #f472b6; }
  .del-btn { background: none; color: #f87171; border: none; width: auto; padding: 0 4px; margin: 0; font-weight: 600; cursor: pointer; flex-shrink: 0; }
   .empty-state { text-align: center; padding: 20px 0; color: #94a3b8; font-size: 0.9rem; }
@@ -2076,7 +2075,7 @@ async function confirmDeleteFood() {
         const r = card.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
         const trash = document.createElement('div');
         trash.className = 'trash-fly';
-        trash.innerHTML = `<svg viewBox="0 0 56 64" width="56" height="64"><defs><linearGradient id="trashG" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#fecaca" stop-opacity=".9"/><stop offset="1" stop-color="#ef4444" stop-opacity=".7"/></linearGradient></defs><path d="M8 20 L12 58 Q12.4 62 17 62 H39 Q43.6 62 44 58 L48 20 Z" fill="url(#trashG)" stroke="rgba(255,255,255,.75)" stroke-width="1.5"/><path d="M20 28V54M28 28V54M36 28V54" stroke="rgba(255,255,255,.55)" stroke-width="2" stroke-linecap="round"/><g class="trash-lid"><rect x="4" y="12" width="48" height="8" rx="4" fill="#fca5a5" stroke="rgba(255,255,255,.8)" stroke-width="1.5"/><rect x="21" y="5" width="14" height="8" rx="4" fill="#f87171" stroke="rgba(255,255,255,.8)" stroke-width="1.5"/></g></svg>`;
+        trash.innerHTML = `<svg viewBox="0 0 56 64" width="56" height="64"><path d="M8 21 L12 58 Q12.4 62 17 62 H39 Q43.6 62 44 58 L48 21 Z" fill="rgba(255,45,85,.18)" stroke="#ff4d6d" stroke-width="2" stroke-linejoin="round"/><circle cx="22" cy="39" r="2.4" fill="#fff"/><circle cx="34" cy="39" r="2.4" fill="#fff"/><path d="M24.5 46 Q28 50 31.5 46" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round"/><ellipse cx="17.5" cy="44.5" rx="3" ry="2" fill="#ff8fa3" opacity=".75"/><ellipse cx="38.5" cy="44.5" rx="3" ry="2" fill="#ff8fa3" opacity=".75"/><g class="trash-lid"><rect x="4" y="12" width="48" height="8" rx="4" fill="rgba(255,45,85,.3)" stroke="#ff4d6d" stroke-width="2"/><rect x="21" y="5" width="14" height="8" rx="4" fill="rgba(255,45,85,.3)" stroke="#ff4d6d" stroke-width="2"/></g></svg>`;
         trash.style.left = 'calc(50% - 28px)'; trash.style.bottom = 'calc(28px + env(safe-area-inset-bottom, 0px))';
         document.body.appendChild(trash);
         const tr = trash.getBoundingClientRect(), mx = tr.left + 28, my = tr.top + 14; // bin mouth
