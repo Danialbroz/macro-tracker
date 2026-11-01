@@ -184,6 +184,15 @@
   #scannedPreviewImg { width: 70px; height: 70px; object-fit: cover; border-radius: 12px; border: 2px solid rgba(255,255,255,0.25); }
   #status { font-size: 0.85rem; color: var(--red); text-align: center; margin-top: 6px; display: none; }
   .food-card { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+  .food-swipe { position: relative; }
+  .food-swipe .food-card { position: relative; transform: translateX(var(--x, 0px)); transition: transform .35s cubic-bezier(.2,.9,.3,1); touch-action: pan-y; }
+  .food-swipe.drag .food-card { transition: none; }
+  .swipe-actions { position: absolute; right: 0; top: 0; bottom: 0; width: 126px; display: none; align-items: center; justify-content: flex-end; gap: 10px; opacity: var(--o, 0); pointer-events: none; }
+  .food-swipe.open .swipe-actions { pointer-events: auto; }
+  .swipe-actions button { width: 54px; height: 54px; margin: 0; padding: 0; border-radius: 18px; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.06); border: 1.5px solid; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); transform: scale(var(--s, .6)); transition: transform .35s cubic-bezier(.3,1.5,.5,1); }
+  .sw-edit { color: #38bdf8; border-color: #38bdf8; box-shadow: 0 0 10px rgba(56,189,248,.55), inset 0 0 10px rgba(56,189,248,.2); }
+  .sw-del { color: #ff2d55; border-color: #ff2d55; box-shadow: 0 0 10px rgba(255,45,85,.7), inset 0 0 10px rgba(255,45,85,.25); }
+  @media (max-width: 700px) { .swipe-actions { display: flex; } }
   .trash-fly { position: fixed; z-index: 3000; line-height: 1; pointer-events: none; filter: drop-shadow(0 0 3px #ff2d55) drop-shadow(0 0 12px rgba(255,45,85,.75)); }
  .food-thumb { width: 52px; height: 52px; border-radius: 12px; object-fit: cover; flex-shrink: 0; background: rgba(255,255,255,0.08); }
   .food-thumb.placeholder { display: flex; align-items: center; justify-content: center; font-size: 1.4rem; }
@@ -2069,6 +2078,27 @@ document.getElementById('calRow')?.addEventListener('scroll', e => {
     c.style.opacity = 1 - Math.abs(p) * 0.5;
   });
 }, { passive: true });
+// phone: swipe a log row left to reveal edit / delete
+(() => {
+  const list = document.getElementById('logList'); let sw, x0, y0, base, mode;
+  const set = (w, x) => { w.style.setProperty('--x', x + 'px'); const f = Math.min(1, -x / 126); w.style.setProperty('--o', f); w.style.setProperty('--s', .6 + .4 * f); };
+  const close = keep => list.querySelectorAll('.food-swipe.open').forEach(w => { if (w !== keep) { w.classList.remove('open'); set(w, 0); } });
+  list.addEventListener('touchstart', e => {
+    sw = e.target.closest('.food-swipe'); if (!sw || e.touches.length > 1) { sw = null; return; }
+    close(sw); x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; mode = null; base = sw.classList.contains('open') ? -126 : 0;
+  }, { passive: true });
+  list.addEventListener('touchmove', e => {
+    if (!sw) return; const dx = e.touches[0].clientX - x0, dy = e.touches[0].clientY - y0;
+    if (!mode) { if (Math.abs(dx) < 6 && Math.abs(dy) < 6) return; mode = Math.abs(dx) > Math.abs(dy) ? 'x' : 'y'; if (mode === 'x') sw.classList.add('drag'); }
+    if (mode === 'x') set(sw, Math.max(-140, Math.min(0, base + dx)));
+  }, { passive: true });
+  list.addEventListener('touchend', () => {
+    if (!sw) return; sw.classList.remove('drag');
+    if (mode === 'x') { const open = parseFloat(sw.style.getPropertyValue('--x')) < -50; sw.classList.toggle('open', open); set(sw, open ? -126 : 0); }
+    sw = null;
+  });
+  document.addEventListener('touchstart', e => { if (!e.target.closest('.food-swipe')) close(); }, { passive: true });
+})();
 function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
  function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
   function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
@@ -2316,7 +2346,7 @@ labels.forEach(v => {
       logs.forEach(item => {
        totalCal += item.cal; totalPro += item.pro;
    const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb" style="cursor:pointer" onclick="openFoodDetail(${item.id})">` : `<div class="food-thumb placeholder" style="cursor:pointer" onclick="openFoodDetail(${item.id})">🥣</div>`;
-    listEl.innerHTML += `<div class="food-card" data-id="${item.id}">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div>`;
+    listEl.innerHTML += `<div class="food-swipe"><div class="swipe-actions"><button class="sw-edit" aria-label="Edit" onclick="openEditFood(${item.id})"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button><button class="sw-del" aria-label="Delete" onclick="askDeleteFood(${item.id})"><svg viewBox="0 0 56 64" width="26" height="30"><path d="M8 21 L12 58 Q12.4 62 17 62 H39 Q43.6 62 44 58 L48 21 Z" fill="rgba(255,45,85,.18)" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="22" cy="39" r="2.6" fill="#fff"/><circle cx="34" cy="39" r="2.6" fill="#fff"/><path d="M24.5 46 Q28 50 31.5 46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><rect x="4" y="12" width="48" height="8" rx="4" fill="rgba(255,45,85,.3)" stroke="currentColor" stroke-width="3"/><rect x="21" y="4" width="14" height="8" rx="4" fill="rgba(255,45,85,.3)" stroke="currentColor" stroke-width="3"/></svg></button></div><div class="food-card" data-id="${item.id}">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div></div>`;
       });
       renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO); renderCalendar();
   }
