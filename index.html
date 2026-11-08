@@ -2054,7 +2054,7 @@ function closePuterConfirm() { document.getElementById('puterConfirmModal').clas
 async function doSwitchPuter() {
   closePuterConfirm();
   try { await puter.auth.signOut(); } catch (e) { console.error(e); alert('Could not sign out of Puter.'); return; }
-  try { await puter.auth.signIn(); } catch (e) { alert('Sign-in cancelled. You'll be asked again at your next scan.'); }
+  try { await puter.auth.signIn(); } catch (e) { alert("Sign-in cancelled. You'll be asked again at your next scan."); }
 }
 function toggleRangeMenu(e) { e.stopPropagation(); closeAllFoodMenus(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
