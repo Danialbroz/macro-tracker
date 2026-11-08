@@ -336,6 +336,19 @@
  .floating-card h2 { text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #fff; }
   .floating-card label { font-size: 0.85rem; color: #cbd5e1; margin-top: 10px; display: block; font-weight: 600;}
  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+  .age-dial { position: relative; margin: 6px 0 4px; padding: 14px 0 10px; border-radius: 18px; background: rgba(8,20,40,0.5); border: 1px solid rgba(186,230,253,0.2); cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: box-shadow .25s ease, border-color .25s ease; overflow: hidden; }
+  .age-dial:hover, .age-dial:focus-visible, .age-dial.drag { border-color: rgba(56,189,248,0.6); box-shadow: 0 0 22px rgba(56,189,248,0.28); outline: none; }
+  .age-dial.drag { cursor: grabbing; }
+  .age-num { text-align: center; height: 64px; overflow: hidden; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .age-num span { font-size: 3.4rem; font-weight: 800; line-height: 64px; color: #f0f9ff; font-variant-numeric: tabular-nums; }
+  .age-num small { font-size: .8rem; color: #7dd3fc; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+  .age-ruler { position: relative; height: 46px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); }
+  .age-strip { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
+  .age-tick { position: absolute; top: 6px; width: 2px; height: 14px; margin-left: -1px; border-radius: 1px; background: rgba(186,230,253,0.4); }
+  .age-tick.t5 { height: 20px; background: rgba(186,230,253,0.6); }
+  .age-tick.t10 { height: 26px; background: rgba(240,249,255,0.85); }
+  .age-lbl { position: absolute; top: 31px; transform: translateX(-50%); font-size: .7rem; font-weight: 700; color: #7dd3fc; font-variant-numeric: tabular-nums; }
+  .age-needle { position: absolute; left: 50%; top: 0; width: 3px; height: 34px; margin-left: -1.5px; border-radius: 2px; background: var(--pink); box-shadow: 0 0 12px rgba(236,72,153,0.8); }
  .step { display: none; animation: fadeIn 0.4s ease; }
  .step.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
@@ -1458,7 +1471,7 @@ function splash() {
 <div id="onboardingScreen" class="onboarding">
  <div class="floating-card">
   <div id="step1" class="step active">
-    <h2>About You</h2><label>Age</label><input type="number" id="obAge" value="22" inputmode="numeric"><label style="margin-top: 24px;">Biological Sex</label><div class="gender-selector"><div class="gender-card" id="card-male" onclick="selectGender('male')"><svg viewBox="0 0 24 24" width="60" height="60"><g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M8.5 9 Q 5.5 8, 4 4" /><path d="M15.5 9 Q 18.5 8, 20 4" /></g><path
+    <h2>About You</h2><label>Age</label><input type="hidden" id="obAge" value="22"><div class="age-dial" id="ageDial" role="slider" aria-label="Age" aria-valuemin="10" aria-valuemax="100" aria-valuenow="22" tabindex="0"><div class="age-num"><span id="ageNum">22</span><small>years</small></div><div class="age-ruler"><div class="age-strip" id="ageStrip"></div><div class="age-needle"></div></div></div><label style="margin-top: 24px;">Biological Sex</label><div class="gender-selector"><div class="gender-card" id="card-male" onclick="selectGender('male')"><svg viewBox="0 0 24 24" width="60" height="60"><g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M8.5 9 Q 5.5 8, 4 4" /><path d="M15.5 9 Q 18.5 8, 20 4" /></g><path
 d="M9.5 9h5a1.5 1.5 0 0 1 1.5 1.5V16h-2v6h-4v-6h-2v-5.5A1.5 1.5 0 0 1 9.5 9z" fill="currentColor" /><g class="face-neutral" fill="currentColor"><circle cx="12" cy="5" r="2.5" /></g><g class="face-happy" fill="currentColor"><circle cx="12" cy="5" r="2.5" /><path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/><circle cx="11" cy="4.5" r="0.5" fill="#0f172a"/><circle cx="13" cy="4.5" r="0.5" fill="#0f172a"/></g></svg><span>Boy</span></div><div class="gender-card" id="card-female" onclick="selectGender('female')"><svg viewBox="0 0 24 24" width="60" height="60"><g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M9.5 9 Q 6 7, 5 3" /><path d="M14.5 9 Q 18 7, 19 3" /></g><path d="M12 8 L7.5 16 H10 V22 H14 V16 H16.5 Z" fill="currentColor" /><g class="face-neutral" fill="currentColor"><circle cx="12" cy="5" r="2.5" /></g><g class="face-happy" fill="currentColor"><circle cx="12" cy="5" r="2.5" /><path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/><circle cx="11" cy="4.5" r="0.5" fill="#0f172a"/><circle cx="13" cy="4.5" r="0.5" fill="#0f172a"/></g></svg><span>Girl</span></div></div><input type="hidden" id="obSex" value=""><button class="action-btn" style="margin-top: 32px;" onclick="goToStep2()">Next ➔</button>
   </div>
   <div id="step2" class="step">
@@ -1806,7 +1819,7 @@ function startOnboarding() {
      document.getElementById('mainApp').style.display = 'none';
      document.getElementById('cancelOnboardingBtn').classList.add('show');
      if (profile) {
-         document.getElementById('obAge').value = profile.age;
+         setAgeDial(profile.age);
          selectGender(profile.sex);
          document.getElementById('obHeight').value = profile.height;
          document.getElementById('obWeight').value = profile.weight;
@@ -1838,6 +1851,52 @@ function startOnboarding() {
     t.classList.remove('show'); void t.offsetWidth; t.classList.add('show');
     clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 3800);
   };
+
+const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
+(function initAgeDial() {
+  const dial = document.getElementById('ageDial'), strip = document.getElementById('ageStrip'), numEl = document.getElementById('ageNum'), input = document.getElementById('obAge');
+  let h = '';
+  for (let a = AGE_MIN; a <= AGE_MAX; a++) {
+    const x = (a - AGE_MIN) * AGE_PPY;
+    h += '<i class="age-tick' + (a % 10 === 0 ? ' t10' : a % 5 === 0 ? ' t5' : '') + '" style="left:' + x + 'px"></i>';
+    if (a % 10 === 0) h += '<span class="age-lbl" style="left:' + x + 'px">' + a + '</span>';
+  }
+  strip.innerHTML = h; strip.style.width = (AGE_MAX - AGE_MIN) * AGE_PPY + 'px';
+  let pos = 22, shown = 22, vel = 0, raf = 0, dragging = false, lastX = 0, lastT = 0, ac = null;
+  const clampAge = v => Math.max(AGE_MIN, Math.min(AGE_MAX, v));
+  function tick() {
+    try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime; o.type = 'sine'; o.frequency.value = 1500; g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.05); } catch (e) {}
+  }
+  function draw() {
+    strip.style.transform = 'translateX(' + (dial.clientWidth / 2 - (pos - AGE_MIN) * AGE_PPY) + 'px)';
+    const r = Math.round(pos);
+    if (r !== shown) {
+      const dir = r > shown ? 1 : -1; shown = r;
+      numEl.textContent = r; input.value = r; dial.setAttribute('aria-valuenow', r);
+      numEl.animate([{ transform: 'translateY(' + (dir * 34) + 'px)', opacity: 0, filter: 'blur(4px)' }, { transform: 'none', opacity: 1, filter: 'blur(0)' }], { duration: 160, easing: 'ease-out' });
+      tick();
+    }
+  }
+  function glide() {
+    if (dragging) return;
+    pos = clampAge(pos + vel); vel *= 0.94;
+    if (pos <= AGE_MIN || pos >= AGE_MAX) vel = 0;
+    if (Math.abs(vel) < 0.004) { pos = Math.round(pos); vel = 0; draw(); return; } // snap to a whole year
+    draw(); raf = requestAnimationFrame(glide);
+  }
+  dial.addEventListener('pointerdown', e => { dragging = true; vel = 0; cancelAnimationFrame(raf); lastX = e.clientX; lastT = performance.now(); dial.classList.add('drag'); dial.setPointerCapture(e.pointerId); });
+  dial.addEventListener('pointermove', e => {
+    if (!dragging) return;
+    const now = performance.now(), dy = (lastX - e.clientX) / AGE_PPY; // drag left = older (ruler rolls left)
+    pos = clampAge(pos + dy); vel = dy * 0.6 + vel * 0.4; lastX = e.clientX; lastT = now; draw();
+  });
+  const end = () => { if (!dragging) return; dragging = false; dial.classList.remove('drag'); raf = requestAnimationFrame(glide); };
+  dial.addEventListener('pointerup', end); dial.addEventListener('pointercancel', end);
+  dial.addEventListener('keydown', e => { const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : 0; if (d) { e.preventDefault(); pos = clampAge(Math.round(pos) + d); draw(); } });
+  window.setAgeDial = v => { pos = shown = clampAge(Math.round(+v) || 22); numEl.textContent = pos; input.value = pos; draw(); };
+  new ResizeObserver(draw).observe(dial);
+  draw();
+})();
   function goToStep2() { if (!document.getElementById('obSex').value) return alert("Please tap a gender to continue!"); if (!document.getElementById('obAge').value) return alert("Please enter your age!"); nextStep(2); }
   function goToStep3() { const h = parseFloat(document.getElementById('obHeight').value); const w = parseFloat(document.getElementById('obWeight').value); if (!h || !w) return alert("Please enter both your height and weight!"); nextStep(3); }
   function goToStep4() { const goal = document.getElementById('obGoal').value; if (!goal) return alert("Please select a goal!"); if (goal !== 'maintain') { const gw = parseFloat(document.getElementById('obGoalWeight').value); if (!gw) return alert("Please enter your goal weight!"); } updateGoalUI(); nextStep(4); }
