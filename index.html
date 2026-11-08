@@ -1794,7 +1794,6 @@ document.getElementById('sfLeftLeg').setAttribute('y2', groundY); document.getEl
  function toggleMenu() { document.getElementById('dropdownMenu').classList.toggle('show'); document.getElementById('gearBtn').classList.toggle('spin'); }
   document.addEventListener('click', (e) => { const menu = document.getElementById('dropdownMenu'); const btn = document.getElementById('gearBtn'); if (!e.target.closest('.header-controls') && menu.classList.contains('show')) { menu.classList.remove('show'); btn.classList.remove('spin'); } });
   async function compressImage(file, maxDim = 800, quality = 0.7) { return new Promise((resolve) => { const reader = new FileReader(); reader.onload = (e) => { const img = new Image(); img.onload = () => { const canvas = document.createElement('canvas'); const scale = Math.min(maxDim / img.width, maxDim / img.height, 1); canvas.width = img.width * scale; canvas.height = img.height * scale; canvas.getContext('2d').drawImage(img, 0, 0, canvas.width, canvas.height); resolve(canvas.toDataURL('image/jpeg', quality).split(',')[1]); }; img.src = e.target.result; }; reader.readAsDataURL(file); }); }
- const TEST_MODE = true;
  function isMobileDevice() {
      return /Android|iPhone|iPad|iPod|Mobile|Windows Phone/i.test(navigator.userAgent)
          || (navigator.maxTouchPoints > 1 && 'ontouchstart' in window);
@@ -1976,12 +1975,7 @@ async function analyzePhoto(event) {
     showScanOverlay();
     try {
      let data;
-     if (TEST_MODE) {
-      const thumb = await compressImage(file, 160, 0.5);
-      lastScanThumb = 'data:image/jpeg;base64,' + thumb;
-      await new Promise(r => setTimeout(r, 2600));
-      data = { name: 'Test Scan Meal', cal: 2500, pro: 200, carb: 250, fat: 80 };
-     } else {
+     {
         const base64Image = await compressImage(file, 800, 0.7);
         const thumb = await compressImage(file, 160, 0.5);
         lastScanThumb = 'data:image/jpeg;base64,' + thumb;
