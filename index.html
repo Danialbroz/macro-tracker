@@ -249,14 +249,21 @@
   .range-menu.show { display: block; }
   .range-menu button { display: block; width: 100%; text-align: left; background: none; border: 0; color: #f0f9ff; padding: 9px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
   .range-menu button:hover { background: rgba(56,189,248,0.2); }
-  .day-log-card { max-width: 560px; width: 94%; padding: 22px; text-align: left; max-height: 86vh; display: flex; flex-direction: column; background: rgba(20,40,65,0.5); border: 1px solid rgba(186,230,253,0.35); box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); animation: popIn 0.3s ease; }
+  .day-log-card { max-width: 560px; width: 94%; padding: 22px; text-align: left; max-height: 86vh; display: flex; flex-direction: column; background: rgba(20,40,65,0.5); border: 1px solid rgba(186,230,253,0.35); box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); animation: popIn 0.3s ease, bob 4s ease-in-out 0.3s infinite; }
   .day-log-card h3 { text-align: center; }
   #dayLogBody { overflow-y: auto; }
   .dl-day { margin-bottom: 12px; }
   .dl-day > b { display: flex; justify-content: space-between; font-size: .85rem; color: #7dd3fc; border-bottom: 1px solid rgba(186,230,253,0.2); padding-bottom: 3px; margin-bottom: 4px; }
-  .dl-meal { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: .9rem; color: #f0f9ff; }
-  .dl-meal img, .dl-meal .ph { width: 76px; height: 76px; border-radius: 14px; font-size: 1.6rem; box-shadow: 0 4px 12px rgba(0,0,0,0.4); object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
-  .dl-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .dl-meal { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border-radius: 16px; font-size: .9rem; color: #f0f9ff; cursor: pointer; background: linear-gradient(135deg, rgba(30,64,110,0.96), rgba(12,38,76,0.96)); border: 1px solid rgba(255,255,255,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.25); }
+  .dl-meal img, .dl-meal .ph { width: 104px; height: 104px; border-radius: 14px; font-size: 1.6rem; box-shadow: 0 4px 12px rgba(0,0,0,0.4); object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
+  .dl-info { flex: 1; min-width: 0; height: 104px; display: flex; flex-direction: column; justify-content: space-between; }
+  .dl-bar { display: flex; align-items: center; gap: 8px; }
+  .dl-bar em { font-style: normal; font-size: .75rem; color: #bae6fd; width: 64px; flex: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .dl-bar .scan-macro-bar { height: 8px; }
+  .dl-bar .scan-macro-fill { transition: none; }
+  .img-viewer { position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 16px; cursor: zoom-out; }
+  .img-viewer.show { display: flex; }
+  .img-viewer img { width: min(100%, 69vh); aspect-ratio: 3 / 4; object-fit: contain; border-radius: 16px; background: #000; animation: popIn 0.3s ease; }
   .dl-info span { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .dl-info small { color: #bae6fd; font-size: .78rem; }
   .dl-empty { text-align: center; color: #bae6fd; opacity: .8; padding: 16px 0; }
@@ -1645,7 +1652,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
   </div>
   <div class="scan-phase scan-phase-result" id="scanPhaseResult">
    <div class="scan-result-img-wrap">
-    <img id="scanResultImg" class="scan-result-img" alt="Scanned meal">
+    <img id="scanResultImg" class="scan-result-img" alt="Scanned meal" onclick="if(scanOverlayMode==='detail'){event.stopPropagation();openImgViewer(this.src)}">
    </div>
    <div class="scan-result-name" id="scanResultName">Scanned Meal</div>
    <div class="scan-macro-list">
@@ -1681,6 +1688,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
 </div>
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="openOnboarding(); toggleMenu();">📝 Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📸 Scan Meal with AI</button><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img
 id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="cal-row" id="calRow"><div class="card cal-card" id="calCard"></div><div class="card week-card" id="weekCard"></div></div><div class="cal-dots" id="calDots"><i class="on"></i><i></i></div><div class="card"><div class="log-head"><strong id="logTitle">Today's Log</strong><div class="log-range"><button class="log-range-btn" onclick="toggleRangeMenu(event)" aria-label="View full log">📋 ▾</button><div class="range-menu" id="rangeMenu"><button onclick="setLogRange('today')">Today</button><button onclick="setLogRange('week')">This week</button><button onclick="setLogRange('month')">This month</button><button onclick="setLogRange('6m')">Last 6 months</button><button onclick="setLogRange('year')">Last year</button></div></div></div><div id="logList" style="margin-top: 8px;"></div></div></div>
+<div id="imgViewer" class="img-viewer" onclick="this.classList.remove('show')"><img id="imgViewerImg" alt="Meal photo"></div>
 <div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
 <script>
  let GOAL_CAL = 0;
@@ -2024,6 +2032,7 @@ async function analyzePhoto(event) {
 const escHtml = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function toggleRangeMenu(e) { e.stopPropagation(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
+function openImgViewer(src) { document.getElementById('imgViewerImg').src = src; document.getElementById('imgViewer').classList.add('show'); }
 function closeDayLog() { document.getElementById('dayLogModal').classList.remove('show'); }
 const RANGE_DAYS = { week: 7, '6m': 182, year: 365 }, RANGE_TITLE = { today: "Today's Log", week: 'This Week', month: 'This Month', '6m': 'Last 6 Months', year: 'Last Year' };
 let logRange = 'today';
@@ -2041,7 +2050,12 @@ function mealsHtml(kind) {
   const fmt = k => new Date(k + 'T00:00:00').toLocaleDateString('en-US', long ? { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' } : { weekday: 'short', month: 'short', day: 'numeric' });
   return keys.filter(k => (data[k] || []).length).map(k => {
     const logs = data[k], cal = logs.reduce((a, x) => a + (x.cal || 0), 0), pro = logs.reduce((a, x) => a + (x.pro || 0), 0);
-    const meals = logs.map(x => `<div class="dl-meal">${x.img ? `<img src="${x.img}" alt="">` : '<div class="ph">🥣</div>'}<div class="dl-info"><span>${escHtml(x.name)}</span><small>🔥 ${x.cal || 0} · 💪 ${x.pro || 0}g · 🌾 ${x.carb || 0}g · 🧈 ${x.fat || 0}g</small></div></div>`).join('');
+    const meals = logs.map(x => {
+      // Bar fill: calories/protein vs daily goal; carbs/fat as share of the meal's calories.
+      const c = x.cal || 0, pct = (v, of) => of > 0 ? Math.min(100, Math.round(v / of * 100)) : 0;
+      const bar = (k, label, w) => `<div class="dl-bar"><em>${label}</em><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-${k}" style="width:${w}%"></div></div></div>`;
+      return `<div class="dl-meal" onclick="openFoodDetail(${x.id}, '${k}')">${x.img ? `<img src="${x.img}" alt="">` : '<div class="ph">🥣</div>'}<div class="dl-info"><span>${escHtml(x.name)}</span>${bar('cal', `🔥 ${c}`, pct(c, GOAL_CAL))}${bar('pro', `💪 ${x.pro || 0}g`, pct(x.pro || 0, GOAL_PRO))}${bar('carb', `🌾 ${x.carb || 0}g`, pct((x.carb || 0) * 4, c))}${bar('fat', `🧈 ${x.fat || 0}g`, pct((x.fat || 0) * 9, c))}</div></div>`;
+    }).join('');
     return `<div class="dl-day"><b><span>${single ? 'Total' : fmt(k)}</span><span>${cal} kcal · ${pro}g protein</span></b>${meals}</div>`;
   }).join('') || '<div class="dl-empty">🥣 No meals logged</div>';
 }
@@ -2153,9 +2167,9 @@ function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') 
      }
  }
  document.addEventListener('click', closeAllFoodMenus);
- function openFoodDetail(id) {
+ function openFoodDetail(id, key) {
 closeAllFoodMenus();
-const meal = getLogs().find(x => x.id === id);
+const meal = (key ? JSON.parse(localStorage.getItem('macro_logs') || '{}')[key] || [] : getLogs()).find(x => x.id === id);
 if (!meal) return;
 scanOverlayMode = 'detail';
 document.getElementById('scanOverlay').classList.add('show');
