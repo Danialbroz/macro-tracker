@@ -260,6 +260,8 @@
   .dl-day { margin-bottom: 12px; }
   .dl-day > b { display: flex; justify-content: space-between; font-size: .85rem; color: #7dd3fc; border-bottom: 1px solid rgba(186,230,253,0.2); padding-bottom: 3px; margin-bottom: 4px; }
   .dl-meal { display: flex; align-items: center; gap: 12px; padding: 10px 12px; margin-bottom: 8px; border-radius: 16px; font-size: .9rem; color: #f0f9ff; cursor: pointer; background: linear-gradient(135deg, rgba(30,64,110,0.96), rgba(12,38,76,0.96)); border: 1px solid rgba(255,255,255,0.16); box-shadow: inset 0 1px 0 rgba(255,255,255,0.15), 0 4px 12px rgba(0,0,0,0.25); }
+  .dl-meal { position: relative; }
+  .dl-meal:has(.food-actions.menu-open) { z-index: 70; }
   .dl-meal img, .dl-meal .ph { width: 104px; height: 104px; border-radius: 14px; font-size: 1.6rem; box-shadow: 0 4px 12px rgba(0,0,0,0.4); object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
   .dl-info { flex: 1; min-width: 0; height: 104px; display: flex; flex-direction: column; justify-content: space-between; }
   .dl-bar { display: flex; align-items: center; gap: 8px; }
