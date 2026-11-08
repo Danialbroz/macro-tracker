@@ -266,9 +266,9 @@
   .dl-bar em { font-style: normal; font-size: .75rem; color: #bae6fd; width: 64px; flex: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
   .dl-bar .scan-macro-bar { height: 8px; }
   .dl-bar .scan-macro-fill { transition: none; }
-  .toast { position: fixed; left: 50%; top: calc(18px + env(safe-area-inset-top, 0px)); z-index: 5000; max-width: min(92vw, 420px); pointer-events: none; opacity: 0; transform: translate(-50%, -14px) scale(.35, .5); transform-origin: top center; filter: blur(6px); transition: opacity .3s ease, transform .35s cubic-bezier(.4,0,.2,1), filter .3s ease; }
+  .toast { position: fixed; left: 50%; top: calc(18px + env(safe-area-inset-top, 0px)); z-index: 5000; max-width: 94vw; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -14px) scale(.35, .5); transform-origin: top center; filter: blur(6px); transition: opacity .3s ease, transform .35s cubic-bezier(.4,0,.2,1), filter .3s ease; }
   .toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); filter: blur(0); transition: opacity .3s ease, transform .7s cubic-bezier(.34,1.45,.5,1), filter .4s ease; }
-  .toast span { display: block; padding: 12px 22px; border-radius: 999px; color: #f0f9ff; font-weight: 600; font-size: .9rem; text-align: center; background: linear-gradient(135deg, rgba(30,64,110,0.94), rgba(12,38,76,0.94)); border: 1px solid rgba(186,230,253,0.35); box-shadow: 0 14px 36px rgba(0,0,0,0.5), 0 0 24px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.18); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
+  .toast span { display: block; padding: 12px 22px; border-radius: 999px; color: #f0f9ff; font-weight: 600; font-size: .9rem; text-align: center; overflow: hidden; text-overflow: ellipsis; background: linear-gradient(135deg, rgba(30,64,110,0.94), rgba(12,38,76,0.94)); border: 1px solid rgba(186,230,253,0.35); box-shadow: 0 14px 36px rgba(0,0,0,0.5), 0 0 24px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.18); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); }
   .toast.show span { animation: bob 4s ease-in-out .7s infinite; }
   .img-viewer { position: fixed; inset: 0; z-index: 3000; background: rgba(0,0,0,0.9); display: none; align-items: center; justify-content: center; padding: 16px; cursor: zoom-out; }
   .img-viewer.show { display: flex; }
@@ -2054,7 +2054,7 @@ function closePuterConfirm() { document.getElementById('puterConfirmModal').clas
 async function doSwitchPuter() {
   closePuterConfirm();
   try { await puter.auth.signOut(); } catch (e) { console.error(e); alert('Could not sign out of Puter.'); return; }
-  try { await puter.auth.signIn(); } catch (e) { alert('Sign-in cancelled. Your next scan will ask you to sign in.'); }
+  try { await puter.auth.signIn(); } catch (e) { alert('Sign-in cancelled. You'll be asked again at your next scan.'); }
 }
 function toggleRangeMenu(e) { e.stopPropagation(); closeAllFoodMenus(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
