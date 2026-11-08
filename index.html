@@ -2031,7 +2031,7 @@ async function analyzePhoto(event) {
  // Same rules as the gauges: calories count when within 90-100% of goal, protein when it reaches 100%.
 // Read-only meal history: one day (calendar tap), last 7 days, or this month.
 const escHtml = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
-function toggleRangeMenu(e) { e.stopPropagation(); document.getElementById('rangeMenu').classList.toggle('show'); }
+function toggleRangeMenu(e) { e.stopPropagation(); closeAllFoodMenus(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
 // Bar fill: calories/protein vs daily goal; carbs/fat as share of meal calories (4/9 kcal per g).
 function macroPct(k, m) {
@@ -2167,7 +2167,7 @@ function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') 
      const actions = e.currentTarget.parentElement;
      const menu = actions.querySelector('.food-menu');
      const wasOpen = menu.classList.contains('show');
-     closeAllFoodMenus();
+     closeAllFoodMenus(); document.getElementById('rangeMenu')?.classList.remove('show');
      if (!wasOpen) {
          menu.classList.add('show');
          actions.classList.add('menu-open');
