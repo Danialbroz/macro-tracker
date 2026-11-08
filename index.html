@@ -2028,7 +2028,7 @@ async function analyzePhoto(event) {
         const thumb = await compressImage(file, 640, 0.6);
         lastScanThumb = 'data:image/jpeg;base64,' + thumb;
         const prompt = 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}';
-        const reply = await puter.ai.chat(prompt, 'data:image/jpeg;base64,' + base64Image, { model: 'gpt-5-nano' });
+        const reply = await puter.ai.chat(prompt, 'data:image/jpeg;base64,' + base64Image, { model: 'google/gemini-3.8-flash' });
         console.log('puter reply', reply);
         const rawText = (reply?.message?.content ?? String(reply)).replace(/```json|```/g, '').trim();
         const parsed = JSON.parse(rawText);
