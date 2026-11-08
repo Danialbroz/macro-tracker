@@ -339,18 +339,20 @@
   .age-dial { position: relative; margin: 6px 0 4px; padding: 14px 0 10px; border-radius: 18px; background: rgba(8,20,40,0.5); border: 1px solid rgba(186,230,253,0.2); cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: box-shadow .25s ease, border-color .25s ease; overflow: hidden; }
   .age-dial:hover, .age-dial:focus-visible, .age-dial.drag { border-color: rgba(56,189,248,0.6); box-shadow: 0 0 22px rgba(56,189,248,0.28); outline: none; }
   .age-dial.drag { cursor: grabbing; }
-  .age-num { text-align: center; height: 64px; overflow: hidden; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
+  .age-num { text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 14px; }
+  .age-num #ageNum { height: 64px; overflow: hidden; text-shadow: 0 2px 18px rgba(125,211,252,0.35); }
   .age-num #ageNum { display: inline-flex; font-size: 3.4rem; font-weight: 800; color: #f0f9ff; font-variant-numeric: tabular-nums; }
   .age-d { position: relative; display: inline-block; width: .64em; height: 64px; overflow: hidden; }
   .age-d b { position: absolute; inset: 0; line-height: 64px; text-align: center; font-weight: 800; will-change: transform, opacity, filter; }
-  .age-num small { font-size: .8rem; color: #7dd3fc; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
+  .age-num small { margin-top: 2px; font-size: .78rem; color: rgba(186,230,253,0.6); font-weight: 500; letter-spacing: 1.6px; }
   .age-ruler { position: relative; height: 46px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); }
   .age-strip { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
   .age-tick { position: absolute; top: 6px; width: 2px; height: 14px; margin-left: -1px; border-radius: 1px; background: rgba(186,230,253,0.4); }
   .age-tick.t5 { height: 20px; background: rgba(186,230,253,0.6); }
   .age-tick.t10 { height: 26px; background: rgba(240,249,255,0.85); }
   .age-lbl { position: absolute; top: 31px; transform: translateX(-50%); font-size: .7rem; font-weight: 700; color: #7dd3fc; font-variant-numeric: tabular-nums; }
-  .age-needle { position: absolute; left: 50%; top: 0; width: 3px; height: 34px; margin-left: -1.5px; border-radius: 2px; background: var(--pink); box-shadow: 0 0 12px rgba(236,72,153,0.8); }
+  .age-needle { position: absolute; left: 50%; top: 4px; width: 2px; height: 32px; margin-left: -1px; border-radius: 2px; background: var(--pink); box-shadow: 0 0 10px rgba(236,72,153,0.7); }
+  .age-needle::before { content: ''; position: absolute; left: 50%; top: -4px; width: 7px; height: 7px; margin-left: -3.5px; border-radius: 50%; background: var(--pink); box-shadow: 0 0 8px rgba(236,72,153,0.9); }
  .step { display: none; animation: fadeIn 0.4s ease; }
  .step.active { display: block; }
   @keyframes fadeIn { from { opacity: 0; transform: translateX(15px); } to { opacity: 1; transform: translateX(0); } }
@@ -1473,7 +1475,7 @@ function splash() {
 <div id="onboardingScreen" class="onboarding">
  <div class="floating-card">
   <div id="step1" class="step active">
-    <h2>About You</h2><label style="display:block;text-align:center;">Age</label><input type="hidden" id="obAge" value="22"><div class="age-dial" id="ageDial" role="slider" aria-label="Age" aria-valuemin="10" aria-valuemax="100" aria-valuenow="22" tabindex="0"><div class="age-num"><span id="ageNum">22</span><small>years</small></div><div class="age-ruler"><div class="age-strip" id="ageStrip"></div><div class="age-needle"></div></div></div><label style="margin-top: 24px;">Biological Sex</label><div class="gender-selector"><div class="gender-card" id="card-male" onclick="selectGender('male')"><svg viewBox="0 0 24 24" width="60" height="60"><g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M8.5 9 Q 5.5 8, 4 4" /><path d="M15.5 9 Q 18.5 8, 20 4" /></g><path
+    <h2>About You</h2><label style="display:block;text-align:center;">Age</label><input type="hidden" id="obAge" value="22"><div class="age-dial" id="ageDial" role="slider" aria-label="Age" aria-valuemin="10" aria-valuemax="100" aria-valuenow="22" tabindex="0"><div class="age-num"><span id="ageNum">22</span><small>years old</small></div><div class="age-ruler"><div class="age-strip" id="ageStrip"></div><div class="age-needle"></div></div></div><label style="margin-top: 24px;">Biological Sex</label><div class="gender-selector"><div class="gender-card" id="card-male" onclick="selectGender('male')"><svg viewBox="0 0 24 24" width="60" height="60"><g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M8.5 9 Q 5.5 8, 4 4" /><path d="M15.5 9 Q 18.5 8, 20 4" /></g><path
 d="M9.5 9h5a1.5 1.5 0 0 1 1.5 1.5V16h-2v6h-4v-6h-2v-5.5A1.5 1.5 0 0 1 9.5 9z" fill="currentColor" /><g class="face-neutral" fill="currentColor"><circle cx="12" cy="5" r="2.5" /></g><g class="face-happy" fill="currentColor"><circle cx="12" cy="5" r="2.5" /><path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/><circle cx="11" cy="4.5" r="0.5" fill="#0f172a"/><circle cx="13" cy="4.5" r="0.5" fill="#0f172a"/></g></svg><span>Boy</span></div><div class="gender-card" id="card-female" onclick="selectGender('female')"><svg viewBox="0 0 24 24" width="60" height="60"><g class="arms-group" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" fill="none"><path d="M9.5 9 Q 6 7, 5 3" /><path d="M14.5 9 Q 18 7, 19 3" /></g><path d="M12 8 L7.5 16 H10 V22 H14 V16 H16.5 Z" fill="currentColor" /><g class="face-neutral" fill="currentColor"><circle cx="12" cy="5" r="2.5" /></g><g class="face-happy" fill="currentColor"><circle cx="12" cy="5" r="2.5" /><path d="M10.5 5.5 a1.5 1.5 0 0 0 3 0" stroke="#0f172a" fill="none" stroke-width="0.7"/><circle cx="11" cy="4.5" r="0.5" fill="#0f172a"/><circle cx="13" cy="4.5" r="0.5" fill="#0f172a"/></g></svg><span>Girl</span></div></div><input type="hidden" id="obSex" value=""><button class="action-btn" style="margin-top: 32px;" onclick="goToStep2()">Next ➔</button>
   </div>
   <div id="step2" class="step">
