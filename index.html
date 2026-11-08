@@ -242,6 +242,24 @@
   .cal-grid { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
   .cal-dow { text-align: center; font-size: 0.65rem; font-weight: 700; color: #7dd3fc; opacity: .8; }
   .cal-day { aspect-ratio: 1; min-width: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 1px; border-radius: 12px; font-size: 0.78rem; font-weight: 700; color: #cbd5e1; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12); box-shadow: inset 0 1px 0 rgba(255,255,255,0.18); }
+  .log-head { display: flex; align-items: center; justify-content: space-between; }
+  .log-range { position: relative; }
+  .log-range-btn { background: rgba(255,255,255,0.1); color: #e0f2fe; border: 1px solid rgba(186,230,253,0.25); border-radius: 10px; padding: 4px 10px; font-size: .85rem; font-weight: 700; cursor: pointer; }
+  .range-menu { display: none; position: absolute; right: 0; top: 110%; z-index: 50; min-width: 130px; background: rgba(20,40,65,0.95); border: 1px solid rgba(186,230,253,0.25); border-radius: 12px; padding: 4px; box-shadow: 0 12px 28px rgba(0,0,0,0.5); }
+  .range-menu.show { display: block; }
+  .range-menu button { display: block; width: 100%; text-align: left; background: none; border: 0; color: #f0f9ff; padding: 9px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
+  .range-menu button:hover { background: rgba(56,189,248,0.2); }
+  .day-log-card { max-width: 420px; text-align: left; max-height: 80vh; display: flex; flex-direction: column; }
+  .day-log-card h3 { text-align: center; }
+  #dayLogBody { overflow-y: auto; }
+  .dl-day { margin-bottom: 12px; }
+  .dl-day > b { display: flex; justify-content: space-between; font-size: .85rem; color: #7dd3fc; border-bottom: 1px solid rgba(186,230,253,0.2); padding-bottom: 3px; margin-bottom: 4px; }
+  .dl-meal { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: .85rem; color: #f0f9ff; }
+  .dl-meal img, .dl-meal .ph { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
+  .dl-meal span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl-meal small { color: #bae6fd; white-space: nowrap; }
+  .dl-empty { text-align: center; color: #bae6fd; opacity: .8; padding: 16px 0; }
+  .cal-day[data-k] { cursor: pointer; }
   .cal-day b { line-height: 1; }
   .cal-day.future, .cal-day.none { opacity: .45; }
   .cal-day.today { border-color: #38bdf8; box-shadow: 0 0 0 1px #38bdf8, 0 0 12px rgba(56,189,248,0.55), inset 0 1px 0 rgba(255,255,255,0.25); color: #fff; }
@@ -1661,7 +1679,8 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
  </div>
 </div>
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="openOnboarding(); toggleMenu();">📝 Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📸 Scan Meal with AI</button><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img
-id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="cal-row" id="calRow"><div class="card cal-card" id="calCard"></div><div class="card week-card" id="weekCard"></div></div><div class="cal-dots" id="calDots"><i class="on"></i><i></i></div><div class="card"><strong>Today's Log</strong><div id="logList" style="margin-top: 8px;"></div></div></div>
+id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="cal-row" id="calRow"><div class="card cal-card" id="calCard"></div><div class="card week-card" id="weekCard"></div></div><div class="cal-dots" id="calDots"><i class="on"></i><i></i></div><div class="card"><div class="log-head"><strong>Today's Log</strong><div class="log-range"><button class="log-range-btn" onclick="toggleRangeMenu(event)" aria-label="View full log">📋 ▾</button><div class="range-menu" id="rangeMenu"><button onclick="openRangeLog('week')">This week</button><button onclick="openRangeLog('month')">This month</button></div></div></div><div id="logList" style="margin-top: 8px;"></div></div></div>
+<div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
 <script>
  let GOAL_CAL = 0;
  let GOAL_PRO = 0;
@@ -2000,6 +2019,27 @@ async function analyzePhoto(event) {
      }
  }
  // Same rules as the gauges: calories count when within 90-100% of goal, protein when it reaches 100%.
+// Read-only meal history: one day (calendar tap), last 7 days, or this month.
+const escHtml = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function toggleRangeMenu(e) { e.stopPropagation(); document.getElementById('rangeMenu').classList.toggle('show'); }
+document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
+function closeDayLog() { document.getElementById('dayLogModal').classList.remove('show'); }
+function openRangeLog(kind, dayKey) {
+  document.getElementById('rangeMenu')?.classList.remove('show');
+  const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'), now = new Date(), keys = [];
+  if (kind === 'day') keys.push(dayKey);
+  else if (kind === 'week') for (let i = 0; i < 7; i++) { const d = new Date(); d.setDate(now.getDate() - i); keys.push(d.toLocaleDateString('en-CA')); }
+  else for (let d = now.getDate(); d >= 1; d--) keys.push(new Date(now.getFullYear(), now.getMonth(), d).toLocaleDateString('en-CA'));
+  const fmt = k => new Date(k + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+  document.getElementById('dayLogTitle').textContent = kind === 'day' ? fmt(dayKey) : kind === 'week' ? 'Last 7 Days' : now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
+  const body = keys.filter(k => (data[k] || []).length).map(k => {
+    const logs = data[k], cal = logs.reduce((a, x) => a + (x.cal || 0), 0), pro = logs.reduce((a, x) => a + (x.pro || 0), 0);
+    const meals = logs.map(x => `<div class="dl-meal">${x.img ? `<img src="${x.img}" alt="">` : '<div class="ph">🥣</div>'}<span>${escHtml(x.name)}</span><small>🔥 ${x.cal || 0} · 💪 ${x.pro || 0}g · 🌾 ${x.carb || 0}g · 🧈 ${x.fat || 0}g</small></div>`).join('');
+    return `<div class="dl-day"><b><span>${kind === 'day' ? 'Total' : fmt(k)}</span><span>${cal} kcal · ${pro}g protein</span></b>${meals}</div>`;
+  }).join('');
+  document.getElementById('dayLogBody').innerHTML = body || '<div class="dl-empty">🥣 No meals logged</div>';
+  document.getElementById('dayLogModal').classList.add('show');
+}
 function dayStats(key, data) {
   const logs = data[key] || []; let cal = 0, pro = 0;
   logs.forEach(i => { cal += i.cal; pro += i.pro; });
@@ -2026,7 +2066,7 @@ function renderCalendar() {
     const half = !s.both && (s.calOK || s.proOK) ? ' half' : ''; // one goal hit: neon green outline on that day only
     const cls = (key > today ? 'future' : key === today ? (s.both ? 'win today' : 'today') : s.both ? 'win' : half ? '' : s.has ? 'miss' : 'none') + half;
     const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
-    cells += `<div class="cal-day ${cls}"><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
+    cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openRangeLog('day', '${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
   }
   el.innerHTML = `<div class="cal-head"><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><div class="cal-streak ${streak ? 'on' : ''}"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
   renderWeek(data);
