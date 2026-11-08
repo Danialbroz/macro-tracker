@@ -846,7 +846,9 @@ html.intro-lock { overflow: hidden; }
     will-change: transform;
     backface-visibility: hidden;
 }
-.intro-layer { position: absolute; left: 0; width: 100%; pointer-events: none; backface-visibility: hidden; }
+.intro-layer { position: absolute; left: 0; width: 100%; pointer-events: none; backface-visibility: hidden; will-change: transform; }
+/* once the dive passes the surface the sky is mostly gone: stop its many infinite animations so the dive stays smooth */
+#intro-root.intro-sky-off .intro-layer--sky *, #intro-root.intro-sky-off .intro-layer--waves * { animation-play-state: paused !important; }
 .intro-layer--sky      { top: 0;   height: 73vh; }
 .intro-layer--waves { top: 66vh; height: 19vh; }
 .intro-layer--rays { top: 72vh; height: 131vh; }
@@ -931,6 +933,11 @@ html.intro-lock { overflow: hidden; }
 .intro-fish--far-3 { top: 70%; left: 30%; color: rgba(15,74,114,.45); animation: intro-fish-rtl 18s linear infinite 5s; }
 .intro-fish--near-1 { top: 30%; left: 20%; color: rgba(251,191,36,.75); animation: intro-fish-rtl-near 12s linear infinite; }
 .intro-fish--near-2 { top: 60%; left: 70%; color: rgba(248,113,113,.8); animation: intro-fish-ltr-near 15s linear infinite 3s; }
+.intro-diver { position: absolute; top: 38%; left: -25%; width: 110px; height: 46px; color: rgba(15,74,114,.55); animation: intro-diver-ltr 30s linear infinite 2s; }
+.intro-diver svg { width: 100%; height: 100%; display: block; overflow: visible; animation: intro-fish-bob 2.4s ease-in-out infinite; }
+.intro-diver-legs { transform-box: fill-box; transform-origin: 100% 50%; animation: intro-diver-kick .9s ease-in-out infinite alternate; }
+@keyframes intro-diver-ltr { from { transform: translate3d(0,0,0); } to { transform: translate3d(150vw,0,0); } }
+@keyframes intro-diver-kick { from { transform: rotate(-9deg); } to { transform: rotate(9deg); } }
 .intro-seaweed-svg { position: absolute; left: 0; bottom: 0; width: 100%; height: 100%; display: block; }
 .intro-seaweed-shape { transform-box: fill-box; transform-origin: 50% 100%; animation: intro-seaweed-sway 4s ease-in-out infinite; }
 .intro-seaweed-shape--2 { animation-delay: .5s; }
@@ -949,8 +956,7 @@ html.intro-lock { overflow: hidden; }
     position: absolute; z-index: 20; left: 50%; top: 50vh; transform: translate(-50%, -50%);
     display: flex; align-items: center; gap: 12px; max-width: calc(100vw - 20px);
     padding: 10px 22px; border-radius: 999px; pointer-events: none;
-    background: rgba(8,47,73,.45);
-    -webkit-backdrop-filter: blur(8px); backdrop-filter: blur(8px);
+    background: rgba(8,47,73,.6);
     border: 1px solid rgba(255,255,255,.35);
     box-shadow: 0 8px 24px rgba(4,30,66,.35);
 }
@@ -1088,6 +1094,7 @@ html.intro-lock { overflow: hidden; }
   <div class="intro-fish intro-fish--far-1"></div>
   <div class="intro-fish intro-fish--far-2"></div>
   <div class="intro-fish intro-fish--far-3"></div>
+  <div class="intro-diver"><svg viewBox="0 0 120 50" aria-hidden="true"><g fill="currentColor"><ellipse cx="55" cy="26" rx="24" ry="7.5"/><circle cx="85" cy="23" r="7"/><rect x="38" y="14" width="26" height="8" rx="4"/><path d="M76 28 L102 31 L101 34 L74 32Z"/><g class="intro-diver-legs"><path d="M34 27 L12 33 L10 29 L32 23Z"/><path d="M14 31 L2 38 L6 28Z"/></g></g><circle cx="88" cy="22" r="3.2" fill="rgba(186,230,253,.7)"/></svg></div>
  </div>
  <!-- UNDERWATER: bubbles (spawned by script) -->
  <div class="intro-layer intro-layer--bubbles" id="intro-layer-bubbles"></div>
@@ -1380,7 +1387,7 @@ function splash() {
      masterTl.to(world, {
       y: -D, duration: dur, ease: 'power2.inOut',
       onUpdate: function () {
-          if (!burst && gsap.getProperty(world, 'y') <= surfaceTrigger) { burst = true; }
+          if (!burst && gsap.getProperty(world, 'y') <= surfaceTrigger) { burst = true; root.classList.add('intro-sky-off'); }
       }
      }, 0);
      parallax.forEach(function (l) {
