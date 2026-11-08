@@ -249,15 +249,16 @@
   .range-menu.show { display: block; }
   .range-menu button { display: block; width: 100%; text-align: left; background: none; border: 0; color: #f0f9ff; padding: 9px 12px; border-radius: 8px; font-weight: 600; cursor: pointer; }
   .range-menu button:hover { background: rgba(56,189,248,0.2); }
-  .day-log-card { max-width: 420px; text-align: left; max-height: 80vh; display: flex; flex-direction: column; }
+  .day-log-card { max-width: 560px; width: 94%; padding: 22px; text-align: left; max-height: 86vh; display: flex; flex-direction: column; background: rgba(20,40,65,0.5); border: 1px solid rgba(186,230,253,0.35); box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); animation: popIn 0.3s ease; }
   .day-log-card h3 { text-align: center; }
   #dayLogBody { overflow-y: auto; }
   .dl-day { margin-bottom: 12px; }
   .dl-day > b { display: flex; justify-content: space-between; font-size: .85rem; color: #7dd3fc; border-bottom: 1px solid rgba(186,230,253,0.2); padding-bottom: 3px; margin-bottom: 4px; }
-  .dl-meal { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-size: .85rem; color: #f0f9ff; }
-  .dl-meal img, .dl-meal .ph { width: 34px; height: 34px; border-radius: 8px; object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
-  .dl-meal span { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .dl-meal small { color: #bae6fd; white-space: nowrap; }
+  .dl-meal { display: flex; align-items: center; gap: 12px; padding: 6px 0; font-size: .9rem; color: #f0f9ff; }
+  .dl-meal img, .dl-meal .ph { width: 76px; height: 76px; border-radius: 14px; font-size: 1.6rem; box-shadow: 0 4px 12px rgba(0,0,0,0.4); object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
+  .dl-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+  .dl-info span { font-weight: 700; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .dl-info small { color: #bae6fd; font-size: .78rem; }
   .dl-empty { text-align: center; color: #bae6fd; opacity: .8; padding: 16px 0; }
   .cal-day[data-k] { cursor: pointer; }
   .cal-day b { line-height: 1; }
@@ -1679,7 +1680,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
  </div>
 </div>
   <div id="mainApp" style="display:none;"><div class="header"><div class="macro-title-float"><div class="macro-title-card"><h2>Today's Macros</h2></div></div><div class="header-controls"><button class="gear-btn" id="gearBtn" onclick="toggleMenu()"><svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg></button><div class="dropdown" id="dropdownMenu"><button onclick="openOnboarding(); toggleMenu();">📝 Edit your data</button></div></div></div><div class="card stats"><div class="stat-box" id="calBox"><div class="meter-label">Calories</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="calArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradCal)" stroke-width="14" stroke-linecap="round"/><g id="calScale" class="gauge-scale"></g><g id="calNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="calText">0 / 0</div></div><div class="stat-box" id="proBox"><div class="meter-label">Protein</div><div class="gauge-wrap"><svg viewBox="0 0 200 120" class="gauge-svg"><path id="proArc" d="M20,100 A80,80 0 0,1 180,100" fill="none" stroke="url(#gaugeGradPro)" stroke-width="14" stroke-linecap="round"/><g id="proScale" class="gauge-scale"></g><g id="proNeedle" transform="rotate(-90 100 100)"><line x1="100" y1="100" x2="100" y2="28" stroke="#cbd5e1" stroke-width="4" stroke-linecap="round"/></g><circle cx="100" cy="100" r="8" fill="#cbd5e1" stroke="#0f172a" stroke-width="2"/></svg></div><div class="meter-text" id="proText">0 / 0g</div></div></div><div class="card"><input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="analyzePhoto(event)"><input type="file" id="galleryInput" accept="image/*" style="display:none" onchange="analyzePhoto(event)"><button class="liquid-btn scan-btn" onclick="openPhotoSource()">📸 Scan Meal with AI</button><div class="success-anim-wrap" id="scanSuccessAnimation"><svg class="success-checkmark-svg" viewBox="0 0 52 52"><circle class="checkmark-circle" cx="26" cy="26" r="25" fill="none" stroke="#4ade80" stroke-width="3"/><path class="checkmark-check" fill="none" d="M14.1 27.2l7.1 7.2 16.7-16.8" stroke="#4ade80" stroke-width="4" stroke-linecap="round"/></svg><span class="success-anim-text">Analyze Successfully</span></div><div id="scannedPreviewWrap"><img
-id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="cal-row" id="calRow"><div class="card cal-card" id="calCard"></div><div class="card week-card" id="weekCard"></div></div><div class="cal-dots" id="calDots"><i class="on"></i><i></i></div><div class="card"><div class="log-head"><strong>Today's Log</strong><div class="log-range"><button class="log-range-btn" onclick="toggleRangeMenu(event)" aria-label="View full log">📋 ▾</button><div class="range-menu" id="rangeMenu"><button onclick="openRangeLog('week')">This week</button><button onclick="openRangeLog('month')">This month</button></div></div></div><div id="logList" style="margin-top: 8px;"></div></div></div>
+id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="cal-row" id="calRow"><div class="card cal-card" id="calCard"></div><div class="card week-card" id="weekCard"></div></div><div class="cal-dots" id="calDots"><i class="on"></i><i></i></div><div class="card"><div class="log-head"><strong id="logTitle">Today's Log</strong><div class="log-range"><button class="log-range-btn" onclick="toggleRangeMenu(event)" aria-label="View full log">📋 ▾</button><div class="range-menu" id="rangeMenu"><button onclick="setLogRange('today')">Today</button><button onclick="setLogRange('week')">This week</button><button onclick="setLogRange('month')">This month</button><button onclick="setLogRange('6m')">Last 6 months</button><button onclick="setLogRange('year')">Last year</button></div></div></div><div id="logList" style="margin-top: 8px;"></div></div></div>
 <div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
 <script>
  let GOAL_CAL = 0;
@@ -2024,20 +2025,29 @@ const escHtml = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<
 function toggleRangeMenu(e) { e.stopPropagation(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
 function closeDayLog() { document.getElementById('dayLogModal').classList.remove('show'); }
-function openRangeLog(kind, dayKey) {
-  document.getElementById('rangeMenu')?.classList.remove('show');
+const RANGE_DAYS = { week: 7, '6m': 182, year: 365 }, RANGE_TITLE = { today: "Today's Log", week: 'This Week', month: 'This Month', '6m': 'Last 6 Months', year: 'Last Year' };
+let logRange = 'today';
+function setLogRange(kind) {
+  logRange = kind; document.getElementById('rangeMenu').classList.remove('show');
+  document.getElementById('logTitle').textContent = RANGE_TITLE[kind]; render();
+}
+// Meals grouped by date, newest first. kind: day key (YYYY-MM-DD) or a RANGE_TITLE key.
+function mealsHtml(kind) {
   const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'), now = new Date(), keys = [];
-  if (kind === 'day') keys.push(dayKey);
-  else if (kind === 'week') for (let i = 0; i < 7; i++) { const d = new Date(); d.setDate(now.getDate() - i); keys.push(d.toLocaleDateString('en-CA')); }
-  else for (let d = now.getDate(); d >= 1; d--) keys.push(new Date(now.getFullYear(), now.getMonth(), d).toLocaleDateString('en-CA'));
-  const fmt = k => new Date(k + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
-  document.getElementById('dayLogTitle').textContent = kind === 'day' ? fmt(dayKey) : kind === 'week' ? 'Last 7 Days' : now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' });
-  const body = keys.filter(k => (data[k] || []).length).map(k => {
+  if (/^\d{4}-/.test(kind)) keys.push(kind);
+  else if (kind === 'month') for (let d = now.getDate(); d >= 1; d--) keys.push(new Date(now.getFullYear(), now.getMonth(), d).toLocaleDateString('en-CA'));
+  else for (let i = 0; i < RANGE_DAYS[kind]; i++) { const d = new Date(); d.setDate(now.getDate() - i); keys.push(d.toLocaleDateString('en-CA')); }
+  const single = keys.length === 1, long = kind === '6m' || kind === 'year';
+  const fmt = k => new Date(k + 'T00:00:00').toLocaleDateString('en-US', long ? { weekday: 'short', month: 'short', day: 'numeric', year: 'numeric' } : { weekday: 'short', month: 'short', day: 'numeric' });
+  return keys.filter(k => (data[k] || []).length).map(k => {
     const logs = data[k], cal = logs.reduce((a, x) => a + (x.cal || 0), 0), pro = logs.reduce((a, x) => a + (x.pro || 0), 0);
-    const meals = logs.map(x => `<div class="dl-meal">${x.img ? `<img src="${x.img}" alt="">` : '<div class="ph">🥣</div>'}<span>${escHtml(x.name)}</span><small>🔥 ${x.cal || 0} · 💪 ${x.pro || 0}g · 🌾 ${x.carb || 0}g · 🧈 ${x.fat || 0}g</small></div>`).join('');
-    return `<div class="dl-day"><b><span>${kind === 'day' ? 'Total' : fmt(k)}</span><span>${cal} kcal · ${pro}g protein</span></b>${meals}</div>`;
-  }).join('');
-  document.getElementById('dayLogBody').innerHTML = body || '<div class="dl-empty">🥣 No meals logged</div>';
+    const meals = logs.map(x => `<div class="dl-meal">${x.img ? `<img src="${x.img}" alt="">` : '<div class="ph">🥣</div>'}<div class="dl-info"><span>${escHtml(x.name)}</span><small>🔥 ${x.cal || 0} · 💪 ${x.pro || 0}g · 🌾 ${x.carb || 0}g · 🧈 ${x.fat || 0}g</small></div></div>`).join('');
+    return `<div class="dl-day"><b><span>${single ? 'Total' : fmt(k)}</span><span>${cal} kcal · ${pro}g protein</span></b>${meals}</div>`;
+  }).join('') || '<div class="dl-empty">🥣 No meals logged</div>';
+}
+function openDayLog(key) {
+  document.getElementById('dayLogTitle').textContent = new Date(key + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  document.getElementById('dayLogBody').innerHTML = mealsHtml(key);
   document.getElementById('dayLogModal').classList.add('show');
 }
 function dayStats(key, data) {
@@ -2066,7 +2076,7 @@ function renderCalendar() {
     const half = !s.both && (s.calOK || s.proOK) ? ' half' : ''; // one goal hit: neon green outline on that day only
     const cls = (key > today ? 'future' : key === today ? (s.both ? 'win today' : 'today') : s.both ? 'win' : half ? '' : s.has ? 'miss' : 'none') + half;
     const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
-    cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openRangeLog('day', '${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
+    cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openDayLog('${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
   }
   el.innerHTML = `<div class="cal-head"><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><div class="cal-streak ${streak ? 'on' : ''}"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
   renderWeek(data);
@@ -2373,6 +2383,7 @@ labels.forEach(v => {
    const imgHtml = item.img ? `<img src="${item.img}" class="food-thumb" style="cursor:pointer" onclick="openFoodDetail(${item.id})">` : `<div class="food-thumb placeholder" style="cursor:pointer" onclick="openFoodDetail(${item.id})">🥣</div>`;
     listEl.innerHTML += `<div class="food-swipe"><div class="swipe-actions"><button class="sw-edit" aria-label="Edit" onclick="openEditFood(${item.id})"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/></svg></button><button class="sw-del" aria-label="Delete" onclick="askDeleteFood(${item.id})"><svg viewBox="0 0 56 64" width="26" height="30"><path d="M8 21 L12 58 Q12.4 62 17 62 H39 Q43.6 62 44 58 L48 21 Z" fill="rgba(255,45,85,.18)" stroke="currentColor" stroke-width="3" stroke-linejoin="round"/><circle cx="22" cy="39" r="2.6" fill="#fff"/><circle cx="34" cy="39" r="2.6" fill="#fff"/><path d="M24.5 46 Q28 50 31.5 46" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round"/><rect x="4" y="12" width="48" height="8" rx="4" fill="rgba(255,45,85,.3)" stroke="currentColor" stroke-width="3"/><rect x="21" y="4" width="14" height="8" rx="4" fill="rgba(255,45,85,.3)" stroke="currentColor" stroke-width="3"/></svg></button></div><div class="food-card" data-id="${item.id}">${imgHtml}<div class="food-info"><div class="food-name" style="cursor:pointer" onclick="openFoodDetail(${item.id})">${item.name}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${item.cal}</span><span class="macro-chip chip-pro">💪 ${item.pro}g</span><span class="macro-chip chip-carb">🌾 ${item.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${item.fat || 0}g</span></div></div><div class="food-actions"><button class="hamburger-btn" onclick="toggleFoodMenu(event, ${item.id})" aria-label="Food options"><span></span><span></span><span></span></button><div class="food-menu"><button onclick="openEditFood(${item.id})">✏️ Edit this food</button><button class="danger" onclick="askDeleteFood(${item.id})">🗑️ Delete</button></div></div></div></div>`;
       });
+      if (logRange !== 'today') listEl.innerHTML = mealsHtml(logRange);
       renderGauge('cal', totalCal, GOAL_CAL); renderGauge('pro', totalPro, GOAL_PRO); renderCalendar();
   }
 function buildAppIconPng(size) {
