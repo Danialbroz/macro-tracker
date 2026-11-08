@@ -2006,7 +2006,7 @@ async function analyzePhoto(event) {
      let data;
      {
         const base64Image = await compressImage(file, 800, 0.7);
-        const thumb = await compressImage(file, 160, 0.5);
+        const thumb = await compressImage(file, 640, 0.6);
         lastScanThumb = 'data:image/jpeg;base64,' + thumb;
         const prompt = 'Identify the food in this image and estimate total calories, protein, carbohydrates and fat in grams. Respond ONLY with valid JSON in this exact format: {"name": "Food Name", "cal": 500, "pro": 35, "carb": 40, "fat": 15}';
         const reply = await puter.ai.chat(prompt, 'data:image/jpeg;base64,' + base64Image, { model: 'gpt-5-nano' });
@@ -2165,7 +2165,12 @@ document.getElementById('calRow')?.addEventListener('scroll', e => {
   document.addEventListener('touchstart', e => { if (!e.target.closest('.food-swipe')) close(); }, { passive: true });
 })();
 function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
- function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; localStorage.setItem('macro_logs', JSON.stringify(data)); render(); }
+ function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; // Storage full: drop photos from the oldest days first until it fits.
+  for (const k of [null, ...Object.keys(data).sort()]) {
+    if (k) (data[k] || []).forEach(x => delete x.img);
+    try { localStorage.setItem('macro_logs', JSON.stringify(data)); break; } catch (e) {}
+  }
+  render(); }
   function addEntry() { const name = document.getElementById('foodName').value.trim() || 'Meal'; const cal = parseInt(document.getElementById('foodCal').value) || 0; const pro = parseInt(document.getElementById('foodPro').value) || 0; const carb = parseInt(document.getElementById('foodCarb').value) || 0; const fat = parseInt(document.getElementById('foodFat').value) || 0; if (!cal && !pro && !carb && !fat) return; const logs = getLogs(); logs.push({ id: Date.now(), name, cal, pro, carb, fat, img: lastScanThumb }); saveLogs(logs); document.getElementById('foodName').value = ''; document.getElementById('foodCal').value = ''; document.getElementById('foodPro').value = ''; document.getElementById('foodCarb').value = ''; document.getElementById('foodFat').value = ''; document.getElementById('status').style.display = 'none'; document.getElementById('scannedPreviewWrap').style.display = 'none'; lastScanThumb = null; }
  function closeAllFoodMenus() {
      document.querySelectorAll('.food-menu.show').forEach(m => m.classList.remove('show'));
