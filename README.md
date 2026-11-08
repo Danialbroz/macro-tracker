@@ -63,7 +63,7 @@ Mobile-first with safe-area support and a generated "Add to Home Screen" icon. T
 ```mermaid
 flowchart LR
     A[📸 Photo] --> B[Compress to 800px JPEG]
-    B --> C[Puter.js AI vision<br/>google/gemini-3.8-flash]
+    B --> C[Puter.js AI vision<br/>qwen/qwen3.8-flash]
     C --> D[Name, kcal, protein,<br/>carbs, fat]
     D --> E{Confirm}
     E -->|Log| F[(localStorage)]
@@ -81,7 +81,7 @@ flowchart LR
 | App | One `index.html`: plain HTML, CSS and JavaScript, no build step |
 | Animation | [GSAP](https://gsap.com/) for the intro, Web Animations API and CSS for UI motion |
 | Audio | Web Audio API, with generated sounds |
-| AI | [Puter.js](https://developer.puter.com/) `puter.ai.chat` with vision (`google/gemini-3.8-flash`) |
+| AI | [Puter.js](https://developer.puter.com/) `puter.ai.chat` with vision (`qwen/qwen3.8-flash`) |
 | Storage | Browser `localStorage` (oldest photos are dropped first if storage fills up) |
 
 ---
