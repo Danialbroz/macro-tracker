@@ -2122,6 +2122,15 @@ function renderWeek(data) {
 }
 // phone carousel: light up the dot for the visible card
 // + 3D flip-through: each card swings/shrinks/fades by how far it is from center
+// iOS can leave the row part-way between snaps (and the 3D transforms stale): after scrolling stops, snap to the nearest card.
+let calSettle;
+document.getElementById('calRow')?.addEventListener('scroll', e => {
+  const r = e.target; clearTimeout(calSettle);
+  calSettle = setTimeout(() => {
+    const step = r.clientWidth - 32 + 12, to = Math.round(r.scrollLeft / step) * step;
+    if (Math.abs(r.scrollLeft - to) > 1) r.scrollTo({ left: to, behavior: 'smooth' });
+  }, 120);
+}, { passive: true });
 document.getElementById('calRow')?.addEventListener('scroll', e => {
   const row = e.target, w = row.clientWidth - 32 + 12; // card = row minus 16px side padding, + 12px gap
   const pos = row.scrollLeft / w;
