@@ -1957,10 +1957,10 @@ function showScanResults(data) {
       item.querySelector('.scan-macro-value').textContent = '0';
      });
      const macros = [
-      { key: 'cal', value: data.cal || 0, pct: 88 },
-      { key: 'pro', value: data.pro || 0, pct: 75 },
-      { key: 'carb', value: data.carb || 0, pct: 68 },
-      { key: 'fat', value: data.fat || 0, pct: 55 }
+      { key: 'cal', value: data.cal || 0, pct: macroPct('cal', data) },
+      { key: 'pro', value: data.pro || 0, pct: macroPct('pro', data) },
+      { key: 'carb', value: data.carb || 0, pct: macroPct('carb', data) },
+      { key: 'fat', value: data.fat || 0, pct: macroPct('fat', data) }
      ];
      macros.forEach((m, i) => {
       const item = document.querySelector(`.scan-macro-item[data-macro="${m.key}"]`);
@@ -2032,6 +2032,11 @@ async function analyzePhoto(event) {
 const escHtml = t => String(t ?? '').replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
 function toggleRangeMenu(e) { e.stopPropagation(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
+// Bar fill: calories/protein vs daily goal; carbs/fat as share of meal calories (4/9 kcal per g).
+function macroPct(k, m) {
+  const v = m[k] || 0, of = { cal: GOAL_CAL, pro: GOAL_PRO, carb: m.cal || 0, fat: m.cal || 0 }[k], w = { carb: 4, fat: 9 }[k] || 1;
+  return of > 0 ? Math.min(100, Math.round(v * w / of * 100)) : 0;
+}
 function openImgViewer(src) { document.getElementById('imgViewerImg').src = src; document.getElementById('imgViewer').classList.add('show'); }
 function closeDayLog() { document.getElementById('dayLogModal').classList.remove('show'); }
 const RANGE_DAYS = { week: 7, '6m': 182, year: 365 }, RANGE_TITLE = { today: "Today's Log", week: 'This Week', month: 'This Month', '6m': 'Last 6 Months', year: 'Last Year' };
@@ -2188,10 +2193,10 @@ document.querySelectorAll('.scan-macro-item').forEach(row => {
  row.querySelector('.scan-macro-value').textContent = '0';
 });
 const macros = [
- { key: 'cal', value: meal.cal || 0, pct: 88 },
- { key: 'pro', value: meal.pro || 0, pct: 75 },
- { key: 'carb', value: meal.carb || 0, pct: 68 },
- { key: 'fat', value: meal.fat || 0, pct: 55 }
+ { key: 'cal', value: meal.cal || 0, pct: macroPct('cal', meal) },
+ { key: 'pro', value: meal.pro || 0, pct: macroPct('pro', meal) },
+ { key: 'carb', value: meal.carb || 0, pct: macroPct('carb', meal) },
+ { key: 'fat', value: meal.fat || 0, pct: macroPct('fat', meal) }
 ];
 macros.forEach((m, i) => {
      const row = document.querySelector(`.scan-macro-item[data-macro="${m.key}"]`);
