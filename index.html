@@ -406,12 +406,11 @@
   .glass-modal-card.not-food-card { animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
   .clown-face { font-size: 4rem; line-height: 1; margin-bottom: 8px; display: inline-block; animation: clownBounce 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s both; }
   @keyframes clownBounce { 0% { transform: translateY(-120px) scale(.3); opacity: 0; } 55% { transform: translateY(8px) scale(1.15, .9); opacity: 1; } 75% { transform: translateY(-14px) scale(.95, 1.05); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-  .scan-btn-row { display: flex; gap: 8px; margin-top: 6px; }
-  .scan-btn-row > button { flex: 1; margin-top: 0; padding: 13px 6px; font-size: 0.9rem; border-radius: 14px; font-weight: 800; cursor: pointer; touch-action: manipulation; animation: fadeUp 0.5s ease 0.85s both; transition: transform 0.15s ease; }
+  .scan-btn-row { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
+  .scan-btn-row > button { width: 100%; margin-top: 0; padding: 13px; font-size: 0.98rem; border-radius: 14px; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; touch-action: manipulation; animation: fadeUp 0.5s ease 0.85s both; transition: transform 0.15s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .scan-btn-row > button:active { transform: scale(0.97); }
-  .scan-btn-row .scan-log-btn { width: auto; }
-  .scan-cancel-btn { border: 1px solid rgba(248,113,113,0.6); background: linear-gradient(135deg, rgba(239,68,68,0.45), rgba(220,38,38,0.45)); color: #fef2f2; box-shadow: 0 8px 24px rgba(239,68,68,0.3), inset 0 1px 1px rgba(255,255,255,0.15); }
-  .scan-edit-btn { border: 1px solid rgba(186,230,253,0.4); background: rgba(56,189,248,0.2); color: #f0f9ff; box-shadow: 0 8px 24px rgba(56,189,248,0.2), inset 0 1px 1px rgba(255,255,255,0.15); }
+  .scan-cancel-btn { border: 1px solid rgba(248,113,113,0.7); background: linear-gradient(135deg, rgba(239,68,68,0.75), rgba(220,38,38,0.75)); color: #fff; box-shadow: 0 8px 24px rgba(239,68,68,0.4), inset 0 1px 1px rgba(255,255,255,0.2); }
+  .scan-edit-btn { border: 1px solid rgba(125,211,252,0.7); background: linear-gradient(135deg, rgba(56,189,248,0.7), rgba(14,165,233,0.7)); color: #fff; box-shadow: 0 8px 24px rgba(56,189,248,0.4), inset 0 1px 1px rgba(255,255,255,0.2); }
   #scanEditModal { z-index: 2600; }
   #scanEditModal .glass-modal-card { animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
   .cancel-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px; }
@@ -1694,7 +1693,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
     </div>
    </div>
-   <div class="scan-btn-row"><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button><button class="scan-edit-btn" id="scanEditBtn" onclick="openScanEdit()">Edit my food</button><button class="scan-log-btn" onclick="confirmScanLog()">Log Meal</button></div>
+   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-edit-btn" id="scanEditBtn" onclick="openScanEdit()">Edit my food</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button></div>
   </div>
   <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
    <div class="scan-success-wrap">
@@ -1973,7 +1972,7 @@ function showScanOverlay() {
     scanOverlayMode = 'scan';
     document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = '';
     const logBtnReset = document.querySelector('.scan-log-btn');
-    if (logBtnReset) logBtnReset.textContent = 'Log Meal';
+    if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
     const detailImgReset = document.getElementById('scanResultImg');
     if (detailImgReset) detailImgReset.style.display = 'block';
     overlay.classList.add('show');
@@ -2050,7 +2049,7 @@ function hideScanOverlay() {
     document.getElementById('scanOverlay').classList.remove('show');
     scanOverlayMode = 'scan';
     const logBtnReset = document.querySelector('.scan-log-btn');
-    if (logBtnReset) logBtnReset.textContent = 'Log Meal';
+    if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
     setTimeout(resetDinoScene, 400);
 }
 function confirmScanLog() {
@@ -2281,7 +2280,7 @@ if (meal.img) { imgEl.src = meal.img; imgEl.style.display = 'block'; }
 else { imgEl.style.display = 'none'; }
 document.getElementById('scanResultName').textContent = meal.name || 'Meal';
 const logBtn = document.querySelector('.scan-log-btn');
-if (logBtn) logBtn.textContent = 'Done';
+if (logBtn) logBtn.textContent = '✓ Done';
 document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = 'none';
 document.querySelectorAll('.scan-macro-item').forEach(row => {
  row.querySelector('.scan-macro-fill').style.width = '0%';
