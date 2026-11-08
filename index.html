@@ -340,7 +340,9 @@
   .age-dial:hover, .age-dial:focus-visible, .age-dial.drag { border-color: rgba(56,189,248,0.6); box-shadow: 0 0 22px rgba(56,189,248,0.28); outline: none; }
   .age-dial.drag { cursor: grabbing; }
   .age-num { text-align: center; height: 64px; overflow: hidden; display: flex; align-items: baseline; justify-content: center; gap: 6px; }
-  .age-num span { font-size: 3.4rem; font-weight: 800; line-height: 64px; color: #f0f9ff; font-variant-numeric: tabular-nums; }
+  .age-num #ageNum { display: inline-flex; font-size: 3.4rem; font-weight: 800; color: #f0f9ff; font-variant-numeric: tabular-nums; text-shadow: 0 0 22px rgba(56,189,248,0.35); }
+  .age-d { position: relative; display: inline-block; width: .64em; height: 64px; overflow: hidden; }
+  .age-d b { position: absolute; inset: 0; line-height: 64px; text-align: center; font-weight: 800; will-change: transform, opacity, filter; }
   .age-num small { font-size: .8rem; color: #7dd3fc; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; }
   .age-ruler { position: relative; height: 46px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); mask-image: linear-gradient(90deg, transparent, #000 22%, #000 78%, transparent); }
   .age-strip { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
@@ -1867,13 +1869,37 @@ const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
   function tick() {
     try { ac = ac || new (window.AudioContext || window.webkitAudioContext)(); const o = ac.createOscillator(), g = ac.createGain(), t = ac.currentTime; o.type = 'sine'; o.frequency.value = 1500; g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.0001, t + 0.04); o.connect(g); g.connect(ac.destination); o.start(t); o.stop(t + 0.05); } catch (e) {}
   }
+  // Only the digits that changed roll; the old digit leaves one way as the new one arrives from the other.
+  const ROLL = { duration: 420, easing: 'cubic-bezier(.22,1,.36,1)', fill: 'both' };
+  function showNum(n, dir) {
+    const str = String(n);
+    while (numEl.children.length < str.length) numEl.insertBefore(Object.assign(document.createElement('span'), { className: 'age-d', innerHTML: '<b></b>' }), numEl.firstChild);
+    while (numEl.children.length > str.length) numEl.removeChild(numEl.firstChild);
+    [...numEl.children].forEach((slot, i) => {
+      const b = slot.firstElementChild, ch = str[i];
+      if (b.textContent === ch) return;
+      if (b.textContent) {
+        const old = b.cloneNode(true);
+        slot.appendChild(old);
+        old.animate([{ transform: 'none', opacity: 1, filter: 'blur(0)' }, { transform: 'translateY(' + (-dir * 70) + '%)', opacity: 0, filter: 'blur(5px)' }], ROLL).onfinish = () => old.remove();
+      }
+      b.textContent = ch;
+      b.animate([{ transform: 'translateY(' + (dir * 70) + '%) scale(.85)', opacity: 0, filter: 'blur(5px)' }, { transform: 'none', opacity: 1, filter: 'blur(0)' }], ROLL);
+    });
+  }
+  // Wheel and keys ease the ruler to the new year instead of jumping.
+  let tw = 0, goal = 22; // goal accumulates notches so fast scrolling adds exactly one year per notch
+  function tweenTo(to) {
+    cancelAnimationFrame(raf); cancelAnimationFrame(tw); vel = 0; to = goal = clampAge(to);
+    const step = () => { pos += (to - pos) * 0.2; if (Math.abs(to - pos) < 0.01) { pos = to; tw = 0; draw(); return; } draw(); tw = requestAnimationFrame(step); };
+    step();
+  }
   function draw() {
     strip.style.transform = 'translateX(' + (dial.clientWidth / 2 - (pos - AGE_MIN) * AGE_PPY) + 'px)';
     const r = Math.round(pos);
     if (r !== shown) {
       const dir = r > shown ? 1 : -1; shown = r;
-      numEl.textContent = r; input.value = r; dial.setAttribute('aria-valuenow', r);
-      numEl.animate([{ transform: 'translateY(' + (dir * 34) + 'px)', opacity: 0, filter: 'blur(4px)' }, { transform: 'none', opacity: 1, filter: 'blur(0)' }], { duration: 160, easing: 'ease-out' });
+      showNum(r, dir); input.value = r; dial.setAttribute('aria-valuenow', r);
       tick();
     }
   }
@@ -1884,7 +1910,7 @@ const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
     if (Math.abs(vel) < 0.004) { pos = Math.round(pos); vel = 0; draw(); return; } // snap to a whole year
     draw(); raf = requestAnimationFrame(glide);
   }
-  dial.addEventListener('pointerdown', e => { dragging = true; vel = 0; cancelAnimationFrame(raf); lastX = e.clientX; lastT = performance.now(); dial.classList.add('drag'); dial.setPointerCapture(e.pointerId); });
+  dial.addEventListener('pointerdown', e => { dragging = true; vel = 0; cancelAnimationFrame(raf); cancelAnimationFrame(tw); tw = 0; lastX = e.clientX; lastT = performance.now(); dial.classList.add('drag'); dial.setPointerCapture(e.pointerId); });
   dial.addEventListener('pointermove', e => {
     if (!dragging) return;
     const now = performance.now(), dy = (lastX - e.clientX) / AGE_PPY; // drag left = older (ruler rolls left)
@@ -1892,12 +1918,12 @@ const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
   });
   const end = () => { if (!dragging) return; dragging = false; dial.classList.remove('drag'); raf = requestAnimationFrame(glide); };
   dial.addEventListener('pointerup', end); dial.addEventListener('pointercancel', end);
-  dial.addEventListener('wheel', e => { e.preventDefault(); cancelAnimationFrame(raf); vel = 0; pos = clampAge(Math.round(pos) + (e.deltaY > 0 || e.deltaX > 0 ? 1 : -1)); draw(); }, { passive: false });
+  dial.addEventListener('wheel', e => { e.preventDefault(); tweenTo((tw && Math.abs(goal - pos) > 0.01 ? goal : Math.round(pos)) + (e.deltaY > 0 || e.deltaX > 0 ? 1 : -1)); }, { passive: false });
   dial.addEventListener('mousedown', e => { if (e.button === 1) e.preventDefault(); }); // stop middle-click autoscroll so a middle-button drag works
-  dial.addEventListener('keydown', e => { const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : 0; if (d) { e.preventDefault(); pos = clampAge(Math.round(pos) + d); draw(); } });
-  window.setAgeDial = v => { pos = shown = clampAge(Math.round(+v) || 22); numEl.textContent = pos; input.value = pos; draw(); };
+  dial.addEventListener('keydown', e => { const d = e.key === 'ArrowRight' || e.key === 'ArrowUp' ? 1 : e.key === 'ArrowLeft' || e.key === 'ArrowDown' ? -1 : 0; if (d) { e.preventDefault(); tweenTo((tw && Math.abs(goal - pos) > 0.01 ? goal : Math.round(pos)) + d); } });
+  window.setAgeDial = v => { cancelAnimationFrame(tw); pos = shown = clampAge(Math.round(+v) || 22); numEl.innerHTML = ''; showNum(pos, 1); input.value = pos; draw(); };
   new ResizeObserver(draw).observe(dial);
-  draw();
+  setAgeDial(22);
 })();
   function goToStep2() { if (!document.getElementById('obSex').value) return alert("Please tap a gender to continue!"); if (!document.getElementById('obAge').value) return alert("Please enter your age!"); nextStep(2); }
   function goToStep3() { const h = parseFloat(document.getElementById('obHeight').value); const w = parseFloat(document.getElementById('obWeight').value); if (!h || !w) return alert("Please enter both your height and weight!"); nextStep(3); }
