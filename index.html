@@ -1380,7 +1380,7 @@ function splash() {
      masterTl.to(world, {
       y: -D, duration: dur, ease: 'power2.inOut',
       onUpdate: function () {
-          if (!burst && gsap.getProperty(world, 'y') <= surfaceTrigger) { burst = true; splash(); }
+          if (!burst && gsap.getProperty(world, 'y') <= surfaceTrigger) { burst = true; }
       }
      }, 0);
      parallax.forEach(function (l) {
