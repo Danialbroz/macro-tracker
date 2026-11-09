@@ -1972,8 +1972,10 @@ const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
  heightHandle.addEventListener('pointercancel', () => { isDraggingHeight = false; });
   heightTrack.addEventListener('pointerdown', (e) => { if (e.target === heightHandle) return; setHeightFromClientY(e.clientY); });
   function onHeightInput() { let v = parseFloat(document.getElementById('obHeight').value); if (isNaN(v)) return; positionHeightHandle(v); updateStickFigure(v, parseFloat(document.getElementById('obWeight').value) || 0); }
-  // Weights can never be negative: block the minus key and strip it from pasted/typed text.
-  ['obWeight', 'obGoalWeight'].forEach(id => { const el = document.getElementById(id); el.min = 0; el.addEventListener('keydown', e => { if (e.key === '-' || e.key === 'e') e.preventDefault(); }); el.addEventListener('input', () => { if (el.value.includes('-')) { el.value = el.value.replace(/-/g, ''); if (id === 'obWeight') onWeightInput(); } }); });
+  // No number field accepts negatives: block the minus/e keys and strip '-' from typed or pasted text.
+  document.querySelectorAll('input[type=number], #obGoalWeight').forEach(el => el.min = 0);
+  document.addEventListener('keydown', e => { if (e.target.matches?.('input[type=number], #obGoalWeight') && (e.key === '-' || e.key === 'e')) e.preventDefault(); });
+  document.addEventListener('input', e => { const el = e.target; if (el.matches?.('input[type=number], #obGoalWeight') && el.value.includes('-')) { el.value = el.value.replace(/-/g, ''); el.dispatchEvent(new Event('input', { bubbles: true })); } });
   function onWeightInput() { let w = parseFloat(document.getElementById('obWeight').value) || 0; const h = parseFloat(document.getElementById('obHeight').value) || 150; updateStickFigure(h, w); }
   function calculateGoals() {
   const age = parseFloat(document.getElementById('obAge').value); const sex = document.getElementById('obSex').value; const height = parseFloat(document.getElementById('obHeight').value); const weight = parseFloat(document.getElementById('obWeight').value); const goal = document.getElementById('obGoal').value; const goalWeight = parseFloat(document.getElementById('obGoalWeight').value); const timeline = parseFloat(document.getElementById('obTimeline').value); const exercise = parseInt(document.getElementById('obExercise').value);
