@@ -345,12 +345,12 @@
   .age-d { position: relative; display: inline-block; width: .74em; height: 64px; overflow: hidden; }
   .age-d b { position: absolute; inset: 0; line-height: 64px; text-align: center; font-weight: 900; will-change: transform, opacity, filter; }
   .age-num small { margin-top: 0; font-size: .8rem; color: #8fb4d0; font-weight: 600; letter-spacing: 2px; }
-  .age-ruler { position: relative; height: 56px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent); mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent); }
-  .age-strip { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
-  .age-tick { position: absolute; top: 8px; width: 1px; height: 12px; margin-left: -0.5px; border-radius: 1px; background: rgba(255,255,255,0.2); }
+  .age-ruler { position: relative; height: 56px; overflow: hidden; }
+  .age-strip { position: absolute; inset: 0; }
+  .age-tick { position: absolute; left: 0; transform-origin: 50% 0; will-change: transform, opacity; top: 8px; width: 1px; height: 12px; margin-left: -0.5px; border-radius: 1px; background: rgba(255,255,255,0.2); }
   .age-tick.t5 { height: 18px; background: rgba(255,255,255,0.42); }
   .age-tick.t10 { height: 26px; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.88); }
-  .age-lbl { position: absolute; top: 38px; transform: translateX(-50%); font-size: .72rem; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,0.4); font-variant-numeric: tabular-nums; }
+  .age-lbl { position: absolute; left: 0; will-change: transform, opacity; top: 38px; font-size: .72rem; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,0.4); font-variant-numeric: tabular-nums; }
   .age-needle { position: absolute; left: 50%; top: 5px; width: 2px; height: 36px; margin-left: -1px; border-radius: 2px; background: #ff7a3d; box-shadow: 0 0 8px rgba(255,122,61,0.6); }
   .age-needle::before { content: ''; position: absolute; left: 50%; top: -4px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: #ff7a3d; box-shadow: 0 0 8px rgba(255,122,61,0.9); }
  .step { display: none; animation: fadeIn 0.4s ease; }
@@ -1859,13 +1859,11 @@ function startOnboarding() {
 const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
 (function initAgeDial() {
   const dial = document.getElementById('ageDial'), strip = document.getElementById('ageStrip'), numEl = document.getElementById('ageNum'), input = document.getElementById('obAge');
-  let h = '';
+  const els = [];
   for (let a = AGE_MIN; a <= AGE_MAX; a++) {
-    const x = (a - AGE_MIN) * AGE_PPY;
-    h += '<i class="age-tick' + (a % 10 === 0 ? ' t10' : a % 5 === 0 ? ' t5' : '') + '" style="left:' + x + 'px"></i>';
-    if (a % 10 === 0) h += '<span class="age-lbl" style="left:' + x + 'px">' + a + '</span>';
+    const t = document.createElement('i'); t.className = 'age-tick' + (a % 10 === 0 ? ' t10' : a % 5 === 0 ? ' t5' : ''); strip.appendChild(t); els.push({ el: t, age: a, lbl: false });
+    if (a % 10 === 0) { const l = document.createElement('span'); l.className = 'age-lbl'; l.textContent = a; strip.appendChild(l); els.push({ el: l, age: a, lbl: true }); }
   }
-  strip.innerHTML = h; strip.style.width = (AGE_MAX - AGE_MIN) * AGE_PPY + 'px';
   let pos = 22, shown = 22, vel = 0, raf = 0, dragging = false, lastX = 0, lastT = 0, ac = null;
   const clampAge = v => Math.max(AGE_MIN, Math.min(AGE_MAX, v));
   function tick() {
@@ -1897,7 +1895,15 @@ const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
     step();
   }
   function draw() {
-    strip.style.transform = 'translateX(' + (dial.clientWidth / 2 - (pos - AGE_MIN) * AGE_PPY) + 'px)';
+    // Ticks sit on a cylinder: x = R*sin(angle), squeezed, dimmer and lower toward the edges, like a bent ruler.
+    const cx = dial.clientWidth / 2, R = Math.min(cx * 0.9, 170);
+    els.forEach(o => {
+      const a = (o.age - pos) * AGE_PPY / R, c = Math.cos(a);
+      if (Math.abs(a) > 1.45) { o.el.style.opacity = 0; return; }
+      const x = cx + R * Math.sin(a), dy = (1 - c) * 14;
+      o.el.style.opacity = Math.pow(c, 1.3);
+      o.el.style.transform = o.lbl ? 'translate(' + x + 'px,' + dy + 'px) translateX(-50%) scale(' + (0.6 + 0.4 * c) + ')' : 'translate(' + x + 'px,' + dy + 'px) scale(' + c + ',' + (0.5 + 0.5 * c) + ')';
+    });
     const r = Math.round(pos);
     if (r !== shown) {
       const dir = r > shown ? 1 : -1; shown = r;
