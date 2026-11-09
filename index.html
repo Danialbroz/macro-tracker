@@ -336,24 +336,22 @@
  .floating-card h2 { text-align: center; margin-bottom: 20px; font-size: 1.5rem; color: #fff; }
   .floating-card label { font-size: 0.85rem; color: #cbd5e1; margin-top: 10px; display: block; font-weight: 600;}
  @keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
-  .age-dial { position: relative; margin: 6px 0 4px; padding: 18px 0 8px; border-radius: 22px; background: radial-gradient(120% 90% at 50% 0%, #2a2a2e 0%, #151517 55%, #0b0b0d 100%); border: 1px solid rgba(255,255,255,0.06); box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -10px 24px rgba(0,0,0,0.3); cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: box-shadow .3s ease, border-color .3s ease; overflow: hidden; }
+  .age-dial { position: relative; margin: 6px 0 4px; padding: 18px 0 8px; border-radius: 22px; background: linear-gradient(180deg, rgba(14,26,46,0.85), rgba(6,14,28,0.92)); border: 1px solid rgba(255,255,255,0.08); box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -10px 24px rgba(0,0,0,0.3); cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; transition: box-shadow .3s ease, border-color .3s ease; overflow: hidden; }
   .age-dial:hover, .age-dial:focus-visible, .age-dial.drag { border-color: rgba(125,211,252,0.7); box-shadow: inset 0 1px 0 rgba(255,255,255,0.07), inset 0 -10px 24px rgba(0,0,0,0.3), 0 0 22px rgba(125,211,252,0.25); outline: none; }
   .age-dial.drag { cursor: grabbing; }
-  .age-num { text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 10px; }
+  .age-num { text-align: center; display: flex; flex-direction: column; align-items: center; margin-bottom: 14px; }
   .age-num #ageNum { height: 64px; overflow: hidden; }
-  .age-num #ageNum { display: inline-flex; font-size: 3.4rem; font-weight: 900; color: #fff; font-variant-numeric: tabular-nums; }
+  .age-num #ageNum { display: inline-flex; font-size: 3.4rem; font-weight: 900; color: #f0f9ff; font-variant-numeric: tabular-nums; }
   .age-d { position: relative; display: inline-block; width: .6em; height: 64px; overflow: hidden; }
   .age-d b { position: absolute; inset: 0; line-height: 64px; text-align: center; font-weight: 900; will-change: transform, opacity, filter; }
-  .age-num small { margin-top: -2px; font-size: .85rem; color: rgba(255,255,255,0.7); font-weight: 500; letter-spacing: .2px; }
-  .age-ruler { position: relative; height: 64px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); mask-image: linear-gradient(90deg, transparent, #000 12%, #000 88%, transparent); }
-  /* recessed groove the ticks sit in: dark fill, shadow on the top inner edge, faint light on the bottom lip */
-  .age-ruler::before { content: ''; position: absolute; left: 10px; right: 10px; top: 8px; height: 34px; border-radius: 17px; background: linear-gradient(180deg, rgba(0,0,0,0.55), rgba(0,0,0,0.3)); box-shadow: inset 0 3px 6px rgba(0,0,0,0.7), inset 0 -1px 0 rgba(255,255,255,0.09), 0 1px 0 rgba(255,255,255,0.06); }
+  .age-num small { margin-top: 0; font-size: .8rem; color: #8fb4d0; font-weight: 600; letter-spacing: 2px; }
+  .age-ruler { position: relative; height: 56px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent); mask-image: linear-gradient(90deg, transparent, #000 25%, #000 75%, transparent); }
   .age-strip { position: absolute; top: 0; left: 0; height: 100%; will-change: transform; }
-  .age-tick { position: absolute; top: 15px; width: 1px; height: 10px; margin-left: -0.5px; border-radius: 1px; background: rgba(255,255,255,0.2); }
-  .age-tick.t5 { height: 15px; background: rgba(255,255,255,0.42); }
-  .age-tick.t10 { height: 21px; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.88); }
-  .age-lbl { position: absolute; top: 47px; transform: translateX(-50%); font-size: .72rem; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,0.4); font-variant-numeric: tabular-nums; }
-  .age-needle { position: absolute; left: 50%; top: 5px; width: 2px; height: 40px; margin-left: -1px; border-radius: 2px; background: #ff7a3d; box-shadow: 0 0 8px rgba(255,122,61,0.6); }
+  .age-tick { position: absolute; top: 8px; width: 1px; height: 12px; margin-left: -0.5px; border-radius: 1px; background: rgba(255,255,255,0.2); }
+  .age-tick.t5 { height: 18px; background: rgba(255,255,255,0.42); }
+  .age-tick.t10 { height: 26px; width: 2px; margin-left: -1px; background: rgba(255,255,255,0.88); }
+  .age-lbl { position: absolute; top: 38px; transform: translateX(-50%); font-size: .72rem; font-weight: 600; letter-spacing: .5px; color: rgba(255,255,255,0.4); font-variant-numeric: tabular-nums; }
+  .age-needle { position: absolute; left: 50%; top: 5px; width: 2px; height: 36px; margin-left: -1px; border-radius: 2px; background: #ff7a3d; box-shadow: 0 0 8px rgba(255,122,61,0.6); }
   .age-needle::before { content: ''; position: absolute; left: 50%; top: -4px; width: 8px; height: 8px; margin-left: -4px; border-radius: 50%; background: #ff7a3d; box-shadow: 0 0 8px rgba(255,122,61,0.9); }
  .step { display: none; animation: fadeIn 0.4s ease; }
  .step.active { display: block; }
