@@ -1948,15 +1948,16 @@ const AGE_MIN = 10, AGE_MAX = 100, AGE_PPY = 14;
   function updateStickFigure(heightCm, weightKg) {
    heightCm = clamp(heightCm || 150, 100, 200); weightKg = clamp(weightKg || 0, 0, 200);
    // Build comes from BMI, so a tall person at the same weight stays slim.
-   const bmi = weightKg / Math.pow(heightCm / 100, 2), f = clamp((bmi - 17) / 23, 0, 1);
+   const bmi = weightKg / Math.pow(heightCm / 100, 2), f = clamp((bmi - 17) / 40, 0, 1); // weight is capped at 200 kg above
    const g = 188, cx = 50, H = 85 + (heightCm - 100) / 100 * 95, u = H / 100;
-   const headR = u * 6.5, headCY = g - H + headR, neckY = headCY + headR * 0.9, hipY = g - H * 0.45, sy = neckY + u * 3, len = hipY - sy;
-   const neck = u * 2.8, sh = u * (10 + f * 3), bel = u * (7 + f * 11), hip = u * (8 + f * 9), belY = sy + len * 0.62;
-   const legW = u * (4.2 + f * 5.5), armW = u * (3.2 + f * 3);
+   const headR = u * 6.5 + f * u * 1.5, headCY = g - H + headR, neckY = headCY + headR * 0.9, hipY = g - H * 0.45, sy = neckY + u * 3, len = hipY - sy;
+   const neck = u * (2.8 + f * 1.5), sh = u * (10 + f * 2), bel = u * (7 + f * 16), hip = u * (8 + f * 11), belY = sy + len * 0.66;
+   const legW = u * (4.2 + f * 6), armW = u * (3.2 + f * 3.5);
    const set = (id, o) => { const e = document.getElementById(id); for (const k in o) e.setAttribute(k, o[k]); };
    set('sfHead', { cx, cy: headCY, r: headR });
-   set('sfTorso', { d: `M${cx - neck} ${neckY}Q${cx - sh} ${neckY} ${cx - sh} ${sy + u * 2}C${cx - sh} ${sy + len * 0.3} ${cx - bel} ${belY - len * 0.2} ${cx - bel} ${belY}C${cx - bel} ${belY + len * 0.2} ${cx - hip} ${hipY - len * 0.1} ${cx - hip} ${hipY}H${cx + hip}C${cx + hip} ${hipY - len * 0.1} ${cx + bel} ${belY + len * 0.2} ${cx + bel} ${belY}C${cx + bel} ${belY - len * 0.2} ${cx + sh} ${sy + len * 0.3} ${cx + sh} ${sy + u * 2}Q${cx + sh} ${neckY} ${cx + neck} ${neckY}Z` });
-   const lx = hip * 0.5, fx = lx + u * 2, ax = sh - armW / 2, hx = Math.max(sh, bel) + armW * 0.5 + u * 1.5, hy = sy + len * 0.85;
+   const L = (x, y) => `${cx - x} ${y}`, R = (x, y) => `${cx + x} ${y}`, by = hipY + u * 1;
+   set('sfTorso', { d: `M${L(neck, neckY)}C${L(neck + u * 2, neckY)} ${L(sh, neckY + u)} ${L(sh, sy + u * 3)}C${L(sh + (bel - sh) * 0.9, sy + len * 0.2)} ${L(bel, belY - len * 0.25)} ${L(bel, belY)}C${L(bel, belY + len * 0.25)} ${L(hip, hipY - len * 0.05)} ${L(hip, by)}C${L(hip, hipY + u * 6)} ${R(hip, hipY + u * 6)} ${R(hip, by)}C${R(hip, hipY - len * 0.05)} ${R(bel, belY + len * 0.25)} ${R(bel, belY)}C${R(bel, belY - len * 0.25)} ${R(sh + (bel - sh) * 0.9, sy + len * 0.2)} ${R(sh, sy + u * 3)}C${R(sh, neckY + u)} ${R(neck + u * 2, neckY)} ${R(neck, neckY)}Z` });
+   const lx = hip * 0.55, fx = lx + u * 2, ax = sh - armW / 2, hx = Math.max(sh, bel) + armW * 0.5 + u * 1.5, hy = sy + len * 0.85;
    set('sfLeftLeg', { x1: cx - lx, y1: hipY - 2, x2: cx - fx, y2: g - legW / 2, 'stroke-width': legW });
    set('sfRightLeg', { x1: cx + lx, y1: hipY - 2, x2: cx + fx, y2: g - legW / 2, 'stroke-width': legW });
    set('sfLeftArm', { x1: cx - ax, y1: sy + u * 3, x2: cx - hx, y2: hy, 'stroke-width': armW });
