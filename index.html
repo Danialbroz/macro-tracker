@@ -450,6 +450,28 @@
   .scan-cancel-btn { border: 1px solid rgba(248,113,113,0.7); background: linear-gradient(135deg, rgba(239,68,68,0.75), rgba(220,38,38,0.75)); color: #fff; box-shadow: 0 8px 24px rgba(239,68,68,0.4), inset 0 1px 1px rgba(255,255,255,0.2); }
   .scan-edit-btn { border: 1px solid rgba(125,211,252,0.3); background: linear-gradient(135deg, rgba(30,64,110,0.75), rgba(12,38,76,0.75)); color: #e0f2fe; box-shadow: 0 6px 18px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.12); }
   #scanEditModal { z-index: 2600; }
+  .ai-chat-overlay { position: fixed; inset: 0; z-index: 2700; background: rgba(4,12,28,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 20px; }
+  .ai-chat-overlay.show { display: flex; }
+  .ai-chat-wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 12px; animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; }
+  .ai-chat-window { display: flex; flex-direction: column; height: min(70vh, 540px); background: linear-gradient(180deg, rgba(15,23,42,0.97), rgba(8,47,73,0.97)); border: 1px solid rgba(148,197,253,0.28); border-radius: 22px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
+  .ai-chat-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border-bottom: 1px solid rgba(148,197,253,0.18); color: #e0f2fe; font-weight: 800; }
+  .ai-chat-avatar { width: 30px; height: 30px; border-radius: 50%; background: linear-gradient(135deg,#38bdf8,#4ade80); display: flex; align-items: center; justify-content: center; font-size: 1rem; }
+  .ai-chat-msgs { flex: 1; overflow-y: auto; padding: 14px; display: flex; flex-direction: column; gap: 10px; }
+  .ai-msg { max-width: 85%; padding: 9px 13px; border-radius: 16px; font-size: 0.9rem; line-height: 1.35; animation: fadeUp 0.3s ease both; word-wrap: break-word; }
+  .ai-msg.bot { align-self: flex-start; background: rgba(30,64,110,0.7); color: #e0f2fe; border-bottom-left-radius: 4px; }
+  .ai-msg.user { align-self: flex-end; background: linear-gradient(135deg, #0ea5e9, #2563eb); color: #fff; border-bottom-right-radius: 4px; }
+  .ai-typing { display: flex; gap: 4px; padding: 12px 14px; }
+  .ai-typing i { width: 7px; height: 7px; border-radius: 50%; background: #7dd3fc; animation: seq-bounce 0.9s ease-in-out infinite; }
+  .ai-typing i:nth-child(2) { animation-delay: .15s; } .ai-typing i:nth-child(3) { animation-delay: .3s; }
+  .ai-card { align-self: stretch; padding: 12px; border-radius: 16px; background: rgba(15,23,42,0.85); border: 1px solid rgba(125,211,252,0.35); display: flex; flex-direction: column; gap: 10px; animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+  .ai-card .scan-result-name { animation: none; }
+  .ai-card .scan-macro-list { gap: 9px; }
+  .ai-card .scan-macro-item { animation: none; }
+  .ai-card .scan-log-btn { animation: none; margin-top: 0; }
+  .ai-chat-form { display: flex; gap: 8px; padding: 10px; border-top: 1px solid rgba(148,197,253,0.18); }
+  .ai-chat-form input { flex: 1; margin: 0; min-width: 0; }
+  .ai-chat-form button { border: 0; border-radius: 12px; padding: 0 16px; font-weight: 800; color: #fff; background: linear-gradient(135deg,#0ea5e9,#2563eb); cursor: pointer; }
+  .ai-chat-cancel { width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; }
   #scanEditModal .glass-modal-card { animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
   .cancel-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px; }
   .cancel-modal-overlay.show { display: flex; }
@@ -1711,7 +1733,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
     </div>
    </div>
-   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-edit-btn" id="scanEditBtn" onclick="openScanEdit()">Edit my food</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button></div>
+   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-edit-btn" id="scanAiBtn" onclick="openAiChat()">Edit this food? Use AI</button><button class="scan-edit-btn" id="scanEditBtn" onclick="openScanEdit()">Edit my food</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button></div>
   </div>
   <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
    <div class="scan-success-wrap">
@@ -1748,7 +1770,20 @@ id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><
   </div>
  </div>
 </div>
-<div id="puterConfirmModal" class="cancel-modal-overlay" onclick="if(event.target===this)closePuterConfirm()"><div class="glass-modal-card"><h3>Switch Puter account?</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 16px;">You will be signed out and asked to sign in again.</p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doSwitchPuter()">Yes</button><button class="cancel-no-btn" onclick="closePuterConfirm()">No</button></div></div></div>
+<div id="aiChatModal" class="ai-chat-overlay" onclick="if(event.target===this)closeAiChat()">
+ <div class="ai-chat-wrap">
+  <div class="ai-chat-window">
+   <div class="ai-chat-head"><div class="ai-chat-avatar">🤖</div>Food Fixer</div>
+   <div class="ai-chat-msgs" id="aiChatMsgs"></div>
+   <form class="ai-chat-form" onsubmit="return aiChatSend(event)">
+    <input type="text" id="aiChatInput" maxlength="40" placeholder="Type the correct food..." autocomplete="off">
+    <button type="submit">Send</button>
+   </form>
+  </div>
+  <button class="scan-cancel-btn ai-chat-cancel" onclick="closeAiChat()">Cancel</button>
+ </div>
+</div>
+<div id="puterConfirmModal"class="cancel-modal-overlay" onclick="if(event.target===this)closePuterConfirm()"><div class="glass-modal-card"><h3>Switch Puter account?</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 16px;">You will be signed out and asked to sign in again.</p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doSwitchPuter()">Yes</button><button class="cancel-no-btn" onclick="closePuterConfirm()">No</button></div></div></div>
 <div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
 <script>
  let GOAL_CAL = 0;
@@ -2078,7 +2113,7 @@ function onScanOverlayClick(e) {
 function showScanOverlay() {
     const overlay = document.getElementById('scanOverlay');
     scanOverlayMode = 'scan';
-    document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = '';
+    document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = document.getElementById('scanAiBtn').style.display = '';
     const logBtnReset = document.querySelector('.scan-log-btn');
     if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
     const detailImgReset = document.getElementById('scanResultImg');
@@ -2151,6 +2186,103 @@ function saveScanEdit() {
   });
   document.getElementById('scanResultName').textContent = d.name;
   document.getElementById('scanEditModal').classList.remove('show');
+}
+// ---- "Edit this food? Use AI" chat (local stub; swap lookupFood() for Puter AI later) ----
+// Typical serving: [cal, protein g, carbs g, fat g]
+const FOOD_DB = {
+  'chicken breast': ['Chicken Breast (150g)',248,46,0,5], 'chicken thigh': ['Chicken Thigh (150g)',320,38,0,18], 'chicken': ['Chicken (150g)',280,40,0,12],
+  'fried chicken': ['Fried Chicken (150g)',390,30,14,24], 'chicken wing': ['Chicken Wings (4)',360,32,2,24], 'chicken nugget': ['Chicken Nuggets (6)',280,14,18,17],
+  'beef steak': ['Beef Steak (200g)',500,52,0,32], 'steak': ['Steak (200g)',500,52,0,32], 'ground beef': ['Ground Beef (150g)',375,38,0,24], 'burger': ['Cheeseburger',540,28,40,28],
+  'hamburger': ['Hamburger',480,26,38,24], 'cheeseburger': ['Cheeseburger',540,28,40,28], 'hot dog': ['Hot Dog',290,11,23,17], 'sausage': ['Sausage (2)',360,16,3,32],
+  'bacon': ['Bacon (3 slices)',130,9,0,10], 'pork chop': ['Pork Chop (170g)',310,38,0,17], 'ham': ['Ham (100g)',145,21,1,6], 'lamb': ['Lamb (150g)',350,38,0,21],
+  'turkey': ['Turkey Breast (150g)',225,42,0,5], 'salmon': ['Salmon (150g)',310,34,0,18], 'tuna': ['Tuna (1 can)',130,28,0,1], 'fish': ['Grilled Fish (150g)',190,34,0,5],
+  'shrimp': ['Shrimp (150g)',150,30,1,2], 'egg': ['Egg (2 large)',156,13,1,11], 'boiled egg': ['Boiled Egg (2)',156,13,1,11], 'fried egg': ['Fried Egg (2)',190,12,1,15],
+  'omelette': ['Omelette (3 eggs)',300,20,2,23], 'scrambled egg': ['Scrambled Eggs (3)',280,18,3,21], 'tofu': ['Tofu (150g)',130,14,3,8], 'rice': ['White Rice (1 cup)',205,4,45,0],
+  'white rice': ['White Rice (1 cup)',205,4,45,0], 'brown rice': ['Brown Rice (1 cup)',215,5,45,2], 'fried rice': ['Fried Rice (1 cup)',290,7,40,11], 'pasta': ['Pasta (1.5 cup)',330,12,63,2],
+  'spaghetti': ['Spaghetti (1.5 cup)',330,12,63,2], 'macaroni': ['Mac and Cheese (1 cup)',380,14,47,14], 'noodle': ['Noodles (1.5 cup)',310,10,55,5], 'ramen': ['Ramen Bowl',450,14,60,16],
+  'lasagna': ['Lasagna (1 slice)',420,24,40,18], 'bread': ['Bread (2 slices)',160,6,30,2], 'toast': ['Toast (2 slices)',160,6,30,2], 'bagel': ['Bagel',280,11,55,2],
+  'sandwich': ['Sandwich',400,20,42,16], 'sub': ['Sub Sandwich',480,26,52,18], 'wrap': ['Chicken Wrap',420,28,40,16], 'burrito': ['Burrito',560,24,66,22], 'taco': ['Taco (2)',340,18,28,18],
+  'pizza': ['Pizza (2 slices)',570,24,68,20], 'cheese pizza': ['Cheese Pizza (2 slices)',570,24,68,20], 'pepperoni pizza': ['Pepperoni Pizza (2 slices)',620,26,66,28], 'fries': ['French Fries (medium)',365,4,48,17],
+  'french fries': ['French Fries (medium)',365,4,48,17], 'potato': ['Baked Potato',160,4,37,0], 'mashed potato': ['Mashed Potatoes (1 cup)',240,4,35,9], 'sweet potato': ['Sweet Potato',115,2,27,0],
+  'salad': ['Green Salad',120,4,10,8], 'caesar salad': ['Caesar Salad',330,9,15,27], 'soup': ['Soup (1 bowl)',150,8,18,5], 'oatmeal': ['Oatmeal (1 cup)',160,6,28,3], 'oat': ['Oatmeal (1 cup)',160,6,28,3],
+  'cereal': ['Cereal with Milk',250,8,48,3], 'pancake': ['Pancakes (3)',350,9,56,10], 'waffle': ['Waffles (2)',290,7,40,12], 'yogurt': ['Yogurt (1 cup)',150,12,17,4],
+  'greek yogurt': ['Greek Yogurt (1 cup)',130,22,8,1], 'cheese': ['Cheese (30g)',115,7,0,9], 'milk': ['Milk (1 cup)',150,8,12,8], 'butter': ['Butter (1 tbsp)',100,0,0,11],
+  'peanut butter': ['Peanut Butter (2 tbsp)',190,7,7,16], 'almond': ['Almonds (30g)',170,6,6,15], 'peanut': ['Peanuts (30g)',165,7,5,14], 'walnut': ['Walnuts (30g)',185,4,4,18],
+  'apple': ['Apple',95,0,25,0], 'banana': ['Banana',105,1,27,0], 'orange': ['Orange',62,1,15,0], 'grape': ['Grapes (1 cup)',104,1,27,0], 'strawberry': ['Strawberries (1 cup)',50,1,12,0],
+  'blueberry': ['Blueberries (1 cup)',85,1,21,0], 'watermelon': ['Watermelon (2 cups)',90,2,22,0], 'mango': ['Mango',200,3,50,1], 'pineapple': ['Pineapple (1 cup)',82,1,22,0],
+  'avocado': ['Avocado',240,3,13,22], 'broccoli': ['Broccoli (1 cup)',55,4,11,1], 'carrot': ['Carrots (1 cup)',50,1,12,0], 'corn': ['Corn (1 cup)',130,5,29,2],
+  'beans': ['Beans (1 cup)',225,15,40,1], 'lentil': ['Lentils (1 cup)',230,18,40,1], 'chickpea': ['Chickpeas (1 cup)',270,15,45,4], 'hummus': ['Hummus (1/4 cup)',100,5,9,6],
+  'chocolate': ['Chocolate Bar',230,3,26,13], 'ice cream': ['Ice Cream (1 cup)',270,5,32,14], 'cookie': ['Cookies (2)',160,2,22,8], 'cake': ['Cake (1 slice)',350,4,50,15],
+  'donut': ['Donut',250,3,30,14], 'brownie': ['Brownie',240,3,32,12], 'chips': ['Potato Chips (30g)',155,2,15,10], 'popcorn': ['Popcorn (3 cups)',95,3,19,1],
+  'sushi': ['Sushi Roll (6 pcs)',250,9,38,7], 'protein shake': ['Protein Shake',160,30,6,3], 'protein bar': ['Protein Bar',210,20,22,7], 'smoothie': ['Smoothie',250,6,52,3],
+  'juice': ['Orange Juice (1 cup)',112,2,26,0], 'soda': ['Soda (can)',140,0,39,0], 'coffee': ['Coffee with Milk',40,2,4,2], 'latte': ['Latte',190,13,19,7], 'beer': ['Beer (can)',150,2,13,0], 'shawarma': ['Chicken Shawarma Wrap',520,32,45,24],
+  'falafel': ['Falafel (4)',230,9,22,12], 'kebab': ['Kebab (2 skewers)',380,34,6,24], 'biryani': ['Chicken Biryani (1.5 cup)',480,22,62,15], 'curry': ['Chicken Curry w/ Rice',520,28,55,20]
+};
+const FOOD_FILLER = new Set(['a','an','the','some','of','with','and','i','ate','had','my','it','was','actually','really','is','its','piece','slice','bowl','plate','cup','glass','serving','portion','large','small','medium','big','grilled','fried','baked','boiled','roasted','steamed','cooked','fresh','plain','whole','real','sorry','meant','correct','food','instead','not','that','this','were','have','eaten']);
+const FOOD_KEYS = Object.keys(FOOD_DB);
+const FOOD_VOCAB = new Set(FOOD_KEYS.flatMap(k => k.split(' ')).concat([...FOOD_FILLER]));
+function foodWords(text) {
+  return text.toLowerCase().replace(/[^a-z' -]/g, '').replace(/'s\b/g, '').split(/\s+/).filter(Boolean)
+    .map(w => [w, w.replace(/s$/, ''), w.replace(/es$/, '')].find(c => FOOD_VOCAB.has(c)) || w);
+}
+// Strict: letters only, short, every word must be a known food/filler word, and a known food must match.
+function lookupFood(text) {
+  if (!text || text.length > 40 || /[^A-Za-z' -]/.test(text)) return null;
+  const words = foodWords(text);
+  if (!words.length || words.length > 6 || !words.every(w => FOOD_VOCAB.has(w))) return null;
+  const core = words.filter(w => !FOOD_FILLER.has(w)).join(' ');
+  if (!core) return null;
+  const key = FOOD_KEYS.filter(k => (' ' + core + ' ').includes(' ' + k + ' ')).sort((a, b) => b.length - a.length)[0];
+  if (!key) return null;
+  if (core.split(' ').some(w => !key.split(' ').includes(w))) return null; // one food at a time, no stray words
+  const [name, cal, pro, carb, fat] = FOOD_DB[key];
+  return { name, cal, pro, carb, fat };
+}
+function aiAdd(cls) {
+  const box = document.getElementById('aiChatMsgs'), el = document.createElement('div');
+  el.className = cls; box.appendChild(el); box.scrollTop = box.scrollHeight; return el;
+}
+function aiBot(text, delay, then) {
+  const t = aiAdd('ai-msg bot ai-typing'); t.innerHTML = '<i></i><i></i><i></i>';
+  setTimeout(() => { t.className = 'ai-msg bot'; t.textContent = text; document.getElementById('aiChatMsgs').scrollTop = 1e9; if (then) then(); }, delay);
+}
+function openAiChat() {
+  if (!currentScanData) return;
+  document.getElementById('aiChatMsgs').innerHTML = '';
+  document.getElementById('aiChatInput').value = '';
+  document.getElementById('aiChatModal').classList.add('show');
+  aiBot('Got the wrong food? tell me the correct one! :)', 500);
+  setTimeout(() => document.getElementById('aiChatInput').focus(), 100);
+}
+function closeAiChat() { document.getElementById('aiChatModal').classList.remove('show'); }
+function aiChatSend(e) {
+  e.preventDefault();
+  const inp = document.getElementById('aiChatInput'), text = inp.value.trim();
+  if (!text) return false;
+  inp.value = '';
+  aiAdd('ai-msg user').textContent = text;
+  const food = lookupFood(text);
+  if (!food) { aiBot("Sorry I can't do that, only food name", 600); return false; }
+  aiBot('Found it!', 600, () => {
+    const card = aiAdd('ai-card');
+    card.innerHTML = '<div class="scan-result-name"></div><div class="scan-macro-list">' +
+      [['cal','🔥 Calories','cal'],['pro','💪 Protein','pro'],['carb','🌾 Carbs','carb'],['fat','🧈 Fat','fat']].map(m =>
+        '<div class="scan-macro-item"><div class="scan-macro-top"><span class="scan-macro-value">' + food[m[0]] + '</span><span class="scan-macro-label">' + m[1] + '</span></div><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-' + m[2] + '" style="width:' + macroPct(m[0], food) + '%"></div></div></div>').join('') +
+      '</div><button class="scan-log-btn">✓ Log Meal</button>';
+    card.querySelector('.scan-result-name').textContent = food.name;
+    card.querySelector('.scan-log-btn').onclick = () => logAiFood(food);
+    document.getElementById('aiChatMsgs').scrollTop = 1e9;
+    aiBot('There you go! :)', 500);
+  });
+  return false;
+}
+function logAiFood(food) {
+  currentScanData = food;
+  document.getElementById('foodName').value = food.name;
+  ['cal','pro','carb','fat'].forEach(k => document.getElementById('food' + k[0].toUpperCase() + k.slice(1)).value = food[k]);
+  document.getElementById('scanResultName').textContent = food.name;
+  closeAiChat();
+  confirmScanLog();
 }
 function hideScanOverlay() {
     clearInterval(scanProgressTimer);
@@ -2389,7 +2521,7 @@ else { imgEl.style.display = 'none'; }
 document.getElementById('scanResultName').textContent = meal.name || 'Meal';
 const logBtn = document.querySelector('.scan-log-btn');
 if (logBtn) logBtn.textContent = '✓ Done';
-document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = 'none';
+document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = document.getElementById('scanAiBtn').style.display = 'none';
 document.querySelectorAll('.scan-macro-item').forEach(row => {
  row.querySelector('.scan-macro-fill').style.width = '0%';
  row.querySelector('.scan-macro-value').textContent = '0';
