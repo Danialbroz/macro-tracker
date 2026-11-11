@@ -2854,12 +2854,13 @@ function applyAppIcons() {
  })();
 
 // Cloud sync via Puter KV. Per-meal merge (union by id, newest _t wins, tombstones for deletes) so two devices never overwrite each other.
-// shortcut: goals/profile are last-write-wins as a pair; meal photos stay local (KV values are size-limited).
+// Photos go to Puter file storage (macro_imgs/<id>.txt, data URL text); meals carry hi:1 so other devices know to download. shortcut: files of deleted meals are never removed.
+  // shortcut: goals/profile are last-write-wins as a pair.
 (function () {
   const KEYS = ['macro_logs', 'user_goals', 'user_profile'], CLOUD = 'macro_sync', rawSet = Storage.prototype.setItem;
   const J = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
   const S = (k, v) => rawSet.call(localStorage, k, typeof v === 'string' ? v : JSON.stringify(v));
-  const core = m => { const { img, _t, ...r } = m; return JSON.stringify(r); };
+  const core = m => { const { img, _t, hi, ...r } = m; return JSON.stringify(r); };
   const slim = d => { const o = {}; for (const k in d) o[k] = d[k].map(({ img, ...m }) => m); return o; };
   let timer, busy = false, again = false, started = false;
   const badge = document.createElement('div');
@@ -2903,6 +2904,13 @@ function applyAppIcons() {
       const raw = await puter.kv.get(CLOUD), r = raw ? JSON.parse(raw) : {}, now = Date.now(), cut = now - 60 * 864e5;
       const del = { ...r.del, ...J('sync_del', {}) }; for (const id in del) if (del[id] < cut) delete del[id];
       const local = J('macro_logs', {}), logs = mergeLogs(local, r.logs || {}, del);
+      const meals = Object.values(logs).flat();
+      await Promise.all(meals.map(async m => { // upload new photos, download missing ones; failures retry next sync
+        try {
+          if (m.img && !m.hi) { await puter.fs.write('macro_imgs/' + m.id + '.txt', m.img, { overwrite: true, createMissingParents: true }); m.hi = 1; }
+          else if (m.hi && !m.img) m.img = await (await puter.fs.read('macro_imgs/' + m.id + '.txt')).text();
+        } catch (e) { console.error('photo sync', m.id, e); }
+      }));
       let goals = localStorage.getItem('user_goals'), profile = localStorage.getItem('user_profile'), gts = +localStorage.getItem('sync_g') || (goals ? now : 0), reload = false;
       if ((r.gts || 0) > gts || (!goals && r.goals)) {
         reload = goals !== (r.goals ?? null) || profile !== (r.profile ?? null);
