@@ -2938,5 +2938,68 @@ function applyAppIcons() {
   });
 })();
 </script>
+<style>
+#ptr{position:fixed;top:env(safe-area-inset-top);left:0;right:0;height:5px;z-index:99999;pointer-events:none;opacity:0;display:flex;justify-content:center}
+#ptr .ln{height:100%;width:100%;border-radius:3px;background:linear-gradient(90deg,#38bdf8,#818cf8,#38bdf8);transform:scaleX(0);transform-origin:center;box-shadow:0 0 10px rgba(56,189,248,.6);position:relative;overflow:hidden}
+#ptr.go .ln::after{content:'';position:absolute;top:0;bottom:0;width:35%;left:-35%;background:linear-gradient(90deg,transparent,#fff,transparent);animation:ptrRun .9s linear infinite}
+@keyframes ptrRun{to{left:100%}}
+</style>
+<div id="ptr"><div class="ln"></div></div>
+<script>
+// Stale-PWA fix + mobile-only pull-to-refresh. No service worker exists, so staleness comes from the HTTP cache / iOS keeping the standalone app alive; we compare GitHub's latest commit and force a cache-bypassing reload.
+(function () {
+  const REPO = 'Danialbroz/macro-tracker', KEY = 'app_sha';
+  let busy = false;
+  async function latestSha() {
+    const r = await fetch('https://api.github.com/repos/' + REPO + '/commits/main', { cache: 'no-store', headers: { Accept: 'application/vnd.github.sha' } });
+    if (!r.ok) throw 0; return (await r.text()).trim();
+  }
+  async function hardReload(sha) {
+    await fetch(location.pathname + '?_=' + Date.now(), { cache: 'reload' }).catch(() => {}); // refreshes cached copy of the page
+    await fetch(location.pathname, { cache: 'reload' }).catch(() => {});
+    try { if (sha) localStorage.setItem(KEY, sha); } catch (e) {}
+    location.reload();
+  }
+  async function check(force) {
+    if (busy) return; busy = true;
+    try {
+      const sha = await latestSha(), old = localStorage.getItem(KEY);
+      if (force || (old && old !== sha)) return await hardReload(sha); // shortcut: unauthenticated API = 60 req/h per IP; fails silently
+      if (!old) localStorage.setItem(KEY, sha);
+    } catch (e) { if (force) location.reload(); }
+    busy = false; return 'done';
+  }
+  check(false);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) check(false); });
+  window.addEventListener('pageshow', e => { if (e.persisted) check(false); });
+
+  // pull-to-refresh: touch devices only
+  if (!(matchMedia('(pointer:coarse)').matches && 'ontouchstart' in window)) return;
+  const el = document.getElementById('ptr'), ln = el.firstElementChild, MAX = 90;
+  let y0 = null, d = 0;
+  const scrolled = t => { for (; t && t !== document.body; t = t.parentElement) if (t.scrollTop > 0) return true; return false; };
+  const blocked = t => !!document.querySelector('.show') && !!t.closest && !!t.closest('.show');
+  addEventListener('touchstart', e => {
+    y0 = (busy || e.touches.length !== 1 || window.scrollY > 0 || scrolled(e.target) || blocked(e.target)) ? null : e.touches[0].clientY; d = 0;
+  }, { passive: true });
+  addEventListener('touchmove', e => {
+    if (y0 === null) return;
+    d = Math.max(0, e.touches[0].clientY - y0);
+    if (!d) return;
+    if (e.cancelable) e.preventDefault();
+    el.style.opacity = 1; ln.style.transition = 'none';
+    ln.style.transform = 'scaleX(' + Math.min(1, d * .5 / MAX) + ')';
+  }, { passive: false });
+  addEventListener('touchend', async () => {
+    if (y0 === null) return; y0 = null;
+    ln.style.transition = 'transform .25s';
+    if (d * .5 < MAX) { ln.style.transform = 'scaleX(0)'; el.style.opacity = 0; return; }
+    ln.style.transform = 'scaleX(1)'; el.classList.add('go');
+    busy = false;
+    await check(true); // reloads page on success; reaching here means it failed
+    el.classList.remove('go'); ln.style.transform = 'scaleX(0)'; el.style.opacity = 0;
+  });
+})();
+</script>
 </body>
 </html>
