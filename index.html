@@ -2829,6 +2829,45 @@ function applyAppIcons() {
       setTimeout(() => { if (ripple.parentNode) ripple.parentNode.removeChild(ripple); }, 850);
      });
  })();
+
+// Cloud sync via Puter KV. Whole-snapshot, newest-write-wins (shortcut: concurrent edits on two devices lose the older one; upgrade to per-day merge with tombstones).
+(function () {
+  const KEYS = ['macro_logs', 'user_goals', 'user_profile'], CLOUD = 'macro_sync', rawSet = Storage.prototype.setItem;
+  const ts = () => +localStorage.getItem('sync_ts') || 0;
+  let timer, started = false;
+  const slim = s => { const d = JSON.parse(s || '{}'); for (const k in d) d[k].forEach(x => delete x.img); return d; }; // photos stay local: KV values are size-limited
+  async function push() {
+    try { await puter.kv.set(CLOUD, JSON.stringify({ ts: ts(), logs: slim(localStorage.getItem('macro_logs')), goals: localStorage.getItem('user_goals'), profile: localStorage.getItem('user_profile') })); }
+    catch (e) { console.error('sync push failed', e); }
+  }
+  Storage.prototype.setItem = function (k, v) {
+    rawSet.call(this, k, v);
+    if (this === localStorage && KEYS.includes(k)) { rawSet.call(this, 'sync_ts', Date.now()); clearTimeout(timer); timer = setTimeout(() => puter.auth.isSignedIn() && push(), 1500); }
+  };
+  async function sync() {
+    if (started || !puter.auth.isSignedIn()) return; started = true;
+    try {
+      const raw = await puter.kv.get(CLOUD), r = raw ? JSON.parse(raw) : null;
+      if (!r || ts() > r.ts) return push();
+      if (r.ts === ts()) return;
+      const local = JSON.parse(localStorage.getItem('macro_logs') || '{}'), imgs = {};
+      Object.values(local).flat().forEach(x => x.img && (imgs[x.id] = x.img));
+      for (const k in r.logs) r.logs[k].forEach(x => imgs[x.id] && (x.img = imgs[x.id]));
+      rawSet.call(localStorage, 'macro_logs', JSON.stringify(r.logs));
+      if (r.goals) rawSet.call(localStorage, 'user_goals', r.goals);
+      if (r.profile) rawSet.call(localStorage, 'user_profile', r.profile);
+      rawSet.call(localStorage, 'sync_ts', r.ts);
+      location.reload(); // goals/profile are read at load
+    } catch (e) { console.error('sync failed', e); }
+  }
+  sync();
+  // Sign-in popup needs a user gesture: ask on first tap if not signed in yet.
+  document.addEventListener('click', async () => {
+    if (started || puter.auth.isSignedIn()) return sync();
+    started = true; // one prompt per page load
+    try { await puter.auth.signIn(); started = false; sync(); } catch (e) {}
+  }, { once: false });
+})();
 </script>
 </body>
 </html>
