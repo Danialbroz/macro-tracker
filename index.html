@@ -444,12 +444,12 @@
   .glass-modal-card.not-food-card { animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
   .clown-face { font-size: 4rem; line-height: 1; margin-bottom: 8px; display: inline-block; animation: clownBounce 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s both; }
   @keyframes clownBounce { 0% { transform: translateY(-120px) scale(.3); opacity: 0; } 55% { transform: translateY(8px) scale(1.15, .9); opacity: 1; } 75% { transform: translateY(-14px) scale(.95, 1.05); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
-  .scan-btn-row { width: 100%; display: flex; flex-direction: column; gap: 10px; margin-top: 6px; }
-  .scan-btn-row > button { width: 100%; margin-top: 0; padding: 13px; font-size: 0.98rem; border-radius: 14px; font-weight: 800; letter-spacing: 0.5px; cursor: pointer; touch-action: manipulation; animation: fadeUp 0.5s ease 0.85s both; transition: transform 0.15s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .scan-btn-row { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+  .scan-btn-row > button { flex: 1 1 0; margin-top: 0; padding: 9px 10px; font-size: 0.8rem; border-radius: 11px; font-weight: 700; letter-spacing: 0.3px; cursor: pointer; touch-action: manipulation; animation: fadeUp 0.5s ease 0.85s both; transition: transform 0.15s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
+  .scan-btn-row > .scan-log-btn { flex: 1 1 100%; }
   .scan-btn-row > button:active { transform: scale(0.97); }
-  .scan-cancel-btn { border: 1px solid rgba(248,113,113,0.7); background: linear-gradient(135deg, rgba(239,68,68,0.75), rgba(220,38,38,0.75)); color: #fff; box-shadow: 0 8px 24px rgba(239,68,68,0.4), inset 0 1px 1px rgba(255,255,255,0.2); }
-  .scan-edit-btn { border: 1px solid rgba(125,211,252,0.3); background: linear-gradient(135deg, rgba(30,64,110,0.75), rgba(12,38,76,0.75)); color: #e0f2fe; box-shadow: 0 6px 18px rgba(0,0,0,0.3), inset 0 1px 1px rgba(255,255,255,0.12); }
-  #scanEditModal { z-index: 2600; }
+  .scan-cancel-btn { border: 1px solid rgba(248,113,113,0.4); background: rgba(239,68,68,0.16); color: #fecaca; box-shadow: inset 0 1px 1px rgba(255,255,255,0.08); }
+  .scan-edit-btn { border: 1px solid rgba(125,211,252,0.3); background: rgba(56,189,248,0.12); color: #e0f2fe; box-shadow: inset 0 1px 1px rgba(255,255,255,0.1); }
   .ai-chat-overlay { position: fixed; inset: 0; z-index: 2700; background: rgba(4,12,28,0.7); backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); display: none; align-items: center; justify-content: center; padding: 20px; }
   .ai-chat-overlay.show { display: flex; }
   .ai-chat-wrap { width: 100%; max-width: 360px; display: flex; flex-direction: column; gap: 12px; animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; }
@@ -472,7 +472,6 @@
   .ai-chat-form input { flex: 1; margin: 0; min-width: 0; }
   .ai-chat-form button { border: 0; border-radius: 12px; padding: 0 16px; font-weight: 800; color: #fff; background: linear-gradient(135deg,#0ea5e9,#2563eb); cursor: pointer; }
   .ai-chat-cancel { width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; }
-  #scanEditModal .glass-modal-card { animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
   .cancel-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px; }
   .cancel-modal-overlay.show { display: flex; }
   .cancel-modal-card { background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 24px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); animation: popIn 0.3s ease; }
@@ -539,11 +538,11 @@
      background: linear-gradient(180deg, rgba(15, 23, 42, 0.97), rgba(8, 47, 73, 0.97));
      border: 1px solid rgba(148, 197, 253, 0.28);
      border-radius: 26px;
-     padding: 22px 18px;
+     padding: 14px 16px;
      box-shadow: 0 24px 70px rgba(0,0,0,0.6), 0 0 50px rgba(56, 189, 248, 0.18);
      overflow: hidden;
    animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite;
-     max-height: 88vh; overflow-y: auto;
+     overflow: hidden;
  }
  @keyframes scanWindowPop {
      from { opacity: 0; transform: scale(0.82) translateY(24px); }
@@ -578,7 +577,7 @@
 .scan-phase {
     position: relative; z-index: 2;
     display: none; flex-direction: column; align-items: center; justify-content: center;
-    width: 100%; gap: 16px;
+    width: 100%; gap: 10px;
 }
 .scan-phase.active { display: flex; animation: scanPhaseFadeIn 0.45s cubic-bezier(0.34, 1.56, 0.64, 1); }
 @keyframes scanPhaseFadeIn {
@@ -670,8 +669,8 @@
      100% { opacity: 1; transform: scale(1) rotate(0deg); }
  }
  .scan-result-img {
-     width: 118px; height: 118px; object-fit: cover; border-radius: 22px;
-     border: 3px solid rgba(125, 211, 252, 0.5);
+     width: 76px; height: 76px; object-fit: cover; border-radius: 18px;
+     border: 2px solid rgba(125, 211, 252, 0.5);
      display: block;
      animation: foodGlow 2.4s ease-in-out infinite;
      background: rgba(15, 23, 42, 0.5);
@@ -686,15 +685,15 @@
      animation: fadeUp 0.5s ease 0.2s both;
  }
   @keyframes fadeUp { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
- .scan-macro-list { width: 100%; display: flex; flex-direction: column; gap: 12px; }
+ .scan-macro-list { width: 100%; display: flex; flex-direction: column; gap: 7px; }
  .scan-macro-item { width: 100%; animation: fadeUp 0.5s ease both; }
  .scan-macro-item[data-macro="cal"] { animation-delay: 0.15s; }
  .scan-macro-item[data-macro="pro"] { animation-delay: 0.3s; }
  .scan-macro-item[data-macro="carb"] { animation-delay: 0.45s; }
  .scan-macro-item[data-macro="fat"] { animation-delay: 0.6s; }
- .scan-macro-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 5px; padding-left: 2px; }
+ .scan-macro-top { display: flex; align-items: baseline; gap: 8px; margin-bottom: 3px; padding-left: 2px; }
  .scan-macro-value {
-     font-size: 1.05rem; font-weight: 800; color: #f0f9ff;
+     font-size: 0.92rem; font-weight: 800; color: #f0f9ff;
      min-width: 42px; letter-spacing: 0.3px; text-shadow: 0 2px 8px rgba(0,0,0,0.4);
      font-variant-numeric: tabular-nums;
  }
@@ -703,7 +702,7 @@
      color: #bae6fd; opacity: 0.8;
  }
  .scan-macro-bar {
-     position: relative; width: 100%; height: 11px; background: rgba(15, 23, 42, 0.7);
+     position: relative; width: 100%; height: 7px; background: rgba(15, 23, 42, 0.7);
      border: 1px solid rgba(148, 197, 253, 0.25); border-radius: 8px; overflow: hidden;
      box-shadow: inset 0 1px 2px rgba(0,0,0,0.4);
  }
@@ -718,10 +717,10 @@
   .scan-macro-fill-carb { background-image: linear-gradient(90deg, #a16207, #facc15, #fde68a, #facc15, #a16207); box-shadow: 0 0 10px rgba(250, 204, 21, 0.5); }
  .scan-macro-fill-fat { background-image: linear-gradient(90deg, #be185d, #f472b6, #f9a8d4, #f472b6, #be185d); box-shadow: 0 0 10px rgba(244, 114, 182, 0.5); }
  .scan-log-btn {
-     margin-top: 6px; width: 100%; padding: 13px;
-     border-radius: 14px; border: 1px solid rgba(74, 222, 128, 0.5);
+     margin-top: 6px; width: 100%; padding: 10px;
+     border-radius: 11px; border: 1px solid rgba(74, 222, 128, 0.5);
      background: linear-gradient(135deg, rgba(34, 197, 94, 0.35), rgba(16, 185, 129, 0.35));
-     color: #f0fdf4; font-weight: 800; font-size: 0.98rem; letter-spacing: 0.5px;
+     color: #f0fdf4; font-weight: 700; font-size: 0.86rem; letter-spacing: 0.4px;
      cursor: pointer; touch-action: manipulation;
      box-shadow: 0 8px 24px rgba(34, 197, 94, 0.35), inset 0 1px 1px rgba(255,255,255,0.15);
      backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
@@ -1733,7 +1732,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
     </div>
    </div>
-   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-edit-btn" id="scanAiBtn" onclick="openAiChat()">Edit this food? Use AI</button><button class="scan-edit-btn" id="scanEditBtn" onclick="openScanEdit()">Edit my food</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button></div>
+   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-edit-btn" id="scanAiBtn" onclick="openAiChat()">Edit this food? Use AI</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button></div>
   </div>
   <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
    <div class="scan-success-wrap">
@@ -1750,26 +1749,6 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
 id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><input type="text" id="foodName"><input type="number" id="foodCal"><input type="number" id="foodPro"><input type="number" id="foodCarb"><input type="number" id="foodFat"></div></div><div class="cal-row" id="calRow"><div class="card cal-card" id="calCard"></div><div class="card week-card" id="weekCard"></div></div><div class="cal-dots" id="calDots"><i class="on"></i><i></i></div><div class="card"><div class="log-head"><strong id="logTitle">Today's Log</strong><div class="log-range"><button class="log-range-btn" onclick="toggleRangeMenu(event)" aria-label="View full log">📋 ▾</button><div class="range-menu" id="rangeMenu"><button onclick="setLogRange('today')">Today</button><button onclick="setLogRange('week')">This week</button><button onclick="setLogRange('month')">This month</button><button onclick="setLogRange('6m')">Last 6 months</button><button onclick="setLogRange('year')">Last year</button></div></div></div><div id="logList" style="margin-top: 8px;"></div></div></div>
 <div id="imgViewer" class="img-viewer" onclick="this.classList.remove('show')"><img id="imgViewerImg" alt="Meal photo"></div>
 <div id="notFoodModal" class="cancel-modal-overlay" onclick="if(event.target===this)this.classList.remove('show')"><div class="glass-modal-card not-food-card"><div class="clown-face">🤡</div><h3>Haha you are funny, I like you</h3><div class="cancel-modal-btns"><button class="cancel-no-btn" onclick="document.getElementById('notFoodModal').classList.remove('show')">OK</button></div></div></div>
-<div id="scanEditModal" class="cancel-modal-overlay">
- <div class="glass-modal-card">
-  <h3>Edit my food</h3>
-  <p class="api-key-sub">Fix anything the AI got wrong.</p>
-  <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">NAME</label>
-  <input type="text" id="seName" placeholder="Name">
-  <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">CALORIES</label>
-  <input type="number" id="seCal" inputmode="numeric" placeholder="Calories">
-  <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">PROTEIN (g)</label>
-  <input type="number" id="sePro" inputmode="numeric" placeholder="Protein (G)">
-  <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">CARBS (g)</label>
-  <input type="number" id="seCarb" inputmode="numeric" placeholder="Carbs (G)">
-  <label style="display:block;text-align:left;font-size:0.72rem;font-weight:700;letter-spacing:0.6px;color:#bae6fd;margin-bottom:2px;">FAT (g)</label>
-  <input type="number" id="seFat" inputmode="numeric" placeholder="Fat (G)">
-  <div class="cancel-modal-btns" style="margin-top:16px;">
-   <button class="save-key-btn" onclick="saveScanEdit()">Save changes</button>
-   <button class="cancel-key-btn" onclick="document.getElementById('scanEditModal').classList.remove('show')">Cancel</button>
-  </div>
- </div>
-</div>
 <div id="aiChatModal" class="ai-chat-overlay" onclick="if(event.target===this)closeAiChat()">
  <div class="ai-chat-wrap">
   <div class="ai-chat-window">
@@ -2113,7 +2092,7 @@ function onScanOverlayClick(e) {
 function showScanOverlay() {
     const overlay = document.getElementById('scanOverlay');
     scanOverlayMode = 'scan';
-    document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = document.getElementById('scanAiBtn').style.display = '';
+    document.getElementById('scanCancelBtn').style.display = document.getElementById('scanAiBtn').style.display = '';
     const logBtnReset = document.querySelector('.scan-log-btn');
     if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
     const detailImgReset = document.getElementById('scanResultImg');
@@ -2167,25 +2146,6 @@ function showScanResults(data) {
       }, 180 + i * 140);
      });
     }, 900);
-}
-function openScanEdit() {
-  const d = currentScanData; if (!d) return;
-  document.getElementById('seName').value = d.name || '';
-  ['cal','pro','carb','fat'].forEach(k => document.getElementById('se' + k[0].toUpperCase() + k.slice(1)).value = d[k] || 0);
-  document.getElementById('scanEditModal').classList.add('show');
-}
-function saveScanEdit() {
-  const n = id => Math.max(0, parseInt(document.getElementById(id).value) || 0);
-  const d = currentScanData = { name: document.getElementById('seName').value.trim() || 'Scanned Meal', cal: n('seCal'), pro: n('sePro'), carb: n('seCarb'), fat: n('seFat') };
-  document.getElementById('foodName').value = d.name;
-  ['cal','pro','carb','fat'].forEach(k => {
-    document.getElementById('food' + k[0].toUpperCase() + k.slice(1)).value = d[k];
-    const item = document.querySelector('.scan-macro-item[data-macro="' + k + '"]');
-    item.querySelector('.scan-macro-fill').style.width = macroPct(k, d) + '%';
-    animateNumber(item.querySelector('.scan-macro-value'), d[k], 600, '');
-  });
-  document.getElementById('scanResultName').textContent = d.name;
-  document.getElementById('scanEditModal').classList.remove('show');
 }
 // ---- "Edit this food? Use AI" chat (local stub; swap lookupFood() for Puter AI later) ----
 // Haiku 5.5 + web search finds the nutrition. User text is untrusted data; non-food -> null.
@@ -2490,7 +2450,7 @@ else { imgEl.style.display = 'none'; }
 document.getElementById('scanResultName').textContent = meal.name || 'Meal';
 const logBtn = document.querySelector('.scan-log-btn');
 if (logBtn) logBtn.textContent = '✓ Done';
-document.getElementById('scanCancelBtn').style.display = document.getElementById('scanEditBtn').style.display = document.getElementById('scanAiBtn').style.display = 'none';
+document.getElementById('scanCancelBtn').style.display = document.getElementById('scanAiBtn').style.display = 'none';
 document.querySelectorAll('.scan-macro-item').forEach(row => {
  row.querySelector('.scan-macro-fill').style.width = '0%';
  row.querySelector('.scan-macro-value').textContent = '0';
