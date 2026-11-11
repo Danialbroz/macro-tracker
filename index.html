@@ -491,6 +491,7 @@
   .ai-chat-form input { flex: 1; margin: 0; min-width: 0; }
   .ai-chat-form button { border: 0; border-radius: 12px; padding: 0 16px; font-weight: 800; color: #fff; background: linear-gradient(135deg,#0ea5e9,#2563eb); cursor: pointer; }
   .ai-chat-cancel { width: 100%; padding: 12px; border-radius: 14px; font-weight: 800; cursor: pointer; }
+  #editFoodModal, #deleteFoodModal { z-index: 2600; } /* above the calendar day popup */
   .cancel-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 2000; display: none; align-items: center; justify-content: center; backdrop-filter: blur(4px); padding: 16px; }
   .cancel-modal-overlay.show { display: flex; }
   .cancel-modal-card { background: rgba(30, 41, 59, 0.95); border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; padding: 24px; width: 100%; max-width: 340px; text-align: center; box-shadow: 0 20px 40px rgba(0,0,0,0.6); animation: popIn 0.3s ease; }
@@ -1752,7 +1753,7 @@ id="obGoalWeight" placeholder="e.g. 65" inputmode="numeric"></div><div style="di
      <div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-fat"></div></div>
     </div>
    </div>
-   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button><button class="scan-edit-btn" id="scanAiBtn" onclick="openAiChat()">Edit this food? Use AI</button></div>
+   <div class="scan-btn-row"><button class="scan-log-btn" onclick="confirmScanLog()">✓ Log Meal</button><button class="scan-cancel-btn" id="scanCancelBtn" onclick="hideScanOverlay()">Cancel</button><button class="scan-edit-btn" id="scanAiBtn" onclick="openAiChat()">Edit this food? Use AI</button><button class="scan-edit-btn" id="scanEditMyBtn" style="display:none;flex:1 1 100%" onclick="detailEdit()">Edit my food</button><button class="scan-cancel-btn" id="scanDelBtn" style="display:none;flex:1 1 100%" onclick="detailDelete()">Delete</button></div>
   </div>
   <div class="scan-phase scan-phase-success" id="scanPhaseSuccess">
    <div class="scan-success-wrap">
@@ -1792,7 +1793,11 @@ id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><
  let lastScanThumb = null;
  let scanProgressTimer = null;
  let currentScanData = null;
- let editingFoodId = null;
+ let editingFoodId = null, editingKey, deletingKey, detailRef = {};
+const dayOf = key => JSON.parse(localStorage.getItem('macro_logs') || '{}')[key || todayKey()] || [];
+function detailEdit() { const r = detailRef; hideScanOverlay(); openEditFood(r.id, r.key); }
+function detailDelete() { const r = detailRef; hideScanOverlay(); askDeleteFood(r.id, r.key); }
+function refreshDayViews(key) { if (!key) return; renderCalendar(); if (document.getElementById('dayLogModal').classList.contains('show')) document.getElementById('dayLogBody').innerHTML = mealsHtml(key); }
  let deletingFoodId = null;
  let scanOverlayMode = 'scan';
  // Local calendar day (en-CA gives YYYY-MM-DD). Read fresh each call so the log rolls over at local midnight.
@@ -2115,6 +2120,7 @@ function showScanOverlay() {
     const overlay = document.getElementById('scanOverlay');
     scanOverlayMode = 'scan';
     document.getElementById('scanCancelBtn').style.display = document.getElementById('scanAiBtn').style.display = '';
+    document.getElementById('scanEditMyBtn').style.display = document.getElementById('scanDelBtn').style.display = 'none';
     const logBtnReset = document.querySelector('.scan-log-btn');
     if (logBtnReset) logBtnReset.textContent = '✓ Log Meal';
     const detailImgReset = document.getElementById('scanResultImg');
@@ -2247,6 +2253,8 @@ function logAiFood(food) {
   confirmScanLog();
 }
 function hideScanOverlay() {
+    lastScanThumb = null; // a cancelled/failed scan must not leak its photo onto the next logged meal
+    document.getElementById('scanEditMyBtn').style.display = document.getElementById('scanDelBtn').style.display = 'none';
     clearInterval(scanProgressTimer);
     document.getElementById('scanOverlay').classList.remove('show');
     scanOverlayMode = 'scan';
@@ -2508,7 +2516,7 @@ document.getElementById('calRow')?.addEventListener('scroll', e => {
   document.addEventListener('touchstart', e => { if (!e.target.closest('.food-swipe')) close(); }, { passive: true });
 })();
 function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); return data[todayKey()] || []; }
- function saveLogs(logs) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[todayKey()] = logs; // Storage full: drop photos from the oldest days first until it fits.
+ function saveLogs(logs, key) { const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'); data[key || todayKey()] = logs; // Storage full: drop photos from the oldest days first until it fits.
   for (const k of [null, ...Object.keys(data).sort()]) {
     if (k) (data[k] || []).forEach(x => delete x.img);
     try { localStorage.setItem('macro_logs', JSON.stringify(data)); break; } catch (e) {}
@@ -2532,6 +2540,7 @@ function getLogs() { const data = JSON.parse(localStorage.getItem('macro_logs') 
  }
  document.addEventListener('click', closeAllFoodMenus);
  function openFoodDetail(id, key) {
+detailRef = { id, key };
 closeAllFoodMenus();
 const meal = (key ? JSON.parse(localStorage.getItem('macro_logs') || '{}')[key] || [] : getLogs()).find(x => x.id === id);
 if (!meal) return;
@@ -2547,6 +2556,7 @@ document.getElementById('scanResultName').textContent = meal.name || 'Meal';
 const logBtn = document.querySelector('.scan-log-btn');
 if (logBtn) logBtn.textContent = '✓ Done';
 document.getElementById('scanCancelBtn').style.display = document.getElementById('scanAiBtn').style.display = 'none';
+document.getElementById('scanEditMyBtn').style.display = document.getElementById('scanDelBtn').style.display = '';
 document.querySelectorAll('.scan-macro-item').forEach(row => {
  row.querySelector('.scan-macro-fill').style.width = '0%';
  row.querySelector('.scan-macro-value').textContent = '0';
@@ -2567,11 +2577,11 @@ macros.forEach((m, i) => {
      }, 180 + i * 140);
     });
 }
-function openEditFood(id) {
+function openEditFood(id, key) {
     closeAllFoodMenus();
-    const item = getLogs().find(x => x.id === id);
+    const item = dayOf(key).find(x => x.id === id);
     if (!item) return;
-    editingFoodId = id;
+    editingFoodId = id; editingKey = key;
     document.getElementById('editFoodCal').value = item.cal || 0;
     document.getElementById('editFoodPro').value = item.pro || 0;
     document.getElementById('editFoodFat').value = item.fat || 0;
@@ -2582,13 +2592,14 @@ function closeEditFood() {
     editingFoodId = null;
 }
 function saveEditFood() {
-    const logs = getLogs();
+    const logs = dayOf(editingKey);
     const item = logs.find(x => x.id === editingFoodId);
     if (!item) { closeEditFood(); return; }
     item.cal = parseInt(document.getElementById('editFoodCal').value) || 0;
     item.pro = parseInt(document.getElementById('editFoodPro').value) || 0;
     item.fat = parseInt(document.getElementById('editFoodFat').value) || 0;
-    saveLogs(logs);
+    saveLogs(logs, editingKey);
+    refreshDayViews(editingKey);
     document.getElementById('editFoodModal').classList.remove('show');
     editingFoodId = null;
     showEditSuccess();
@@ -2601,9 +2612,9 @@ function showEditSuccess() {
     editWinkTimer = setTimeout(playWinkSound, 1050);
     setTimeout(() => { ov.classList.remove('show'); }, 2400);
 }
-function askDeleteFood(id) {
+function askDeleteFood(id, key) {
     closeAllFoodMenus();
-    deletingFoodId = id;
+    deletingFoodId = id; deletingKey = key;
     document.getElementById('deleteFoodModal').classList.add('show');
 }
 function cancelDeleteFood() {
@@ -2635,7 +2646,7 @@ function playTrashSound() {
     } catch (e) {}
 }
 async function confirmDeleteFood() {
-    const id = deletingFoodId;
+    const id = deletingFoodId, key = deletingKey;
     document.getElementById('deleteFoodModal').classList.remove('show');
     deletingFoodId = null;
     const card = document.querySelector(`.food-card[data-id="${id}"]`);
@@ -2678,7 +2689,8 @@ async function confirmDeleteFood() {
         await trash.animate([{ transform: 'translateY(0)', opacity: 1 }, { transform: 'translateY(120px)', opacity: 0 }], { ...o, duration: 340, easing: 'ease-in' }).finished;
         trash.remove();
     }
-    saveLogs(getLogs().filter(item => item.id !== id));
+    saveLogs(dayOf(key).filter(item => item.id !== id), key);
+    refreshDayViews(key);
 }
 function gaugePoint(radius, deg) {
     const rad = deg * Math.PI / 180;
