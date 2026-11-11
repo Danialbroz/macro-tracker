@@ -444,6 +444,7 @@
   .glass-modal-card.not-food-card { animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite; box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); }
   .clown-face { font-size: 4rem; line-height: 1; margin-bottom: 8px; display: inline-block; animation: clownBounce 0.8s cubic-bezier(0.34,1.56,0.64,1) 0.15s both; }
   @keyframes clownBounce { 0% { transform: translateY(-120px) scale(.3); opacity: 0; } 55% { transform: translateY(8px) scale(1.15, .9); opacity: 1; } 75% { transform: translateY(-14px) scale(.95, 1.05); } 100% { transform: translateY(0) scale(1); opacity: 1; } }
+  .scan-drop-hot { outline: 2px dashed #7dd3fc; outline-offset: -6px; background: rgba(56,189,248,0.12); }
   .scan-btn-row { width: 100%; display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
   .scan-btn-row > button { flex: 1 1 0; margin-top: 0; padding: 9px 10px; font-size: 0.8rem; border-radius: 11px; font-weight: 700; letter-spacing: 0.3px; cursor: pointer; touch-action: manipulation; animation: fadeUp 0.5s ease 0.85s both; transition: transform 0.15s ease; backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px); }
   .scan-btn-row > .scan-log-btn { flex: 1 1 100%; }
@@ -2244,6 +2245,17 @@ function confirmScanLog() {
       resetDinoScene();
      }, 300);
     }, 2200);
+}
+// Desktop only (mouse + hover): drag-drop or paste a food image into the scanner.
+if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  const zone = document.querySelector('.scan-btn').parentElement;
+  const canScan = () => document.getElementById('mainApp').style.display !== 'none' && !document.getElementById('scanOverlay').classList.contains('show') && !document.querySelector('.cancel-modal-overlay.show, .ai-chat-overlay.show');
+  const scanFile = f => { if (f && /^image\//.test(f.type) && canScan()) analyzePhoto({ target: { files: [f], value: '' } }); };
+  const hasFiles = e => e.dataTransfer && [...e.dataTransfer.types].includes('Files');
+  window.addEventListener('dragover', e => { if (hasFiles(e)) { e.preventDefault(); zone.classList.toggle('scan-drop-hot', zone.contains(e.target)); } });
+  window.addEventListener('dragleave', e => { if (!e.relatedTarget) zone.classList.remove('scan-drop-hot'); });
+  window.addEventListener('drop', e => { if (!hasFiles(e)) return; e.preventDefault(); zone.classList.remove('scan-drop-hot'); if (zone.contains(e.target)) scanFile(e.dataTransfer.files[0]); });
+  window.addEventListener('paste', e => { const f = [...(e.clipboardData?.files || [])].find(f => /^image\//.test(f.type)); if (f) { e.preventDefault(); scanFile(f); } });
 }
 async function analyzePhoto(event) {
     const file = event.target.files[0]; if (!file) return;
