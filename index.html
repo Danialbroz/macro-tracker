@@ -1782,7 +1782,7 @@ id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><
   <button class="scan-cancel-btn ai-chat-cancel" onclick="closeAiChat()">Cancel</button>
  </div>
 </div>
-<div id="puterAccountModal"class="cancel-modal-overlay" onclick="if(event.target===this)this.classList.remove('show')"><div class="glass-modal-card puter-card acct-card"><h3>Puter Account</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 6px;">Account: <b id="puterAcctName">…</b></p><p style="color:#bae6fd;font-size:.9rem;margin:0 0 6px;">Credits used: <b id="puterAcctCredit">…</b></p><div style="height:10px;border-radius:6px;background:rgba(186,230,253,.2);overflow:hidden;margin:0 0 16px;"><div id="puterAcctBar" style="height:100%;width:0;background:linear-gradient(90deg,#38bdf8,#7dd3fc);transition:width .6s;"></div></div><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="document.getElementById('puterAccountModal').classList.remove('show');askSwitchPuter()">Switch Putter Account</button></div></div></div>
+<div id="puterAccountModal"class="cancel-modal-overlay" onclick="if(event.target===this)this.classList.remove('show')"><div class="glass-modal-card puter-card acct-card"><h3>Puter Account</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 6px;">Account: <b id="puterAcctName">…</b></p><p style="color:#bae6fd;font-size:.9rem;margin:0 0 6px;">Credits used: <b id="puterAcctCredit">…</b></p><div style="height:10px;border-radius:6px;background:rgba(186,230,253,.2);overflow:hidden;margin:0 0 16px;"><div id="puterAcctBar" style="height:100%;width:0;background:linear-gradient(90deg,#38bdf8,#7dd3fc);transition:width .6s;"></div></div><p id="syncStatus" style="color:#bae6fd;font-size:.8rem;margin:0 0 12px;"></p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="document.getElementById('puterAccountModal').classList.remove('show');askSwitchPuter()">Switch Putter Account</button></div></div></div>
 <div id="puterConfirmModal"class="cancel-modal-overlay" onclick="if(event.target===this)closePuterConfirm()"><div class="glass-modal-card"><h3>Switch Puter account?</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 16px;">You will be signed out and asked to sign in again.</p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doSwitchPuter()">Yes</button><button class="cancel-no-btn" onclick="closePuterConfirm()">No</button></div></div></div>
 <div id="reuseModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeReuse()"><div class="glass-modal-card day-log-card"><h3>Log a Previous Meal</h3><div class="reuse-sub">Tap a meal to review it, then log it. No scan needed.</div><input type="text" id="reuseSearch" class="reuse-search" placeholder="Search your meals…" oninput="renderReuse()" autocomplete="off"><div id="reuseBody"></div><div class="reuse-nav"><button id="reusePrev" onclick="reuseGo(-1)" aria-label="Previous meals">‹</button><span id="reusePageNum"></span><button id="reuseNext" onclick="reuseGo(1)" aria-label="Next meals">›</button></div><div class="reuse-dots" id="reuseDots"></div><div class="cancel-modal-btns" style="margin-top:8px;"><button class="cancel-key-btn" onclick="closeReuse()">Cancel</button></div></div></div>
 <div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
@@ -2326,7 +2326,7 @@ function closePuterConfirm() { document.getElementById('puterConfirmModal').clas
 async function doSwitchPuter() {
   closePuterConfirm();
   try { await puter.auth.signOut(); } catch (e) { console.error(e); alert('Could not sign out of Puter.'); return; }
-  try { await puter.auth.signIn(); } catch (e) { alert("Sign-in cancelled. You'll be asked again at your next scan."); }
+  try { await puter.auth.signIn(); window.syncNow && syncNow(); } catch (e) { alert("Sign-in cancelled. You'll be asked again at your next scan."); }
 }
 function toggleRangeMenu(e) { e.stopPropagation(); closeAllFoodMenus(); document.getElementById('rangeMenu').classList.toggle('show'); }
 document.addEventListener('click', () => document.getElementById('rangeMenu')?.classList.remove('show'));
@@ -2841,43 +2841,81 @@ function applyAppIcons() {
      });
  })();
 
-// Cloud sync via Puter KV. Whole-snapshot, newest-write-wins (shortcut: concurrent edits on two devices lose the older one; upgrade to per-day merge with tombstones).
+// Cloud sync via Puter KV. Per-meal merge (union by id, newest _t wins, tombstones for deletes) so two devices never overwrite each other.
+// shortcut: goals/profile are last-write-wins as a pair; meal photos stay local (KV values are size-limited).
 (function () {
   const KEYS = ['macro_logs', 'user_goals', 'user_profile'], CLOUD = 'macro_sync', rawSet = Storage.prototype.setItem;
-  const ts = () => +localStorage.getItem('sync_ts') || 0;
-  let timer, started = false;
-  const slim = s => { const d = JSON.parse(s || '{}'); for (const k in d) d[k].forEach(x => delete x.img); return d; }; // photos stay local: KV values are size-limited
-  async function push() {
-    try { await puter.kv.set(CLOUD, JSON.stringify({ ts: ts(), logs: slim(localStorage.getItem('macro_logs')), goals: localStorage.getItem('user_goals'), profile: localStorage.getItem('user_profile') })); }
-    catch (e) { console.error('sync push failed', e); }
+  const J = (k, d) => { try { return JSON.parse(localStorage.getItem(k)) ?? d; } catch (e) { return d; } };
+  const S = (k, v) => rawSet.call(localStorage, k, typeof v === 'string' ? v : JSON.stringify(v));
+  const core = m => { const { img, _t, ...r } = m; return JSON.stringify(r); };
+  const slim = d => { const o = {}; for (const k in d) o[k] = d[k].map(({ img, ...m }) => m); return o; };
+  let timer, busy = false, again = false, started = false;
+  const badge = document.createElement('div');
+  badge.style.cssText = 'position:fixed;left:10px;bottom:10px;z-index:9999;display:none;padding:6px 10px;border-radius:10px;font:700 .75rem sans-serif;color:#fff;background:#b91c1c;cursor:pointer';
+  badge.textContent = '⚠ Sync failed — tap to retry'; badge.onclick = () => sync(); document.body.appendChild(badge);
+  function status(s) {
+    const el = document.getElementById('syncStatus'), t = { ok: 'Synced ✓', syncing: 'Syncing…', fail: 'Sync failed', off: 'Not signed in' }[s];
+    if (el) el.textContent = t + (s === 'ok' ? ' ' + new Date().toLocaleTimeString() : ''); badge.style.display = s === 'fail' ? 'block' : 'none';
   }
   Storage.prototype.setItem = function (k, v) {
+    if (this === localStorage && KEYS.includes(k)) {
+      const now = Date.now();
+      if (k === 'macro_logs') { // stamp changed meals, record deletions
+        const old = {}; Object.values(J('macro_logs', {})).flat().forEach(m => old[m.id] = m);
+        const nw = JSON.parse(v), seen = new Set(), del = J('sync_del', {});
+        for (const d in nw) nw[d].forEach(m => { const o = old[m.id]; seen.add(String(m.id)); m._t = o && core(o) === core(m) ? o._t : now; delete del[m.id]; });
+        Object.keys(old).forEach(id => { if (!seen.has(id)) del[id] = now; });
+        S('sync_del', del); v = JSON.stringify(nw);
+      } else S('sync_g', now);
+      rawSet.call(this, k, v); clearTimeout(timer); timer = setTimeout(sync, 300); return;
+    }
     rawSet.call(this, k, v);
-    if (this === localStorage && KEYS.includes(k)) { rawSet.call(this, 'sync_ts', Date.now()); clearTimeout(timer); timer = setTimeout(() => puter.auth.isSignedIn() && push(), 1500); }
   };
-  async function sync() {
-    if (started || !puter.auth.isSignedIn()) return; started = true;
-    try {
-      const raw = await puter.kv.get(CLOUD), r = raw ? JSON.parse(raw) : null;
-      if (!r || ts() > r.ts) return push();
-      if (r.ts === ts()) return;
-      const local = JSON.parse(localStorage.getItem('macro_logs') || '{}'), imgs = {};
-      Object.values(local).flat().forEach(x => x.img && (imgs[x.id] = x.img));
-      for (const k in r.logs) r.logs[k].forEach(x => imgs[x.id] && (x.img = imgs[x.id]));
-      rawSet.call(localStorage, 'macro_logs', JSON.stringify(r.logs));
-      if (r.goals) rawSet.call(localStorage, 'user_goals', r.goals);
-      if (r.profile) rawSet.call(localStorage, 'user_profile', r.profile);
-      rawSet.call(localStorage, 'sync_ts', r.ts);
-      location.reload(); // goals/profile are read at load
-    } catch (e) { console.error('sync failed', e); }
+  function mergeLogs(a, b, del) { // a = local, b = remote; local wins ties
+    const by = {}, img = {};
+    Object.values(a).flat().forEach(m => m.img && (img[m.id] = m.img));
+    for (const src of [b, a]) for (const d in src) src[d].forEach(m => { const c = by[m.id]; if (!del[m.id] && (!c || (m._t || 0) >= (c.m._t || 0))) by[m.id] = { d, m }; });
+    const out = {};
+    Object.values(by).forEach(({ d, m }) => { if (!m.img && img[m.id]) m.img = img[m.id]; (out[d] ??= []).push(m); });
+    for (const d in out) out[d].sort((x, y) => x.id - y.id);
+    return out;
   }
+  async function sync() {
+    if (!puter.auth.isSignedIn()) return status('off');
+    if (busy) { again = true; return; }
+    busy = true; status('syncing');
+    try {
+      const u = (await puter.auth.getUser()).username, prev = localStorage.getItem('sync_user');
+      if (prev && prev !== u) ['macro_logs', 'user_goals', 'user_profile', 'sync_del', 'sync_g'].forEach(k => localStorage.removeItem(k)); // local data belongs to the previous account
+      S('sync_user', u);
+      const raw = await puter.kv.get(CLOUD), r = raw ? JSON.parse(raw) : {}, now = Date.now(), cut = now - 60 * 864e5;
+      const del = { ...r.del, ...J('sync_del', {}) }; for (const id in del) if (del[id] < cut) delete del[id];
+      const local = J('macro_logs', {}), logs = mergeLogs(local, r.logs || {}, del);
+      let goals = localStorage.getItem('user_goals'), profile = localStorage.getItem('user_profile'), gts = +localStorage.getItem('sync_g') || (goals ? now : 0), reload = false;
+      if ((r.gts || 0) > gts || (!goals && r.goals)) {
+        reload = goals !== (r.goals ?? null) || profile !== (r.profile ?? null);
+        goals = r.goals ?? goals; profile = r.profile ?? profile; gts = r.gts || gts;
+        if (goals != null) S('user_goals', goals); if (profile != null) S('user_profile', profile);
+      }
+      S('sync_g', gts); S('macro_logs', logs); S('sync_del', del);
+      const out = JSON.stringify({ logs: slim(logs), del, goals, profile, gts });
+      if (out !== raw) await puter.kv.set(CLOUD, out);
+      if (reload) location.reload(); else if (JSON.stringify(logs) !== JSON.stringify(local)) render();
+      status('ok');
+    } catch (e) { console.error('sync failed', e); status('fail'); }
+    busy = false; if (again) { again = false; sync(); }
+  }
+  window.syncNow = sync;
   sync();
+  document.addEventListener('visibilitychange', () => sync()); // pull on return, push on leave (best effort)
+  addEventListener('focus', () => sync());
+  setInterval(() => document.visibilityState === 'visible' && sync(), 60000);
   // Sign-in popup needs a user gesture: ask on first tap if not signed in yet.
   document.addEventListener('click', async () => {
-    if (started || puter.auth.isSignedIn()) return sync();
-    started = true; // one prompt per page load
-    try { await puter.auth.signIn(); started = false; sync(); } catch (e) {}
-  }, { once: false });
+    if (puter.auth.isSignedIn()) return;
+    if (started) return; started = true; // one prompt per page load
+    try { await puter.auth.signIn(); sync(); } catch (e) {}
+  });
 })();
 </script>
 </body>
