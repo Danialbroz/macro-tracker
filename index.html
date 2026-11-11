@@ -259,7 +259,17 @@
   .reuse-btn { margin-top: 0; margin-bottom: 10px; padding: 11px; font-size: .9rem; color: #bae6fd; background: rgba(13,25,48,0.35); border-style: dashed; }
   .reuse-sub { text-align: center; font-size: .8rem; color: #94a3b8; margin: -4px 0 10px; }
   .reuse-search { margin: 0 0 10px; background: rgba(15,23,42,0.6); border: 1px solid rgba(186,230,253,0.25); border-radius: 12px; color: #f0f9ff; }
-  #reuseBody { overflow-y: auto; }
+  #reuseBody { overflow: hidden; touch-action: pan-y; }
+  #reuseBody.flip { animation: reuseFlip .3s ease; }
+  @keyframes reuseFlip { from { opacity: 0; transform: translateX(14px); } to { opacity: 1; transform: none; } }
+  .reuse-nav { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 4px; color: #94a3b8; font-size: .8rem; font-weight: 600; }
+  .reuse-nav button { width: 38px; height: 38px; margin: 0; padding: 0; border-radius: 12px; border: 1px solid rgba(186,230,253,0.3); background: rgba(255,255,255,0.08); color: #e0f2fe; font-size: 1.3rem; cursor: pointer; }
+  .reuse-nav button:hover:not(:disabled) { background: rgba(56,189,248,0.2); }
+  .reuse-nav button:disabled { opacity: .3; cursor: default; }
+  .reuse-dots { display: none; justify-content: center; gap: 6px; margin-top: 10px; }
+  .reuse-dots i { width: 6px; height: 6px; border-radius: 50%; background: rgba(186,230,253,0.3); transition: all .3s; }
+  .reuse-dots i.on { background: #7dd3fc; box-shadow: 0 0 8px rgba(56,189,248,0.8); transform: scale(1.3); }
+  @media (hover: none) and (pointer: coarse) { .reuse-nav { display: none; } .reuse-dots { display: flex; } }
   #reuseBody .food-card { margin-bottom: 8px; }
   #dayLogBody { overflow-y: auto; }
   .dl-day { margin-bottom: 12px; }
@@ -1769,7 +1779,7 @@ id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><
  </div>
 </div>
 <div id="puterConfirmModal"class="cancel-modal-overlay" onclick="if(event.target===this)closePuterConfirm()"><div class="glass-modal-card"><h3>Switch Puter account?</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 16px;">You will be signed out and asked to sign in again.</p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doSwitchPuter()">Yes</button><button class="cancel-no-btn" onclick="closePuterConfirm()">No</button></div></div></div>
-<div id="reuseModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeReuse()"><div class="glass-modal-card day-log-card"><h3>Log a Previous Meal</h3><div class="reuse-sub">Already tracked with AI. Tap to log again, no scan needed.</div><input type="text" id="reuseSearch" class="reuse-search" placeholder="Search your meals…" oninput="renderReuse()" autocomplete="off"><div id="reuseBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeReuse()">Close</button></div></div></div>
+<div id="reuseModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeReuse()"><div class="glass-modal-card day-log-card"><h3>Log a Previous Meal</h3><div class="reuse-sub">Tap a meal to review it, then log it. No scan needed.</div><input type="text" id="reuseSearch" class="reuse-search" placeholder="Search your meals…" oninput="renderReuse()" autocomplete="off"><div id="reuseBody"></div><div class="reuse-nav"><button id="reusePrev" onclick="reuseGo(-1)" aria-label="Previous meals">‹</button><span id="reusePageNum"></span><button id="reuseNext" onclick="reuseGo(1)" aria-label="Next meals">›</button></div><div class="reuse-dots" id="reuseDots"></div><div class="cancel-modal-btns" style="margin-top:8px;"><button class="cancel-key-btn" onclick="closeReuse()">Cancel</button></div></div></div>
 <div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
 <script>
  let GOAL_CAL = 0;
@@ -2241,7 +2251,7 @@ function hideScanOverlay() {
 }
 function confirmScanLog() {
     if (scanOverlayMode === 'detail') { hideScanOverlay(); return; }
-    playSuccessSound();
+    playSuccessSound(); closeReuse();
     document.getElementById('scanPhaseResult').classList.remove('active');
     document.getElementById('scanPhaseSuccess').classList.add('active');
     setTimeout(() => { try { addEntry(); } catch(e) { console.error('Log failed', e); } }, 400);
@@ -2315,22 +2325,51 @@ function macroPct(k, m) {
   return of > 0 ? Math.min(100, Math.round(v * w / of * 100)) : 0;
 }
 function openImgViewer(src) { document.getElementById('imgViewerImg').src = src; document.getElementById('imgViewer').classList.add('show'); }
-function openReuse() { document.getElementById('reuseSearch').value = ''; renderReuse(); document.getElementById('reuseModal').classList.add('show'); }
+const REUSE_PER_PAGE = 4, REUSE_MAX = 16; let reusePage = 0;
+function openReuse() { document.getElementById('reuseSearch').value = ''; reusePage = 0; renderReuse(); document.getElementById('reuseModal').classList.add('show'); }
 function closeReuse() { document.getElementById('reuseModal').classList.remove('show'); }
-function renderReuse() {
+function renderReuse(keepPage) {
   const q = document.getElementById('reuseSearch').value.trim().toLowerCase(), data = JSON.parse(localStorage.getItem('macro_logs') || '{}'), seen = new Set(), items = [];
   Object.keys(data).sort().reverse().forEach(k => (data[k] || []).slice().reverse().forEach(x => {
     const sig = (x.name || '').toLowerCase() + '|' + x.cal + '|' + x.pro + '|' + x.carb + '|' + x.fat;
-    if (seen.has(sig) || (q && !(x.name || '').toLowerCase().includes(q))) return;
+    if (items.length >= REUSE_MAX || seen.has(sig) || (q && !(x.name || '').toLowerCase().includes(q))) return;
     seen.add(sig); items.push(x);
   }));
   window._reuseItems = items;
-  document.getElementById('reuseBody').innerHTML = items.map((x, i) => `<div class="food-card" style="cursor:pointer" onclick="logReuse(${i})">${x.img ? `<img src="${x.img}" class="food-thumb">` : '<div class="food-thumb placeholder">🥣</div>'}<div class="food-info"><div class="food-name">${escHtml(x.name)}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${x.cal || 0}</span><span class="macro-chip chip-pro">💪 ${x.pro || 0}g</span><span class="macro-chip chip-carb">🌾 ${x.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${x.fat || 0}g</span></div></div></div>`).join('') || '<div class="dl-empty">🥣 No saved meals yet</div>';
+  const pages = Math.max(1, Math.ceil(items.length / REUSE_PER_PAGE)); if (!keepPage) reusePage = 0; reusePage = Math.min(reusePage, pages - 1);
+  const body = document.getElementById('reuseBody');
+  body.innerHTML = items.slice(reusePage * REUSE_PER_PAGE, (reusePage + 1) * REUSE_PER_PAGE).map((x, j) => { const i = reusePage * REUSE_PER_PAGE + j; return `<div class="food-card" style="cursor:pointer" onclick="previewReuse(${i})">${x.img ? `<img src="${x.img}" class="food-thumb">` : '<div class="food-thumb placeholder">🥣</div>'}<div class="food-info"><div class="food-name">${escHtml(x.name)}</div><div class="food-macros"><span class="macro-chip chip-cal">🔥 ${x.cal || 0}</span><span class="macro-chip chip-pro">💪 ${x.pro || 0}g</span><span class="macro-chip chip-carb">🌾 ${x.carb || 0}g</span><span class="macro-chip chip-fat">🧈 ${x.fat || 0}g</span></div></div></div>`; }).join('') || '<div class="dl-empty">🥣 No saved meals yet</div>';
+  body.classList.remove('flip'); void body.offsetWidth; body.classList.add('flip');
+  document.getElementById('reuseDots').innerHTML = Array.from({ length: pages }, (_, i) => `<i class="${i === reusePage ? 'on' : ''}"></i>`).join('');
+  document.getElementById('reusePageNum').textContent = (reusePage + 1) + ' / ' + pages;
+  document.getElementById('reusePrev').disabled = reusePage === 0; document.getElementById('reuseNext').disabled = reusePage >= pages - 1;
 }
-function logReuse(i) {
+function reuseGo(d) { reusePage += d; renderReuse(true); }
+(() => { // swipe left = next page, right = previous
+  let x0 = null, y0 = 0; const el = document.getElementById('reuseBody');
+  el.addEventListener('touchstart', e => { x0 = e.touches[0].clientX; y0 = e.touches[0].clientY; }, { passive: true });
+  el.addEventListener('touchend', e => { if (x0 === null) return; const dx = e.changedTouches[0].clientX - x0, dy = e.changedTouches[0].clientY - y0; x0 = null; if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy)) reuseGo(dx < 0 ? 1 : -1); });
+})();
+// Tapping a past meal opens the scan-result popup; it is only logged on "Log Meal".
+function previewReuse(i) {
   const x = window._reuseItems[i]; if (!x) return;
-  const logs = getLogs(); logs.push({ id: Date.now(), name: x.name, cal: x.cal, pro: x.pro, carb: x.carb, fat: x.fat, img: x.img }); saveLogs(logs);
-  closeReuse(); playSuccessSound();
+  currentScanData = x; lastScanThumb = x.img || null;
+  document.getElementById('foodName').value = x.name;
+  ['cal','pro','carb','fat'].forEach(k => document.getElementById('food' + k[0].toUpperCase() + k.slice(1)).value = x[k] || 0);
+  scanOverlayMode = 'scan';
+  document.getElementById('scanOverlay').classList.add('show');
+  document.getElementById('scanPhaseRunning').classList.remove('active');
+  document.getElementById('scanPhaseSuccess').classList.remove('active');
+  document.getElementById('scanPhaseResult').classList.add('active');
+  const imgEl = document.getElementById('scanResultImg'); if (x.img) { imgEl.src = x.img; imgEl.style.display = 'block'; } else imgEl.style.display = 'none';
+  document.getElementById('scanResultName').textContent = x.name;
+  document.querySelector('.scan-log-btn').textContent = '✓ Log Meal';
+  document.getElementById('scanCancelBtn').style.display = ''; document.getElementById('scanAiBtn').style.display = 'none';
+  document.querySelectorAll('.scan-macro-item').forEach(row => {
+    const k = row.dataset.macro, fill = row.querySelector('.scan-macro-fill'), val = row.querySelector('.scan-macro-value');
+    fill.style.width = '0%'; val.textContent = '0';
+    setTimeout(() => { fill.style.width = macroPct(k, x) + '%'; animateNumber(val, x[k] || 0, 1100, ''); }, 180);
+  });
 }
 function closeDayLog() { document.getElementById('dayLogModal').classList.remove('show'); }
 const RANGE_DAYS = { week: 7, '6m': 182, year: 365 }, RANGE_TITLE = { today: "Today's Log", week: 'This Week', month: 'This Month', '6m': 'Last 6 Months', year: 'Last Year' };
