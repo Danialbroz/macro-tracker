@@ -2556,7 +2556,7 @@ document.getElementById('scanResultName').textContent = meal.name || 'Meal';
 const logBtn = document.querySelector('.scan-log-btn');
 if (logBtn) logBtn.textContent = '✓ Done';
 document.getElementById('scanCancelBtn').style.display = document.getElementById('scanAiBtn').style.display = 'none';
-document.getElementById('scanEditMyBtn').style.display = document.getElementById('scanDelBtn').style.display = '';
+document.getElementById('scanEditMyBtn').style.display = document.getElementById('scanDelBtn').style.display = (!key || key === todayKey()) ? 'none' : '';
 document.querySelectorAll('.scan-macro-item').forEach(row => {
  row.querySelector('.scan-macro-fill').style.width = '0%';
  row.querySelector('.scan-macro-value').textContent = '0';
