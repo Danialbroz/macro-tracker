@@ -247,6 +247,11 @@
   .pf-wrap { display: inline-flex; line-height: 0; }
   .cal-streak .pf-wrap { margin: -20px -4px -14px; }
   .cal-streak:not(.on) .pf-wrap { filter: grayscale(1) opacity(.6); }
+  @media (max-width: 700px) {
+    .cal-streak { gap: 6px; padding: 6px 13px; font-size: 1.1rem; }
+    .cal-streak canvas.pf { width: 36px !important; height: 48px !important; }
+    .cal-streak .pf-wrap { margin: -15px -3px -10px; }
+  }
   /* flame flicker: sways from its base, stretches and dims irregularly */
   .cal-streak .flame, .sk-hero .flame { display: inline-block; transform-origin: 50% 85%; }
   @keyframes flameBeat {
