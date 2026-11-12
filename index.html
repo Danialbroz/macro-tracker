@@ -296,7 +296,8 @@
   .cal-day b { line-height: 1; }
   .cal-day.future, .cal-day.none { opacity: .45; }
   .cal-day.today { border-color: #38bdf8; box-shadow: 0 0 0 1px #38bdf8, 0 0 12px rgba(56,189,248,0.55), inset 0 1px 0 rgba(255,255,255,0.25); color: #fff; }
-  .cal-day.half { border: 2px solid #39ff14; box-shadow: 0 0 0 1px #39ff14, 0 0 10px #39ff14, 0 0 20px rgba(57,255,20,0.5), inset 0 1px 0 rgba(255,255,255,0.25); color: #fff; opacity: 1; }
+  .cal-day.half { color: #03280a; background: #39ff14; border: 2px solid #39ff14; box-shadow: 0 0 8px #39ff14, 0 0 20px rgba(57,255,20,0.6), inset 0 1px 0 rgba(255,255,255,0.45); opacity: 1; }
+  .cal-day.half .cal-ck i { color: #39ff14; background: #03280a; box-shadow: none; }
   .cal-day.win { color: #03280a; background: #39ff14; border: 2px solid #eaffe3; box-shadow: 0 0 0 1px #39ff14, 0 0 10px #39ff14, 0 0 22px rgba(57,255,20,0.65), inset 0 1px 0 rgba(255,255,255,0.6); }
   .cal-day.miss { color: #fff; background: #ff1744; border-color: #ff9bb0; box-shadow: 0 0 8px #ff1744, 0 0 20px rgba(255,23,68,0.6), inset 0 1px 0 rgba(255,255,255,0.45); }
   .cal-ck { display: flex; gap: 3px; min-height: 14px; }
@@ -306,7 +307,7 @@
   .cal-day.win .cal-ck i { color: #39ff14; background: #03280a; box-shadow: none; }
   .cal-legend { position: relative; display: flex; flex-wrap: wrap; gap: 6px 12px; margin-top: 12px; font-size: 0.68rem; color: #94a3b8; }
   .cal-legend span::before { content: ''; display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: -1px; }
-  .cal-legend .g::before { background: #39ff14; box-shadow: 0 0 6px #39ff14; } .cal-legend .r::before { background: #ff1744; box-shadow: 0 0 6px #ff1744; } .cal-legend .t::before { background: transparent; border: 1px solid #38bdf8; } .cal-legend .h::before { background: transparent; border: 1px solid #39ff14; box-shadow: 0 0 6px #39ff14; }
+  .cal-legend .g::before { background: #39ff14; box-shadow: 0 0 6px #39ff14; } .cal-legend .r::before { background: #ff1744; box-shadow: 0 0 6px #ff1744; } .cal-legend .t::before { background: transparent; border: 1px solid #38bdf8; } .cal-legend .h::before { background: #39ff14; box-shadow: 0 0 6px #39ff14; }
   .food-actions { position: relative; flex-shrink: 0; }
   .hamburger-btn {
    display: flex; flex-direction: column; align-items: flex-end; gap: 3px;
