@@ -288,7 +288,7 @@
   .sk-tcard { padding: 8px; border-radius: 16px; background: rgba(15,30,50,.55); border: 1px solid rgba(186,230,253,.25); min-width: 0; overflow: hidden; font-size: .7rem; }
   .sk-tcard .sk-hero { text-align: center; }
   .sk-tcard .sk-hero b { font-size: 1.7rem; }
-  .sk-tcard canvas.pf { width: 30px !important; height: 40px !important; }
+  .sk-tcard canvas.pf { width: 42px !important; height: 56px !important; }
   .sk-tcard .sk-sub { margin: 2px 0 4px; font-size: .68rem; }
   .sk-tcard .wk-stats { gap: 6px; margin: 4px 0; }
   .sk-tcard .wk-stat { padding: 4px 6px; } .sk-tcard .wk-stat b { font-size: .9rem; } .sk-tcard .wk-stat span { font-size: .58rem; }
@@ -2592,7 +2592,6 @@ function openStreakInfo() {
     <div class="sk-tcard">
       <div class="sk-hero ${st}">${fireCanvas(st, 3)}<b>${n}</b><small>day streak</small></div>
       <p class="sk-sub">Streak safe for today. Come back tomorrow!</p>
-      <div class="wk-stats"><div class="wk-stat"><b>${n}</b><span>best streak</span></div><div class="wk-stat"><b>${n}</b><span>total goal days</span></div></div>
       <div class="sk-sec">Last 7 days</div><div class="sk-week ${st}">${n >= 100 ? sparks : ''}${days}</div>
       <div class="sk-sec">Today's goals</div>${bar('cal', '🔥 0 / 0 kcal')}${bar('pro', '💪 1 / 0g')}
       <div class="sk-sec">Next milestone: ${NEXT[n]} days</div><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro" style="width:${n === 1 ? 33 : n === 3 ? 0 : n === 10 ? 43 : 0}%"></div></div>
