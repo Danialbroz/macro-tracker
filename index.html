@@ -244,6 +244,9 @@
   .cal-streak .flame { filter: grayscale(1) opacity(.6); }
   .cal-streak.on { color: #ffb347; background: rgba(255,140,0,0.16); border-color: rgba(255,170,60,0.55); box-shadow: 0 0 14px rgba(255,140,0,0.35); }
   .cal-streak.on .flame { filter: none; animation: flameBeat 1.1s ease-in-out infinite; }
+  .pf-wrap { display: inline-flex; line-height: 0; }
+  .cal-streak .pf-wrap { margin: -10px -2px -6px; }
+  .cal-streak:not(.on) .pf-wrap { filter: grayscale(1) opacity(.6); }
   /* flame flicker: sways from its base, stretches and dims irregularly */
   .cal-streak .flame, .sk-hero .flame { display: inline-block; transform-origin: 50% 85%; }
   @keyframes flameBeat {
@@ -2503,6 +2506,57 @@ function streakInfo(data) {
   const sub = streak === 0 ? 'Hit both goals today to start a streak' : todayDone ? 'Streak safe for today. Come back tomorrow!' : `Hit both goals today to keep your ${streak}-day streak`;
   return { streak, todayDone, best: Math.max(best, streak), total, sub };
 }
+// Pixel-art "doom fire" sprite on a 24x32 canvas. Stops itself once its canvas leaves the DOM.
+const FIRE_PAL = {
+  orange: ['#7a1010', '#d62828', '#f77f00', '#fcbf49', '#fff3b0'],
+  red: ['#4a0010', '#b00020', '#ff1744', '#ff5c7a', '#ffb3c1'],
+  purple: ['#2a0a4a', '#5b1fa8', '#9b30ff', '#c77dff', '#e0b3ff'],
+  white: ['#6a7a8a', '#b8c7d6', '#e6f0ff', '#ffffff', '#ffffff']
+};
+const FIRE_STAGE = { 'fs-3': 'red', 'fs-10': 'purple', 'fs-30': 'gradient', 'fs-100': 'white' };
+function createPixelFire(canvas, { palette = 'orange', scale = 4 } = {}) {
+  const W = 24, H = 32, M = 29, ctx = canvas.getContext('2d'), heat = new Uint8Array(W * H), rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
+  const SPARK = [[3, 10], [20, 8], [5, 22], [19, 19], [11, 2], [14, 27]];
+  let cols, glow, frame = 0, last = 0, raf = 0, seen = true, dead = false;
+  canvas.width = W; canvas.height = H; canvas.style.width = W * scale + 'px'; canvas.style.height = H * scale + 'px'; canvas.style.imageRendering = 'pixelated';
+  const setPalette = name => {
+    glow = name === 'white'; canvas.style.filter = glow ? 'drop-shadow(0 0 4px #bfe3ff)' : '';
+    // gradient: red on the left, purple on the right, a checkerboard in the middle (hard steps, no interpolation)
+    cols = Array.from({ length: W }, (_, x) => name !== 'gradient' ? FIRE_PAL[name] : x / (W - 1) < .4 ? FIRE_PAL.red : x / (W - 1) < .6 ? null : FIRE_PAL.purple);
+  };
+  const step = () => {
+    for (let x = 0; x < W; x++) {
+      const d = Math.abs(x - (W - 1) / 2) / ((W - 1) / 2);
+      heat[(H - 1) * W + x] = d < .6 ? M : Math.round(M * (1 - (d - .6) / .4 * (.5 + Math.random() * .5)));
+    }
+    for (let y = H - 2; y >= 0; y--) for (let x = 0; x < W; x++) {
+      const src = heat[(y + 1) * W + Math.max(0, Math.min(W - 1, x + rnd(-1, 1)))];
+      // extra decay outside a width that shrinks toward the top -> teardrop with a flickering tip
+      const out = Math.abs(x - (W - 1) / 2) > 2 + 9 * (y / H) ? 3 : 0;
+      heat[y * W + x] = Math.max(0, src - rnd(0, 2) - out);
+    }
+    draw(); frame++;
+  };
+  const draw = () => {
+    ctx.clearRect(0, 0, W, H);
+    ctx.fillStyle = '#1a0505';
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) if (!heat[y * W + x] && [[1, 0], [-1, 0], [0, 1], [0, -1]].some(([dx, dy]) => heat[(y + dy) * W + x + dx] > 0 && x + dx >= 0 && x + dx < W)) ctx.fillRect(x, y, 1, 1);
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) {
+      const h = heat[y * W + x]; if (!h) continue;
+      ctx.fillStyle = (cols[x] || FIRE_PAL[(x + y) % 2 ? 'red' : 'purple'])[Math.min(4, Math.floor(h / 6))]; ctx.fillRect(x, y, 1, 1);
+    }
+    if (glow) { ctx.fillStyle = '#fff'; SPARK.forEach(([x, y], i) => { const f = (frame + i) % 3; if (f) ctx.fillRect(x, y, 1, 1); if (f === 1) [[1, 0], [-1, 0], [0, 1], [0, -1]].forEach(([dx, dy]) => ctx.fillRect(x + dx, y + dy, 1, 1)); }); }
+  };
+  const tick = t => { raf = 0; if (t - last >= 90) { last = t; step(); } run(); }; // ~11 fps
+  const run = () => { if (!raf && !dead && seen && !document.hidden) raf = requestAnimationFrame(tick); };
+  const destroy = () => { dead = true; cancelAnimationFrame(raf); io.disconnect(); document.removeEventListener('visibilitychange', run); };
+  const io = new IntersectionObserver(e => { if (!canvas.isConnected) return destroy(); seen = e[0].isIntersecting; run(); });
+  setPalette(palette); for (let i = 0; i < 40; i++) step(); // pre-warm so the fire is already built
+  io.observe(canvas); document.addEventListener('visibilitychange', run); run();
+  return { setPalette, destroy };
+}
+const fireCanvas = (stage, scale) => `<span class="pf-wrap"><canvas class="pf" data-pf="${FIRE_STAGE[stage] || 'orange'}" data-scale="${scale}" aria-label="flame" role="img"></canvas></span>`;
+const mountFires = root => root.querySelectorAll('canvas.pf').forEach(c => createPixelFire(c, { palette: c.dataset.pf, scale: +c.dataset.scale }));
 function fireStage(n) { return n >= 100 ? 'fs-100' : n >= 30 ? 'fs-30' : n >= 10 ? 'fs-10' : n >= 3 ? 'fs-3' : n >= 1 ? 'fs-1' : ''; }
 function closeStreak() { document.getElementById('streakModal').classList.remove('show'); }
 function openStreak() {
@@ -2517,12 +2571,13 @@ function openStreak() {
   const bar = (cls, label, w) => `<div class="dl-bar"><em>${label}</em><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-${cls}" style="width:${w}%"></div></div></div>`;
   const pct = (v, of) => of > 0 ? Math.min(100, Math.round(v / of * 100)) : 0;
   document.getElementById('streakBody').innerHTML = `
-    <div class="sk-hero ${fireStage(s.streak)}"><span class="flame">🔥</span><b>${s.streak}</b><small>day streak</small></div>
+    <div class="sk-hero ${fireStage(s.streak)}">${fireCanvas(fireStage(s.streak), 3)}<b>${s.streak}</b><small>day streak</small></div>
     <p class="sk-sub">${s.sub}</p>
     <div class="wk-stats"><div class="wk-stat"><b>${s.best}</b><span>best streak</span></div><div class="wk-stat"><b>${s.total}</b><span>total goal days</span></div></div>
     <div class="sk-sec">Last 7 days</div><div class="sk-week ${fireStage(s.streak)}">${s.streak >= 100 ? '<i class="sk-spark" style="left:8%;animation-delay:0s"></i><i class="sk-spark" style="left:24%;animation-delay:.7s"></i><i class="sk-spark" style="left:41%;animation-delay:1.3s"></i><i class="sk-spark" style="left:58%;animation-delay:.3s"></i><i class="sk-spark" style="left:74%;animation-delay:1.0s"></i><i class="sk-spark" style="left:90%;animation-delay:1.6s"></i>' : ''}${week}</div>
     <div class="sk-sec">Today's goals ${t.both ? '✅' : ''}</div>${bar('cal', `🔥 ${Math.round(cal)} / ${GOAL_CAL} kcal ${t.calOK ? '✓' : ''}`, pct(cal, GOAL_CAL))}${bar('pro', `💪 ${Math.round(pro)} / ${GOAL_PRO}g ${t.proOK ? '✓' : ''}`, pct(pro, GOAL_PRO))}
     <div class="sk-sec">Next milestone: ${next} days</div><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro" style="width:${pct(s.streak - prevM, next - prevM)}%"></div></div>`;
+  mountFires(document.getElementById('streakBody'));
   document.getElementById('streakModal').classList.add('show');
 }
 let calOff = 0; // months from the current month (negative = past, positive = future)
@@ -2541,7 +2596,8 @@ function renderCalendar() {
     const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
     cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openDayLog('${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
   }
-  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''} ${fireStage(streak)}" role="button" tabindex="0" style="cursor:pointer" onclick="openStreak()" onkeydown="if(event.key==='Enter')openStreak()"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
+  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''} ${fireStage(streak)}" role="button" tabindex="0" style="cursor:pointer" onclick="openStreak()" onkeydown="if(event.key==='Enter')openStreak()">${fireCanvas(fireStage(streak), 1)}${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
+  mountFires(el);
   renderWeek(data);
 }
 // Last 7 days ending today: calorie bars against the goal line + averages.
