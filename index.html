@@ -243,8 +243,18 @@
   .cal-streak { display: flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; font-weight: 800; font-size: 0.95rem; color: #94a3b8; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
   .cal-streak .flame { filter: grayscale(1) opacity(.6); }
   .cal-streak.on { color: #ffb347; background: rgba(255,140,0,0.16); border-color: rgba(255,170,60,0.55); box-shadow: 0 0 14px rgba(255,140,0,0.35); }
-  .cal-streak.on .flame { filter: none; animation: flameBeat 1.4s ease-in-out infinite; }
-  @keyframes flameBeat { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.22) rotate(-6deg); } }
+  .cal-streak.on .flame { filter: none; animation: flameBeat 1.1s ease-in-out infinite; }
+  /* flame flicker: sways from its base, stretches and dims irregularly */
+  .cal-streak .flame, .sk-hero .flame { display: inline-block; transform-origin: 50% 85%; }
+  @keyframes flameBeat {
+    0%   { transform: rotate(-4deg) scale(1, 1);       filter: brightness(1); }
+    18%  { transform: rotate(3deg) scale(.95, 1.1);    filter: brightness(1.25); }
+    34%  { transform: rotate(-2deg) scale(1.04, .94);  filter: brightness(.9); }
+    52%  { transform: rotate(5deg) scale(.96, 1.14);   filter: brightness(1.3); }
+    70%  { transform: rotate(-5deg) scale(1.03, .97);  filter: brightness(.95); }
+    86%  { transform: rotate(2deg) scale(.97, 1.08);   filter: brightness(1.15); }
+    100% { transform: rotate(-4deg) scale(1, 1);       filter: brightness(1); }
+  }
   .cal-sub { position: relative; font-size: 0.75rem; color: #94a3b8; margin: 4px 0 10px; }
   .cal-grid { position: relative; display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
   .cal-dow { text-align: center; font-size: 0.65rem; font-weight: 700; color: #7dd3fc; opacity: .8; }
@@ -261,7 +271,7 @@
   .day-log-card h3 { text-align: center; }
   .streak-card { max-width: 380px !important; overflow-y: auto; }
   .sk-hero { text-align: center; display: flex; flex-direction: column; align-items: center; }
-  .sk-hero .flame { font-size: 3rem; display: inline-block; animation: flameBeat 1.4s ease-in-out infinite; }
+  .sk-hero .flame { font-size: 3rem; display: inline-block; animation: flameBeat 1.1s ease-in-out infinite; }
   .sk-hero b { font-size: 2.6rem; line-height: 1; color: #ffb347; }
   .sk-hero small, .sk-sub { color: #bae6fd; }
   .sk-sub { text-align: center; font-size: .9rem; margin: 6px 0 12px; }
@@ -295,8 +305,8 @@
   .fs-3 .flame, .fs-3 .sk-day.win span, .fs-10 .flame, .fs-10 .sk-day.win span, .fs-30 .flame, .fs-30 .sk-day.win span, .fs-100 .flame, .fs-100 .sk-day.win span { filter: hue-rotate(var(--fh)) saturate(1.8) drop-shadow(0 0 6px var(--f1)); }
   .fs-30 .flame, .fs-30 .sk-day.win span { animation: fireHue 2.4s ease-in-out infinite alternate; }
   .fs-100 .flame, .fs-100 .sk-day.win span { filter: grayscale(1) brightness(2.4) drop-shadow(0 0 8px #fff) drop-shadow(0 0 14px #9fd2ff); }
-  .cal-streak.on.fs-3 .flame, .cal-streak.on.fs-10 .flame, .cal-streak.on.fs-30 .flame, .cal-streak.on.fs-100 .flame { animation: flameBeat 1.4s ease-in-out infinite; }
-  .cal-streak.on.fs-30 .flame { animation: flameBeat 1.4s ease-in-out infinite, fireHue 2.4s ease-in-out infinite alternate; }
+  .cal-streak.on.fs-3 .flame, .cal-streak.on.fs-10 .flame, .cal-streak.on.fs-30 .flame, .cal-streak.on.fs-100 .flame { animation: flameBeat 1.1s ease-in-out infinite; }
+  .cal-streak.on.fs-30 .flame { animation: flameBeat 1.1s ease-in-out infinite, fireHue 2.4s ease-in-out infinite alternate; }
   @keyframes fireHue { from { filter: hue-rotate(-22deg) saturate(1.8) drop-shadow(0 0 6px #ff1744); } to { filter: hue-rotate(255deg) saturate(1.8) drop-shadow(0 0 6px #9b30ff); } }
   .reuse-btn { margin-top: 0; margin-bottom: 10px; padding: 11px; font-size: .9rem; color: #bae6fd; background: rgba(13,25,48,0.35); border-style: dashed; }
   .reuse-sub { text-align: center; font-size: .8rem; color: #94a3b8; margin: -4px 0 10px; }
