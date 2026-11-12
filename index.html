@@ -271,6 +271,33 @@
   .sk-day.win { background: rgba(255,140,0,0.16); border-color: rgba(255,170,60,0.55); }
   .sk-day.miss { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.4); }
   .sk-day span { display: block; height: 1.3em; } .sk-day small { color: #94a3b8; }
+  /* streak fire stages: fs-1 (1+) orange, fs-3 neon red, fs-10 purple, fs-30 red→purple, fs-100 white */
+  .fs-1 { --f1: #ff9a1f; --f2: #ff5a00; --fh: 0deg; }
+  .fs-3 { --f1: #ff1744; --f2: #ff0033; --fh: -22deg; }
+  .fs-10 { --f1: #b44dff; --f2: #7a1fff; --fh: 255deg; }
+  .fs-30 { --f1: #ff1744; --f2: #9b30ff; --fh: 0deg; }
+  .fs-100 { --f1: #ffffff; --f2: #cfe8ff; --fh: 0deg; }
+  .sk-week[class*="fs-"] { position: relative; padding: 4px; margin: -4px; border-radius: 16px; animation: weekFire 1.2s ease-in-out infinite alternate; }
+  .sk-week[class*="fs-"]::before { content: ""; position: absolute; inset: 0; border-radius: 16px; pointer-events: none; background: radial-gradient(ellipse at 50% 110%, var(--f1) 0, transparent 65%), radial-gradient(ellipse at 20% 110%, var(--f2) 0, transparent 50%), radial-gradient(ellipse at 80% 110%, var(--f2) 0, transparent 50%); opacity: .55; animation: fireFlick .9s ease-in-out infinite alternate; transform-origin: bottom; }
+  .sk-week[class*="fs-"] .sk-day { position: relative; }
+  .sk-week[class*="fs-"] .sk-day.win { border-color: var(--f1); background: color-mix(in srgb, var(--f1) 22%, transparent); box-shadow: 0 0 10px var(--f1); }
+  .fs-30.sk-week { --fb: linear-gradient(135deg, #ff1744, #9b30ff); }
+  .fs-30.sk-week::before { background: radial-gradient(ellipse at 25% 110%, #ff1744 0, transparent 60%), radial-gradient(ellipse at 75% 110%, #9b30ff 0, transparent 60%); }
+  .fs-30.sk-week .sk-day.win { border-image: linear-gradient(135deg, #ff1744, #9b30ff) 1; border-radius: 0; background: linear-gradient(135deg, rgba(255,23,68,.25), rgba(155,48,255,.25)); box-shadow: 0 0 10px #ff1744, 0 0 14px #9b30ff; }
+  .fs-100.sk-week .sk-day.win { background: rgba(255,255,255,.25); box-shadow: 0 0 14px #fff, 0 0 26px #bfe3ff; }
+  @keyframes weekFire { from { box-shadow: 0 0 10px var(--f1), 0 0 22px var(--f2); } to { box-shadow: 0 0 18px var(--f1), 0 0 36px var(--f2); } }
+  @keyframes fireFlick { from { transform: scaleY(.85); opacity: .4; } to { transform: scaleY(1.08); opacity: .7; } }
+  .fs-100.sk-week { animation-name: weekFire100; }
+  @keyframes weekFire100 { from { box-shadow: 0 0 14px #fff, 0 0 30px #bfe3ff; } to { box-shadow: 0 0 24px #fff, 0 0 50px #9fd2ff; } }
+  .sk-spark { position: absolute; width: 4px; height: 4px; border-radius: 50%; background: #fff; box-shadow: 0 0 6px 2px #fff, 0 0 10px 3px #9fd2ff; pointer-events: none; opacity: 0; animation: sparkUp 2s ease-in infinite; }
+  @keyframes sparkUp { 0% { transform: translateY(8px) scale(.4); opacity: 0; } 20% { opacity: 1; } 100% { transform: translateY(-34px) scale(1); opacity: 0; } }
+  /* recolour the 🔥 emoji (native hue ~25deg) */
+  .fs-3 .flame, .fs-3 .sk-day.win span, .fs-10 .flame, .fs-10 .sk-day.win span, .fs-30 .flame, .fs-30 .sk-day.win span, .fs-100 .flame, .fs-100 .sk-day.win span { filter: hue-rotate(var(--fh)) saturate(1.8) drop-shadow(0 0 6px var(--f1)); }
+  .fs-30 .flame, .fs-30 .sk-day.win span { animation: fireHue 2.4s ease-in-out infinite alternate; }
+  .fs-100 .flame, .fs-100 .sk-day.win span { filter: grayscale(1) brightness(2.4) drop-shadow(0 0 8px #fff) drop-shadow(0 0 14px #9fd2ff); }
+  .cal-streak.on.fs-3 .flame, .cal-streak.on.fs-10 .flame, .cal-streak.on.fs-30 .flame, .cal-streak.on.fs-100 .flame { animation: flameBeat 1.4s ease-in-out infinite; }
+  .cal-streak.on.fs-30 .flame { animation: flameBeat 1.4s ease-in-out infinite, fireHue 2.4s ease-in-out infinite alternate; }
+  @keyframes fireHue { from { filter: hue-rotate(-22deg) saturate(1.8) drop-shadow(0 0 6px #ff1744); } to { filter: hue-rotate(255deg) saturate(1.8) drop-shadow(0 0 6px #9b30ff); } }
   .reuse-btn { margin-top: 0; margin-bottom: 10px; padding: 11px; font-size: .9rem; color: #bae6fd; background: rgba(13,25,48,0.35); border-style: dashed; }
   .reuse-sub { text-align: center; font-size: .8rem; color: #94a3b8; margin: -4px 0 10px; }
   .reuse-search { margin: 0 0 10px; background: rgba(15,23,42,0.6); border: 1px solid rgba(186,230,253,0.25); border-radius: 12px; color: #f0f9ff; }
@@ -2466,6 +2493,7 @@ function streakInfo(data) {
   const sub = streak === 0 ? 'Hit both goals today to start a streak' : todayDone ? 'Streak safe for today. Come back tomorrow!' : `Hit both goals today to keep your ${streak}-day streak`;
   return { streak, todayDone, best: Math.max(best, streak), total, sub };
 }
+function fireStage(n) { return n >= 100 ? 'fs-100' : n >= 30 ? 'fs-30' : n >= 10 ? 'fs-10' : n >= 3 ? 'fs-3' : n >= 1 ? 'fs-1' : ''; }
 function closeStreak() { document.getElementById('streakModal').classList.remove('show'); }
 function openStreak() {
   const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'), s = streakInfo(data), t = dayStats(todayKey(), data);
@@ -2479,10 +2507,10 @@ function openStreak() {
   const bar = (cls, label, w) => `<div class="dl-bar"><em>${label}</em><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-${cls}" style="width:${w}%"></div></div></div>`;
   const pct = (v, of) => of > 0 ? Math.min(100, Math.round(v / of * 100)) : 0;
   document.getElementById('streakBody').innerHTML = `
-    <div class="sk-hero"><span class="flame">🔥</span><b>${s.streak}</b><small>day streak</small></div>
+    <div class="sk-hero ${fireStage(s.streak)}"><span class="flame">🔥</span><b>${s.streak}</b><small>day streak</small></div>
     <p class="sk-sub">${s.sub}</p>
     <div class="wk-stats"><div class="wk-stat"><b>${s.best}</b><span>best streak</span></div><div class="wk-stat"><b>${s.total}</b><span>total goal days</span></div></div>
-    <div class="sk-sec">Last 7 days</div><div class="sk-week">${week}</div>
+    <div class="sk-sec">Last 7 days</div><div class="sk-week ${fireStage(s.streak)}">${s.streak >= 100 ? '<i class="sk-spark" style="left:8%;animation-delay:0s"></i><i class="sk-spark" style="left:24%;animation-delay:.7s"></i><i class="sk-spark" style="left:41%;animation-delay:1.3s"></i><i class="sk-spark" style="left:58%;animation-delay:.3s"></i><i class="sk-spark" style="left:74%;animation-delay:1.0s"></i><i class="sk-spark" style="left:90%;animation-delay:1.6s"></i>' : ''}${week}</div>
     <div class="sk-sec">Today's goals ${t.both ? '✅' : ''}</div>${bar('cal', `🔥 ${Math.round(cal)} / ${GOAL_CAL} kcal ${t.calOK ? '✓' : ''}`, pct(cal, GOAL_CAL))}${bar('pro', `💪 ${Math.round(pro)} / ${GOAL_PRO}g ${t.proOK ? '✓' : ''}`, pct(pro, GOAL_PRO))}
     <div class="sk-sec">Next milestone: ${next} days</div><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro" style="width:${pct(s.streak - prevM, next - prevM)}%"></div></div>`;
   document.getElementById('streakModal').classList.add('show');
@@ -2503,7 +2531,7 @@ function renderCalendar() {
     const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
     cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openDayLog('${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
   }
-  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''}" role="button" tabindex="0" style="cursor:pointer" onclick="openStreak()" onkeydown="if(event.key==='Enter')openStreak()"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
+  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''} ${fireStage(streak)}" role="button" tabindex="0" style="cursor:pointer" onclick="openStreak()" onkeydown="if(event.key==='Enter')openStreak()"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
   renderWeek(data);
 }
 // Last 7 days ending today: calorie bars against the goal line + averages.
