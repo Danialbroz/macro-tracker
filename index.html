@@ -2516,7 +2516,7 @@ const FIRE_PAL = {
 const FIRE_STAGE = { 'fs-3': 'red', 'fs-10': 'purple', 'fs-30': 'gradient', 'fs-100': 'white' };
 function createPixelFire(canvas, { palette = 'orange', scale = 4 } = {}) {
   const W = 24, H = 32, M = 29, ctx = canvas.getContext('2d'), heat = new Uint8Array(W * H), rnd = (a, b) => a + Math.floor(Math.random() * (b - a + 1));
-  const SPARK = [[3, 10], [20, 8], [5, 22], [19, 19], [11, 2], [14, 27]];
+  const BX = 13, BY = 20, SPARK = [[3, 10], [20, 8], [5, 22], [19, 19], [11, 2], [14, 27]];
   let cols, glow, frame = 0, last = 0, raf = 0, seen = true, dead = false;
   canvas.width = W; canvas.height = H; canvas.style.width = W * scale + 'px'; canvas.style.height = H * scale + 'px'; canvas.style.imageRendering = 'pixelated';
   const setPalette = name => {
@@ -2525,15 +2525,13 @@ function createPixelFire(canvas, { palette = 'orange', scale = 4 } = {}) {
     cols = Array.from({ length: W }, (_, x) => name !== 'gradient' ? FIRE_PAL[name] : x / (W - 1) < .4 ? FIRE_PAL.red : x / (W - 1) < .6 ? null : FIRE_PAL.purple);
   };
   const step = () => {
-    for (let x = 0; x < W; x++) {
-      const d = Math.abs(x - (W - 1) / 2) / ((W - 1) / 2);
-      heat[(H - 1) * W + x] = d < .6 ? M : Math.round(M * (1 - (d - .6) / .4 * (.5 + Math.random() * .5)));
-    }
+    for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const r = Math.hypot(x - BX, y - BY); if (r <= 6.5) heat[y * W + x] = Math.max(1, M - Math.floor(r * 2.2) + rnd(-1, 1)); }
+    // fireball: round glowing core at the lower right, flames streaming up and to the left like the emoji
     for (let y = H - 2; y >= 0; y--) for (let x = 0; x < W; x++) {
-      const src = heat[(y + 1) * W + Math.max(0, Math.min(W - 1, x + rnd(-1, 1)))];
-      // extra decay outside a width that shrinks toward the top -> teardrop with a flickering tip
-      const out = Math.abs(x - (W - 1) / 2) > 2 + 9 * (y / H) ? 3 : 0;
-      heat[y * W + x] = Math.max(0, src - rnd(0, 2) - out);
+      if (Math.hypot(x - BX, y - BY) <= 6.5) continue; // core is re-lit below
+      const src = heat[(y + 1) * W + Math.max(0, Math.min(W - 1, x + rnd(-1, 1) + (Math.random() < .5 ? 1 : 0)))];
+      const t = Math.min(1, (BY - y) / 19), inBall = (x - BX) ** 2 + (y - BY) ** 2 <= 81, inTail = y < BY && Math.abs(x - (BX - 10 * t)) <= 6 * (1 - t) + 1;
+      heat[y * W + x] = Math.max(0, src - rnd(0, 2) - (inBall || inTail ? 0 : 4));
     }
     draw(); frame++;
   };
