@@ -2436,8 +2436,8 @@ function dayStats(key, data) {
   const calOK = GOAL_CAL > 0 && cal >= GOAL_CAL * 0.9 && cal <= GOAL_CAL, proOK = GOAL_PRO > 0 && pro >= GOAL_PRO;
   return { has: logs.length > 0, calOK, proOK, both: calOK && proOK };
 }
-let calOff = 0; // months from the current month; never > 0 (no future months)
-function calMove(d) { calOff = Math.min(0, calOff + d); renderCalendar(); }
+let calOff = 0; // months from the current month (negative = past, positive = future)
+function calMove(d) { calOff += d; renderCalendar(); }
 function renderCalendar() {
   const el = document.getElementById('calCard'); if (!el) return;
   const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
@@ -2460,7 +2460,7 @@ function renderCalendar() {
     const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
     cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openDayLog('${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
   }
-  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)"${calOff >= 0 ? ' disabled' : ''}>›</button></div><div class="cal-streak ${streak ? 'on' : ''}"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
+  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''}"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
   renderWeek(data);
 }
 // Last 7 days ending today: calorie bars against the goal line + averages.
