@@ -294,8 +294,9 @@
   .dl-meal img, .dl-meal .ph { width: 104px; height: 104px; border-radius: 14px; font-size: 1.6rem; box-shadow: 0 4px 12px rgba(0,0,0,0.4); object-fit: cover; display: flex; align-items: center; justify-content: center; background: rgba(255,255,255,0.1); flex: none; }
   .dl-info { flex: 1; min-width: 0; height: 104px; display: flex; flex-direction: column; justify-content: space-between; }
   .dl-bar { display: flex; align-items: center; gap: 8px; }
-  .dl-bar em { font-style: normal; font-size: .75rem; color: #bae6fd; width: 64px; flex: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
-  .dl-bar .scan-macro-bar { height: 8px; }
+  .dl-bar em { font-style: normal; font-size: .75rem; color: #bae6fd; min-width: 64px; flex: none; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .dl-bar .scan-macro-bar { height: 8px; flex: 1; min-width: 0; }
+  #streakBody .dl-bar em { min-width: 110px; }
   .dl-bar .scan-macro-fill { transition: none; }
   .toast { position: fixed; left: 50%; top: calc(18px + env(safe-area-inset-top, 0px)); z-index: 5000; max-width: 94vw; white-space: nowrap; pointer-events: none; opacity: 0; transform: translate(-50%, -14px) scale(.35, .5); transform-origin: top center; filter: blur(6px); transition: opacity .3s ease, transform .35s cubic-bezier(.4,0,.2,1), filter .3s ease; }
   .toast.show { opacity: 1; transform: translate(-50%, 0) scale(1); filter: blur(0); transition: opacity .3s ease, transform .7s cubic-bezier(.34,1.45,.5,1), filter .4s ease; }
