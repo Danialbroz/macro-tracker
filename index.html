@@ -259,6 +259,18 @@
   .glass-modal-card.day-log-card { max-width: 560px; width: 94%; padding: 22px; text-align: left; max-height: 86vh; display: flex; flex-direction: column; background: rgba(20,40,65,0.5); border: 1px solid rgba(186,230,253,0.35); box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 28px rgba(56,189,248,0.25), inset 0 1px 0 rgba(255,255,255,0.2); animation: scanWindowPop 0.42s cubic-bezier(0.34, 1.56, 0.64, 1), scanWindowFloat 7s ease-in-out 0.42s infinite, dayLogGlow 3.5s ease-in-out infinite; }
   @keyframes dayLogGlow { 0%, 100% { border-color: rgba(186,230,253,0.28); box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 14px rgba(56,189,248,0.16), inset 0 1px 0 rgba(255,255,255,0.2); } 50% { border-color: rgba(186,230,253,0.6); box-shadow: 0 24px 60px rgba(0,0,0,0.55), 0 0 30px rgba(56,189,248,0.38), inset 0 0 14px rgba(186,230,253,0.1), inset 0 1px 0 rgba(255,255,255,0.3); } }
   .day-log-card h3 { text-align: center; }
+  .streak-card { max-width: 380px !important; overflow-y: auto; }
+  .sk-hero { text-align: center; display: flex; flex-direction: column; align-items: center; }
+  .sk-hero .flame { font-size: 3rem; display: inline-block; animation: flameBeat 1.4s ease-in-out infinite; }
+  .sk-hero b { font-size: 2.6rem; line-height: 1; color: #ffb347; }
+  .sk-hero small, .sk-sub { color: #bae6fd; }
+  .sk-sub { text-align: center; font-size: .9rem; margin: 6px 0 12px; }
+  .sk-sec { font-weight: 800; font-size: .85rem; margin: 14px 0 6px; color: #e0f2fe; }
+  .sk-week { display: flex; gap: 6px; }
+  .sk-day { flex: 1; text-align: center; border-radius: 10px; padding: 6px 0; background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12); }
+  .sk-day.win { background: rgba(255,140,0,0.16); border-color: rgba(255,170,60,0.55); }
+  .sk-day.miss { background: rgba(239,68,68,0.14); border-color: rgba(239,68,68,0.4); }
+  .sk-day span { display: block; height: 1.3em; } .sk-day small { color: #94a3b8; }
   .reuse-btn { margin-top: 0; margin-bottom: 10px; padding: 11px; font-size: .9rem; color: #bae6fd; background: rgba(13,25,48,0.35); border-style: dashed; }
   .reuse-sub { text-align: center; font-size: .8rem; color: #94a3b8; margin: -4px 0 10px; }
   .reuse-search { margin: 0 0 10px; background: rgba(15,23,42,0.6); border: 1px solid rgba(186,230,253,0.25); border-radius: 12px; color: #f0f9ff; }
@@ -1790,6 +1802,7 @@ id="scannedPreviewImg"></div><div id="status"></div><div style="display:none;"><
 <div id="puterAccountModal"class="cancel-modal-overlay" onclick="if(event.target===this)this.classList.remove('show')"><div class="glass-modal-card puter-card acct-card"><h3>Puter Account</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 6px;">Account: <b id="puterAcctName">…</b></p><p style="color:#bae6fd;font-size:.9rem;margin:0 0 6px;">Credits used: <b id="puterAcctCredit">…</b></p><div style="height:10px;border-radius:6px;background:rgba(186,230,253,.2);overflow:hidden;margin:0 0 16px;"><div id="puterAcctBar" style="height:100%;width:0;background:linear-gradient(90deg,#38bdf8,#7dd3fc);transition:width .6s;"></div></div><p id="syncStatus" style="color:#bae6fd;font-size:.8rem;margin:0 0 12px;"></p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="document.getElementById('puterAccountModal').classList.remove('show');askSwitchPuter()">Switch Putter Account</button></div></div></div>
 <div id="puterConfirmModal"class="cancel-modal-overlay" onclick="if(event.target===this)closePuterConfirm()"><div class="glass-modal-card"><h3>Switch Puter account?</h3><p style="color:#bae6fd;font-size:.9rem;margin:0 0 16px;">You will be signed out and asked to sign in again.</p><div class="cancel-modal-btns"><button class="cancel-yes-btn" onclick="doSwitchPuter()">Yes</button><button class="cancel-no-btn" onclick="closePuterConfirm()">No</button></div></div></div>
 <div id="reuseModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeReuse()"><div class="glass-modal-card day-log-card"><h3>Log a Previous Meal</h3><div class="reuse-sub">Tap a meal to review it, then log it. No scan needed.</div><input type="text" id="reuseSearch" class="reuse-search" placeholder="Search your meals…" oninput="renderReuse()" autocomplete="off"><div id="reuseBody"></div><div class="reuse-nav"><button id="reusePrev" onclick="reuseGo(-1)" aria-label="Previous meals">‹</button><span id="reusePageNum"></span><button id="reuseNext" onclick="reuseGo(1)" aria-label="Next meals">›</button></div><div class="reuse-dots" id="reuseDots"></div><div class="cancel-modal-btns" style="margin-top:8px;"><button class="cancel-key-btn" onclick="closeReuse()">Cancel</button></div></div></div>
+<div id="streakModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeStreak()"><div class="glass-modal-card day-log-card streak-card"><h3>Your Streak</h3><div id="streakBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeStreak()">Close</button></div></div></div>
 <div id="dayLogModal" class="cancel-modal-overlay" onclick="if(event.target===this)closeDayLog()"><div class="glass-modal-card day-log-card"><h3 id="dayLogTitle"></h3><div id="dayLogBody"></div><div class="cancel-modal-btns" style="margin-top:14px;"><button class="cancel-key-btn" onclick="closeDayLog()">Close</button></div></div></div>
 <script>
  let GOAL_CAL = 0;
@@ -2436,6 +2449,43 @@ function dayStats(key, data) {
   const calOK = GOAL_CAL > 0 && cal >= GOAL_CAL * 0.9 && cal <= GOAL_CAL, proOK = GOAL_PRO > 0 && pro >= GOAL_PRO;
   return { has: logs.length > 0, calOK, proOK, both: calOK && proOK };
 }
+// streak: consecutive days with both goals met, ending today (or yesterday while today is still open)
+function streakInfo(data) {
+  const todayDone = dayStats(todayKey(), data).both; let streak = 0;
+  for (let i = todayDone ? 0 : 1; i < 1000; i++) {
+    const d = new Date(); d.setDate(d.getDate() - i);
+    if (!dayStats(d.toLocaleDateString('en-CA'), data).both) break;
+    streak++;
+  }
+  let best = 0, run = 0, prev = null, total = 0;
+  Object.keys(data).sort().forEach(k => {
+    if (!dayStats(k, data).both) { run = 0; return; }
+    const n = new Date(k + 'T00:00:00'); run = prev && Math.round((n - prev) / 864e5) === 1 ? run + 1 : 1; prev = n; total++; best = Math.max(best, run);
+  });
+  const sub = streak === 0 ? 'Hit both goals today to start a streak' : todayDone ? 'Streak safe for today. Come back tomorrow!' : `Hit both goals today to keep your ${streak}-day streak`;
+  return { streak, todayDone, best: Math.max(best, streak), total, sub };
+}
+function closeStreak() { document.getElementById('streakModal').classList.remove('show'); }
+function openStreak() {
+  const data = JSON.parse(localStorage.getItem('macro_logs') || '{}'), s = streakInfo(data), t = dayStats(todayKey(), data);
+  const logs = data[todayKey()] || [], cal = logs.reduce((a, x) => a + (x.cal || 0), 0), pro = logs.reduce((a, x) => a + (x.pro || 0), 0);
+  const next = [3, 7, 14, 30, 60, 100, 200, 365].find(n => n > s.streak) || s.streak + 100, prevM = [0, 3, 7, 14, 30, 60, 100, 200, 365].filter(n => n <= s.streak).pop();
+  let week = '';
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date(); d.setDate(d.getDate() - i); const k = d.toLocaleDateString('en-CA'), x = dayStats(k, data);
+    week += `<div class="sk-day ${x.both ? 'win' : x.has ? 'miss' : ''}"><span>${x.both ? '🔥' : x.has ? '•' : ''}</span><small>${d.toLocaleDateString('en-US', { weekday: 'narrow' })}</small></div>`;
+  }
+  const bar = (cls, label, w) => `<div class="dl-bar"><em>${label}</em><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-${cls}" style="width:${w}%"></div></div></div>`;
+  const pct = (v, of) => of > 0 ? Math.min(100, Math.round(v / of * 100)) : 0;
+  document.getElementById('streakBody').innerHTML = `
+    <div class="sk-hero"><span class="flame">🔥</span><b>${s.streak}</b><small>day streak</small></div>
+    <p class="sk-sub">${s.sub}</p>
+    <div class="wk-stats"><div class="wk-stat"><b>${s.best}</b><span>best streak</span></div><div class="wk-stat"><b>${s.total}</b><span>total goal days</span></div></div>
+    <div class="sk-sec">Last 7 days</div><div class="sk-week">${week}</div>
+    <div class="sk-sec">Today's goals ${t.both ? '✅' : ''}</div>${bar('cal', `🔥 ${Math.round(cal)} / ${GOAL_CAL} kcal ${t.calOK ? '✓' : ''}`, pct(cal, GOAL_CAL))}${bar('pro', `💪 ${Math.round(pro)} / ${GOAL_PRO}g ${t.proOK ? '✓' : ''}`, pct(pro, GOAL_PRO))}
+    <div class="sk-sec">Next milestone: ${next} days</div><div class="scan-macro-bar"><div class="scan-macro-fill scan-macro-fill-pro" style="width:${pct(s.streak - prevM, next - prevM)}%"></div></div>`;
+  document.getElementById('streakModal').classList.add('show');
+}
 let calOff = 0; // months from the current month (negative = past, positive = future)
 function calMove(d) { calOff += d; renderCalendar(); }
 function renderCalendar() {
@@ -2443,15 +2493,7 @@ function renderCalendar() {
   const data = JSON.parse(localStorage.getItem('macro_logs') || '{}');
   const now = new Date(new Date().getFullYear(), new Date().getMonth() + calOff, 1), y = now.getFullYear(), m = now.getMonth(), today = todayKey();
   const days = new Date(y, m + 1, 0).getDate(), offset = new Date(y, m, 1).getDay();
-  // streak: consecutive days with both goals met, ending today (or yesterday while today is still open)
-  let streak = 0;
-  const todayDone = dayStats(today, data).both;
-  for (let i = todayDone ? 0 : 1; i < 1000; i++) {
-    const d = new Date(); d.setDate(d.getDate() - i);
-    if (!dayStats(d.toLocaleDateString('en-CA'), data).both) break;
-    streak++;
-  }
-  const sub = streak === 0 ? 'Hit both goals today to start a streak' : todayDone ? 'Streak safe for today. Come back tomorrow!' : `Hit both goals today to keep your ${streak}-day streak`;
+  const { streak, todayDone, sub } = streakInfo(data);
   let cells = ['S', 'M', 'T', 'W', 'T', 'F', 'S'].map(d => `<div class="cal-dow">${d}</div>`).join('') + '<div></div>'.repeat(offset);
   for (let d = 1; d <= days; d++) {
     const key = new Date(y, m, d).toLocaleDateString('en-CA'), s = dayStats(key, data);
@@ -2460,7 +2502,7 @@ function renderCalendar() {
     const ck = (s.calOK ? '<i class="c" title="Calories on target">✓</i>' : '') + (s.proOK ? '<i class="p" title="Protein reached">✓</i>' : '');
     cells += `<div class="cal-day ${cls}"${key > today ? '' : ` data-k="${key}" onclick="openDayLog('${key}')"`}><b>${d}</b><span class="cal-ck">${ck}</span></div>`;
   }
-  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''}"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
+  el.innerHTML = `<div class="cal-head"><div class="cal-nav"><button type="button" aria-label="Previous month" onclick="calMove(-1)">‹</button><strong>🗓️ ${now.toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</strong><button type="button" aria-label="Next month" onclick="calMove(1)">›</button></div><div class="cal-streak ${streak ? 'on' : ''}" role="button" tabindex="0" style="cursor:pointer" onclick="openStreak()" onkeydown="if(event.key==='Enter')openStreak()"><span class="flame">🔥</span>${streak}</div></div><div class="cal-sub">${sub}</div><div class="cal-grid">${cells}</div><div class="cal-legend"><span class="g">Both goals</span><span class="h">One goal</span><span class="r">Missed</span><span class="t">Today</span><span>✓ calories · ✓ protein</span></div>`;
   renderWeek(data);
 }
 // Last 7 days ending today: calorie bars against the goal line + averages.
