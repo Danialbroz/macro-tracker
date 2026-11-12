@@ -280,12 +280,22 @@
   .streak-card { max-width: 380px !important; overflow-y: auto; position: relative; }
   .sk-info { position: absolute; top: 14px; right: 14px; width: 28px; height: 28px; padding: 0; border-radius: 50%; border: 1px solid rgba(186,230,253,.5); background: rgba(56,189,248,.15); color: #e0f2fe; font: italic 800 1rem Georgia, serif; line-height: 1; cursor: pointer; display: grid; place-items: center; }
   .sk-info.on { background: #38bdf8; color: #04223a; }
-  .streak-info-card { max-width: 1180px !important; width: 96% !important; overflow-y: auto; }
-  .sk-tiers { display: flex; gap: 12px; overflow-x: auto; padding: 8px 4px 14px; align-items: flex-start; }
-  .sk-tcol { flex: 0 0 250px; display: flex; flex-direction: column; gap: 10px; }
-  .sk-tname { text-align: center; font-weight: 800; color: #e0f2fe; }
-  .sk-tcard { padding: 14px; border-radius: 20px; background: rgba(15,30,50,.55); border: 1px solid rgba(186,230,253,.25); }
+  .streak-info-card { max-width: 1180px !important; width: 96% !important; overflow: hidden !important; padding: 14px !important; }
+  .streak-info-card h3 { margin: 0 0 6px; }
+  .sk-tiers { display: flex; gap: 8px; overflow: hidden; padding: 2px 0; align-items: stretch; min-height: 0; }
+  .sk-tcol { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 5px; }
+  .sk-tname { text-align: center; font-weight: 800; color: #e0f2fe; font-size: .72rem; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .sk-tcard { padding: 8px; border-radius: 16px; background: rgba(15,30,50,.55); border: 1px solid rgba(186,230,253,.25); min-width: 0; overflow: hidden; font-size: .7rem; }
   .sk-tcard .sk-hero { text-align: center; }
+  .sk-tcard .sk-hero b { font-size: 1.7rem; }
+  .sk-tcard canvas.pf { width: 30px !important; height: 40px !important; }
+  .sk-tcard .sk-sub { margin: 2px 0 4px; font-size: .68rem; }
+  .sk-tcard .wk-stats { gap: 6px; margin: 4px 0; }
+  .sk-tcard .wk-stat { padding: 4px 6px; } .sk-tcard .wk-stat b { font-size: .9rem; } .sk-tcard .wk-stat span { font-size: .58rem; }
+  .sk-tcard .sk-sec { margin: 7px 0 3px; font-size: .7rem; }
+  .sk-tcard .sk-week { gap: 2px; } .sk-tcard .sk-day { padding: 2px 0; border-radius: 6px; } .sk-tcard .sk-day span { height: .9em; } .sk-tcard .sk-day small { font-size: .55rem; }
+  .sk-tcard .dl-bar em { min-width: 0 !important; font-size: .62rem; }
+  .streak-info-card .cancel-modal-btns { margin-top: 8px !important; }
   .sk-tier { display: flex; align-items: center; gap: 12px; padding: 8px 10px; margin-bottom: 8px; border-radius: 14px; background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.12); }
   .sk-tier .pf-wrap { flex: none; width: 36px; justify-content: center; }
   .sk-tier b { display: block; color: #ffb347; } .sk-tier small { color: #bae6fd; }
