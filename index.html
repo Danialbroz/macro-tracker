@@ -240,17 +240,17 @@
   .cal-nav { display: flex; align-items: center; gap: 6px; }
   .cal-nav button { width: 28px; height: 28px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.08); color: #e2e8f0; font-size: 1.1rem; line-height: 1; cursor: pointer; }
   .cal-nav button:disabled { opacity: .3; cursor: default; }
-  .cal-streak { display: flex; align-items: center; gap: 8px; padding: 8px 18px; border-radius: 999px; font-weight: 800; font-size: 1.35rem; color: #94a3b8; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
+  .cal-streak { display: flex; align-items: center; gap: 8px; padding: 4px 16px; border-radius: 999px; font-weight: 800; font-size: 1.35rem; color: #94a3b8; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); }
   .cal-streak .flame { filter: grayscale(1) opacity(.6); }
   .cal-streak.on { color: #ffb347; background: rgba(255,140,0,0.16); border-color: rgba(255,170,60,0.55); box-shadow: 0 0 14px rgba(255,140,0,0.35); }
   .cal-streak.on .flame { filter: none; animation: flameBeat 1.1s ease-in-out infinite; }
   .pf-wrap { display: inline-flex; line-height: 0; }
-  .cal-streak .pf-wrap { margin: -20px -4px -14px; }
+  .cal-streak .pf-wrap { margin: 0 -2px; }
+  .cal-streak canvas.pf { width: 27px !important; height: 36px !important; }
   .cal-streak:not(.on) .pf-wrap { filter: grayscale(1) opacity(.6); }
   @media (max-width: 700px) {
-    .cal-streak { gap: 6px; padding: 6px 13px; font-size: 1.1rem; }
-    .cal-streak canvas.pf { width: 36px !important; height: 48px !important; }
-    .cal-streak .pf-wrap { margin: -15px -3px -10px; }
+    .cal-streak { gap: 5px; padding: 3px 13px; font-size: 1.1rem; }
+    .cal-streak canvas.pf { width: 21px !important; height: 28px !important; }
   }
   /* flame flicker: sways from its base, stretches and dims irregularly */
   .cal-streak .flame, .sk-hero .flame { display: inline-block; transform-origin: 50% 85%; }
