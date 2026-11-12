@@ -2526,11 +2526,11 @@ function createPixelFire(canvas, { palette = 'orange', scale = 4 } = {}) {
   };
   const step = () => {
     for (let y = 0; y < H; y++) for (let x = 0; x < W; x++) { const r = Math.hypot(x - BX, y - BY); if (r <= 6.5) heat[y * W + x] = Math.max(1, M - Math.floor(r * 2.2) + rnd(-1, 1)); }
-    // fireball: round glowing core at the lower right, flames streaming up and to the left like the emoji
+    // fireball: round glowing core at the lower right, flames rise straight up from the core like a campfire
     for (let y = H - 2; y >= 0; y--) for (let x = 0; x < W; x++) {
       if (Math.hypot(x - BX, y - BY) <= 6.5) continue; // core is re-lit below
-      const src = heat[(y + 1) * W + Math.max(0, Math.min(W - 1, x + rnd(-1, 1) + (Math.random() < .5 ? 1 : 0)))];
-      const t = Math.min(1, (BY - y) / 19), inBall = (x - BX) ** 2 + (y - BY) ** 2 <= 81, inTail = y < BY && Math.abs(x - (BX - 10 * t)) <= 6 * (1 - t) + 1;
+      const src = heat[(y + 1) * W + Math.max(0, Math.min(W - 1, x + rnd(-1, 1)))];
+      const t = Math.min(1, (BY - y) / 19), inBall = (x - BX) ** 2 + (y - BY) ** 2 <= (y < BY ? 56 : 81), inTail = y < BY && Math.abs(x - BX) <= 5 * (1 - t) + 1;
       heat[y * W + x] = Math.max(0, src - rnd(0, 2) - (inBall || inTail ? 0 : 4));
     }
     draw(); frame++;
