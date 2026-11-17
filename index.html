@@ -1156,6 +1156,13 @@ html.intro-lock { overflow: hidden; }
     bottom: calc(7vh + env(safe-area-inset-bottom, 0px));
     width: min(520px, 80vw); pointer-events: none;
 }
+#intro-skip {
+    position: absolute; z-index: 21; right: calc(16px + env(safe-area-inset-right, 0px));
+    bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+    padding: 8px 12px; border: 1px solid rgba(255,255,255,.35); border-radius: 999px;
+    background: rgba(8,47,73,.35); color: #fff; font-size: .8rem; cursor: pointer;
+}
+#intro-skip[hidden] { display: none; }
 #intro-pct { text-align: center; margin-bottom: 10px; color: #fff; font-size: .85rem; font-weight: 800; letter-spacing: 1.5px; font-variant-numeric: tabular-nums; text-shadow: 0 1px 4px rgba(4,30,66,.8); }
 #intro-track {
     position: relative; width: 100%; height: clamp(30px, 4.6vw, 38px); border-radius: 999px;
@@ -1334,6 +1341,7 @@ html.intro-lock { overflow: hidden; }
   </div>
  </div>
 </div>
+<button id="intro-skip" type="button" hidden>Skip intro</button>
 <!-- GSAP -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
@@ -1403,6 +1411,13 @@ try { played = sessionStorage.getItem('intro-played') === '1'; } catch (e) {}
 if (played || typeof gsap === 'undefined') { cleanup(); return; }
 try { sessionStorage.setItem('intro-played', '1'); } catch (e) {}
 html.classList.add('intro-lock');
+try {
+    if (JSON.parse(localStorage.getItem('user_goals'))) {
+        var skip = $('intro-skip');
+        skip.hidden = false;
+        skip.addEventListener('click', cleanup);
+    }
+} catch (e) {}
 /* ---------- APPLY CONFIG ---------- */
 var c = CONFIG.colors;
 var vars = {
